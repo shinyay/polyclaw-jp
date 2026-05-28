@@ -59,6 +59,9 @@ test.describe('Login overlay', () => {
     await page.goto('/')
     await expect(page.locator('.login-card')).toBeVisible()
     await expect(page.getByText('Polyclaw')).toBeVisible()
+    // testid-based assertion (new convention, see docs/i18n/testid-convention.md)
+    await expect(page.locator('[data-testid="login-input-secret"]')).toBeVisible()
+    await expect(page.locator('[data-testid="login-button-submit"]')).toBeVisible()
   })
 
   test('sign-in button is disabled when input is empty', async ({ page }) => {
@@ -83,11 +86,14 @@ test.describe('Login overlay', () => {
 
     await page.goto('/')
     await expect(page.locator('.login-card')).toBeVisible()
-    await page.getByPlaceholder('Admin secret').fill('my-secret')
-    await page.locator('.login-card .btn--primary').click()
+    // testid-based interaction (new convention, see docs/i18n/testid-convention.md)
+    await page.locator('[data-testid="login-input-secret"]').fill('my-secret')
+    await page.locator('[data-testid="login-button-submit"]').click()
 
     // After login, sidebar should appear
     await expect(page.locator('.sidebar')).toBeVisible()
+    // testid-based sidebar link assertion
+    await expect(page.locator('[data-testid="sidebar-link-chat"]')).toBeVisible()
   })
 
   test('extracts token from URL ?secret= parameter', async ({ page }) => {

@@ -25,8 +25,14 @@ export default function LoginOverlay({ onLogin }: Props) {
             placeholder="Admin secret"
             className="input"
             autoFocus
+            data-testid="login-input-secret"
           />
-          <button type="submit" className="btn btn--primary" disabled={!secret.trim()}>
+          <button
+            type="submit"
+            className="btn btn--primary"
+            disabled={!secret.trim()}
+            data-testid="login-button-submit"
+          >
             Sign In
           </button>
         </form>

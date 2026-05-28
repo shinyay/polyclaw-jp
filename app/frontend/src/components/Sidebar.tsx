@@ -25,7 +25,12 @@ export default function Sidebar({ status, collapsed, onToggle }: Props) {
   return (
     <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
       <div className="sidebar__header">
-        <button className="sidebar__toggle" onClick={onToggle} title={collapsed ? 'Expand' : 'Collapse'}>
+        <button
+          className="sidebar__toggle"
+          onClick={onToggle}
+          title={collapsed ? 'Expand' : 'Collapse'}
+          data-testid="sidebar-toggle"
+        >
           {collapsed ? '▸' : '◂'}
         </button>
         {!collapsed && (
@@ -43,6 +48,7 @@ export default function Sidebar({ status, collapsed, onToggle }: Props) {
             to={item.to}
             className={({ isActive }) => `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`}
             title={item.label}
+            data-testid={`sidebar-link-${item.to.slice(1)}`}
           >
             <span className="sidebar__icon">{item.icon}</span>
             {!collapsed && <span className="sidebar__label">{item.label}</span>}

@@ -46,7 +46,12 @@ export default function TopBar({ onTogglePanel }: Props) {
   return (
     <header className="topbar">
       <div className="topbar__left">
-        <button className="topbar__toggle" onClick={onTogglePanel} title="Toggle sessions">
+        <button
+          className="topbar__toggle"
+          onClick={onTogglePanel}
+          title="Toggle sessions"
+          data-testid="topbar-toggle-panel"
+        >
           <IconPanelLeft />
         </button>
         <button className="topbar__brand" onClick={() => navigate('/chat')}>
@@ -58,6 +63,7 @@ export default function TopBar({ onTogglePanel }: Props) {
           className="topbar__agent"
           onClick={() => setOpen(o => !o)}
           onMouseEnter={() => setOpen(true)}
+          data-testid="topbar-agent-trigger"
         >
           <img src="/logo.png" alt="" className="topbar__avatar-img" />
           <span className="topbar__name">{agentName}</span>
