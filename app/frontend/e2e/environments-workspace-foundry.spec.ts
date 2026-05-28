@@ -9,7 +9,7 @@ test.describe('Environments page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/environments')
-    await expect(page.getByRole('heading', { name: 'Environments' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: '環境' })).toBeVisible()
   })
 
   test('displays deployments table', async ({ page }) => {
@@ -21,13 +21,13 @@ test.describe('Environments page', () => {
 
   test('shows status badge', async ({ page }) => {
     await page.goto('/environments')
-    await expect(page.getByText('active')).toBeVisible()
+    await expect(page.locator('.badge', { hasText: '稼働中' })).toBeVisible()
   })
 
   test('clicking row shows detail panel', async ({ page }) => {
     await page.goto('/environments')
     await page.getByText('dep-001').click()
-    await expect(page.getByRole('button', { name: 'Destroy' })).toBeVisible()
+    await expect(page.getByTestId('environments-destroy-btn')).toBeVisible()
   })
 
   test('detail panel shows resources', async ({ page }) => {
@@ -47,14 +47,14 @@ test.describe('Environments page', () => {
       })
     })
     await page.goto('/environments')
-    await page.getByRole('button', { name: 'Run Audit' }).click()
+    await page.getByTestId('environments-audit-btn').click()
     expect(auditCalled).toBe(true)
   })
 
   test('audit results show no orphans message', async ({ page }) => {
     await page.goto('/environments')
-    await page.getByRole('button', { name: 'Run Audit' }).click()
-    await expect(page.getByText('No orphaned resources found')).toBeVisible()
+    await page.getByTestId('environments-audit-btn').click()
+    await expect(page.getByText('孤立したリソースはありません')).toBeVisible()
   })
 
   test('empty state when no deployments', async ({ page }) => {
@@ -62,7 +62,7 @@ test.describe('Environments page', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ deployments: [] }) }),
     )
     await page.goto('/environments')
-    await expect(page.getByText('No deployments registered')).toBeVisible()
+    await expect(page.getByTestId('environments-empty-state')).toBeVisible()
   })
 })
 
@@ -74,7 +74,7 @@ test.describe('Workspace page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/workspace')
-    await expect(page.getByRole('heading', { name: 'Workspace' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'ワークスペース' })).toBeVisible()
   })
 
   test('shows breadcrumb', async ({ page }) => {
@@ -120,7 +120,7 @@ test.describe('Workspace page', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', entries: [] }) }),
     )
     await page.goto('/workspace')
-    await expect(page.getByText('Empty directory')).toBeVisible()
+    await expect(page.getByTestId('workspace-empty-state')).toBeVisible()
   })
 })
 
@@ -139,16 +139,16 @@ test.describe('Foundry IQ page', () => {
     await page.goto('/foundry-iq')
     const statsBar = page.locator('.stats-bar')
     await expect(statsBar).toBeVisible()
-    await expect(statsBar.getByText('Status')).toBeVisible()
-    await expect(statsBar.getByText('Documents')).toBeVisible()
-    await expect(statsBar.getByText('Schedule')).toBeVisible()
+    await expect(statsBar.getByText('状態')).toBeVisible()
+    await expect(statsBar.getByText('ドキュメント数')).toBeVisible()
+    await expect(statsBar.getByText('スケジュール')).toBeVisible()
   })
 
   test('shows configuration form', async ({ page }) => {
     await page.goto('/foundry-iq')
-    await expect(page.getByText('Configuration')).toBeVisible()
-    await expect(page.getByText('Search Endpoint')).toBeVisible()
-    await expect(page.getByText('Embedding Endpoint')).toBeVisible()
+    await expect(page.getByRole('heading', { name: '設定' })).toBeVisible()
+    await expect(page.getByText('Search エンドポイント')).toBeVisible()
+    await expect(page.getByText('埋め込みエンドポイント')).toBeVisible()
   })
 
   test('enable checkbox is checked', async ({ page }) => {
@@ -178,7 +178,7 @@ test.describe('Foundry IQ page', () => {
     await page.goto('/foundry-iq')
     await Promise.all([
       page.waitForResponse(resp => resp.url().includes('/foundry-iq/ensure-index')),
-      page.getByRole('button', { name: 'Save & Create Index' }).click(),
+      page.getByTestId('foundryiq-save-btn').click(),
     ])
     expect(putCalled).toBe(true)
     expect(indexCalled).toBe(true)
@@ -194,14 +194,14 @@ test.describe('Foundry IQ page', () => {
       })
     })
     await page.goto('/foundry-iq')
-    await page.getByRole('button', { name: 'Run Indexing' }).click()
+    await page.getByTestId('foundryiq-index-btn').click()
     expect(indexCalled).toBe(true)
   })
 
   test('search memories returns results', async ({ page }) => {
     await page.goto('/foundry-iq')
-    await page.getByPlaceholder('Search your memories...').fill('test query')
-    await page.getByRole('button', { name: 'Search' }).click()
+    await page.getByTestId('foundryiq-search-input').fill('test query')
+    await page.getByTestId('foundryiq-search-btn').click()
     await expect(page.getByText('Test Doc')).toBeVisible()
     await expect(page.getByText('Test content for search result')).toBeVisible()
   })
@@ -213,7 +213,7 @@ test.describe('Foundry IQ page', () => {
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', results: [] }) })
     })
     await page.goto('/foundry-iq')
-    await page.getByRole('button', { name: 'Search' }).click()
+    await page.getByTestId('foundryiq-search-btn').click()
     expect(searchCalled).toBe(false)
   })
 })
