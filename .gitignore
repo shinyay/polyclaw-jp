@@ -44,5 +44,8 @@ docker-compose.override.yml
 docs/public/
 docs/resources/
 docs/.hugo_build.lock
+
+# i18n inventory backup (auto-created by scripts/collect_i18n_strings.sh)
+docs/i18n/inventory.csv.bak
 presentations/~$polyclaw.pptx
 customer
