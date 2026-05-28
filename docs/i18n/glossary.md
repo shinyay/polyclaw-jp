@@ -347,3 +347,99 @@
 - 同じ概念に複数の訳語を使わないでください。例外が必要な場合は注釈に理由を書きます。
 - ユーザに見えるラベル、ボタン、説明文は日本語にします。API 名、ファイル名、コード上の識別子は英語を維持します。
 
+## 13. Infrastructure (PR-2.9)
+
+InfrastructureSettings.tsx は Azure / Bot / Monitoring / Memory / Voice の 5 つのサブシステムを Overview + Tabs 構成で扱います。固有名詞 (Azure リソース名、SKU 名、リージョン名) は基本的に英語を維持し、ユーザに見えるラベル/説明文/ボタン/ヒント/トーストを日本語化します。
+
+### Overview / 共通
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Infrastructure | インフラ | ページ見出し / Tab グループ (短縮形優先) | インフラストラクチャ |
+| Provisioned | プロビジョニング済み | リソースが Azure に作成済みの状態を示すバッジ | 構成済み |
+| Active | アクティブ | リソースが起動・接続済みでデータも流れている状態 | 稼働中 |
+| Configured | 構成済み | 接続情報を保存済み (Voice タブの状態バッジ) | 設定済み |
+| Enabled (with no export) | 有効化済み (エクスポートなし) | OTel が enable=true だが export 先未設定の状態 | 有効 (送信なし) |
+| Disabled | 無効 | 機能がオフ | オフ |
+| Resource Group | リソースグループ | Azure 標準訳 (Microsoft Learn 準拠) | RG |
+| Location | リージョン | Azure 標準訳 (region と location は実質同義のため統一) | ロケーション |
+| Deploy New | 新規デプロイ | mode selector の左カード見出し | 新しくデプロイ |
+| Connect Existing | 既存に接続 | mode selector の右カード見出し | 既存リソースに接続 |
+| Decommission | 破棄 | リソース削除アクションのボタン | 削除 / 廃止 |
+| Decommissioning... | 破棄中... | 上記のローディング表示 | 削除中... |
+| Refresh | 更新 | リスト再取得ボタン | リフレッシュ |
+| Scanning... | スキャン中... | サブスクリプション内のリソース検出中の表示 | 検索中... |
+
+### Bot Service / Channels (Overview Tab)
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Bot Service | Bot Service | Azure 製品名のため英語維持 | — |
+| App Registration | アプリ登録 | Entra ID のアプリ登録を指します | App registration |
+| Tenant | テナント | Azure 標準訳 | テナント ID |
+| Telegram Bot Token | Telegram Bot トークン | 製品名 (Telegram, Bot) は維持、token のみ訳 | — |
+| Channels | チャネル | Bot Framework の channel (Telegram, MS Teams 等) | — |
+
+### Monitoring / Application Insights (Monitoring Tab)
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| OpenTelemetry Monitoring | OpenTelemetry モニタリング | 製品名 OpenTelemetry は維持 | — |
+| Application Insights | Application Insights | Azure 製品名のため英語維持 | App Insights |
+| Log Analytics workspace | Log Analytics ワークスペース | Azure 標準訳 (workspace のみ訳) | — |
+| Connection String | 接続文字列 | Azure 標準訳 | — |
+| Validate connection string | 接続文字列を検証 | 接続文字列の検証ボタン | — |
+| Validating... | 検証中... | 上記のローディング表示 | — |
+| Sampling Ratio | サンプリング率 | 100% = 全トレース、5% = 20 件に 1 件 | サンプル率 |
+| Live Metrics | ライブメトリクス | Application Insights の機能名 (Azure 標準訳) | — |
+| Tracer Provider | トレーサープロバイダー | OTel SDK 用語 | Tracer プロバイダー |
+| Open in Grafana | Grafana で開く | エージェントダッシュボード遷移ボタン | — |
+| What Gets Collected | 収集される情報 | 説明見出し | 収集対象 |
+
+### Memory / Foundry IQ (Memory Tab)
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Memory / Foundry IQ | メモリ / Foundry IQ | タブ見出し (Foundry IQ は固有名詞のため英語維持) | — |
+| Search Service | Search サービス | Azure AI Search の Service。Azure 公式表記 | 検索サービス |
+| OpenAI Account | OpenAI アカウント | Azure OpenAI Service のアカウントリソース | — |
+| Index schedule | インデックススケジュール | (§12 既出) | — |
+
+### Voice / ACS / AOAI Realtime (Voice Tab)
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Voice Call Infrastructure | 音声通話インフラ | Voice タブ configured 状態の見出し | 音声インフラ |
+| ACS | ACS | Azure Communication Services 略称 (英語維持) | — |
+| Communication Services | Communication Services | Azure 製品名 (英語維持) | — |
+| Azure OpenAI | Azure OpenAI | Azure 製品名 (英語維持) | — |
+| ACS Resource | ACS リソース | Voice タブ resource grid のラベル | — |
+| Realtime Deployment | Realtime デプロイ | gpt-realtime-mini 等の deployment | リアルタイムデプロイ |
+| ACS Source Number | ACS 発信元番号 | AI が発信に使う ACS で購入済みの番号 | 発信元番号 |
+| Your Phone Number | あなたの電話番号 | AI が発信を許可される唯一の番号 | ターゲット番号 |
+| Source Phone | 発信元電話番号 | configured view の resource grid ラベル | — |
+| Target Phone | 発信先電話番号 | configured view の resource grid ラベル | — |
+| Phone Numbers | 電話番号 | Voice タブの phone number config セクション見出し | — |
+| Select a purchased number... | 購入済み番号を選択... | dropdown placeholder | — |
+| Manage Phone Numbers in Azure Portal | Azure ポータルで電話番号を管理 | 外部リンク | — |
+| Realtime-capable model | realtime 対応モデル | gpt-realtime-mini, gpt-4o-realtime-preview 等 | — |
+| Create a new ACS resource automatically | ACS リソースを自動で新規作成 | チェックボックスラベル | — |
+| Connecting... | 接続中... | Connect ボタンのローディング表示 | — |
+| Deploying... | デプロイ中... | Deploy ボタンのローディング表示 | — |
+| Connect Resources | リソースに接続 | Connect Existing form の保存ボタン | — |
+| Deploy Voice Infrastructure | 音声インフラをデプロイ | Deploy New form の保存ボタン | — |
+| Save Phone Numbers | 電話番号を保存 | configured view の phone number 保存ボタン | — |
+
+### 命名規約・例外
+
+- Azure 製品名 (Application Insights / Log Analytics / Bot Service / Communication Services / OpenAI / Foundry IQ / Cloudflare Tunnel) は英語維持します。日本語化すると検索性と Azure 公式ドキュメントとの整合が損なわれるためです。
+- リージョン名 (eastus, swedencentral, japaneast 等) は英語維持します。
+- SKU 名 (Standard, Premium 等) は英語維持します。
+- 「Active」と「Configured」と「Provisioned」は紛らわしいので明確に使い分けます:
+  - **Active**: リソースが作成済み + 接続設定済み + データが実際に流れている (例: OTel エクスポート有効)
+  - **Configured**: 設定情報が保存済み (Voice タブで使用)
+  - **Provisioned**: Azure 上にリソースが作成済み (データフロー有無を問わない)
+- 「破棄」と「削除」は使い分けます:
+  - **破棄 (Decommission)**: リソースグループ単位での退役 (Azure リソース自体を削除)
+  - **削除 (Delete)**: アプリ内設定や個別エントリの削除
+
