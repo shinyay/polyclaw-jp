@@ -26,11 +26,11 @@ export function WorkspaceContent() {
     try {
       const r = await api<{ status: string; content?: string; binary?: boolean; size?: number }>(`workspace/read?path=${encodeURIComponent(filePath)}`)
       if (r.binary) {
-        setPreview(`(binary file, ${formatSize(r.size || 0)})`)
+        setPreview(`(バイナリファイル, ${formatSize(r.size || 0)})`)
       } else {
         setPreview(r.content || '')
       }
-    } catch (e: any) { setPreview(`Error: ${e.message}`) }
+    } catch (e: any) { setPreview(`エラー: ${e.message}`) }
   }
 
   const parts = path.split('/')
@@ -38,7 +38,7 @@ export function WorkspaceContent() {
   return (
     <>
       <div className="page__header">
-        <h1>Workspace</h1>
+        <h1>ワークスペース</h1>
       </div>
 
       {/* Breadcrumb */}
@@ -51,7 +51,7 @@ export function WorkspaceContent() {
               {isLast ? (
                 <span className="breadcrumb__current">{part}</span>
               ) : (
-                <button className="breadcrumb__link" onClick={() => load(crumbPath)}>{part}</button>
+                <button className="breadcrumb__link" onClick={() => load(crumbPath)} data-testid={`workspace-crumb-${i}`}>{part}</button>
               )}
               {!isLast && <span className="breadcrumb__sep">/</span>}
             </span>
@@ -65,7 +65,7 @@ export function WorkspaceContent() {
 
           {/* Parent directory */}
           {parts.length > 1 && (
-            <button className="workspace-entry workspace-entry--dir" onClick={() => load(parts.slice(0, -1).join('/'))}>
+            <button className="workspace-entry workspace-entry--dir" onClick={() => load(parts.slice(0, -1).join('/'))} data-testid="workspace-parent">
               <span className="workspace-entry__icon"><IconFolder width={16} height={16} /></span>
               <span>..</span>
             </button>
@@ -76,6 +76,7 @@ export function WorkspaceContent() {
               key={entry.name}
               className={`workspace-entry ${entry.is_dir ? 'workspace-entry--dir' : ''}`}
               onClick={() => entry.is_dir ? load(entry.path) : readFile(entry.path)}
+              data-testid={`workspace-entry-${entry.name}`}
             >
               <span className="workspace-entry__icon">{entry.is_dir ? <IconFolder width={16} height={16} /> : <IconFile width={16} height={16} />}</span>
               <span className="workspace-entry__name">{entry.name}</span>
@@ -85,7 +86,7 @@ export function WorkspaceContent() {
             </button>
           ))}
 
-          {!loading && entries.length === 0 && <p className="text-muted">Empty directory</p>}
+          {!loading && entries.length === 0 && <p className="text-muted" data-testid="workspace-empty-state">空のディレクトリです</p>}
         </div>
 
         {preview !== null && (
