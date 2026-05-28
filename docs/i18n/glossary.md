@@ -279,6 +279,67 @@
 | built-in (server badge) | ビルトイン | 組み込みサーバー識別バッジです (§9 既出と整合) | 組み込み |
 | disabled (server badge) | 無効 | 無効状態識別バッジです (§9 既出) | 停止 |
 
+## 12. Environments + Foundry IQ + Workspace + Customization (PR-2.7 C2-C5)
+
+### Environments
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Environments | 環境 | ページ名およびデプロイ環境一覧を指します | デプロイ環境 |
+| Deployment ID | デプロイ ID | デプロイの一意識別子です | 識別子 |
+| Kind | 種別 | デプロイ種別 (local / aca 等) を指します | 種類 |
+| Status | 状態 | デプロイ状態 (§7 既出) | ステータス |
+| active | 稼働中 | 内部値 `active` を表示用に変換 (内部値は維持) | アクティブ |
+| destroyed | 破棄済み | 内部値 `destroyed` を表示用に変換 (内部値は維持) | 削除済み |
+| Version | バージョン | デプロイバージョン (§5 既出) | バージョン番号 |
+| Created | 作成日時 | 作成タイムスタンプを指します | 作成時刻 |
+| Run Audit | 監査を実行 | リソース監査ボタンです | 監査開始 |
+| No orphaned resources found | 孤立したリソースはありません | 監査成功時の表示 | 孤立リソースなし |
+| Orphaned resources | 孤立リソース | 追跡対象から外れた Azure リソースを指します | 未追跡リソース |
+| Tracked Resources | 追跡対象リソース | デプロイで管理しているリソースを指します | 管理リソース |
+| Destroy | 破棄 | デプロイ破棄ボタンです | 削除 |
+| No deployments registered | 登録済みデプロイはありません | 空状態メッセージです | デプロイ未登録 |
+
+### Foundry IQ
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Foundry IQ | Foundry IQ | プロダクト固有名として維持します | Foundry IQ のまま |
+| Configuration | 設定 | フォーム見出しです (§3 既出) | 構成 |
+| Search Endpoint | Search エンドポイント | Azure AI Search のエンドポイント (Search は維持) | 検索エンドポイント |
+| Search API Key | Search API キー | Azure AI Search の API キー | 検索 API キー |
+| Embedding Endpoint | 埋め込みエンドポイント | Azure OpenAI Embeddings のエンドポイント | エンベディングエンドポイント |
+| Embedding API Key | 埋め込み API キー | Azure OpenAI Embeddings の API キー | エンベディング API キー |
+| Embedding Model | 埋め込みモデル | Embeddings モデル名 (例: text-embedding-3-large) | エンベディングモデル |
+| Embedding Dimensions | 埋め込み次元数 | ベクトル次元数を指します | エンベディング次元 |
+| Index Name | インデックス名 | Azure AI Search インデックス名 | 索引名 |
+| Index Schedule | インデックススケジュール | 自動再インデックス頻度です | 索引スケジュール |
+| daily / hourly / manual | 毎日 / 毎時 / 手動 | 内部値は維持、表示時に日本語変換 | 日次 / 時次 / マニュアル |
+| Last Indexed | 最終インデックス | 最終インデックス実行タイムスタンプ | 前回インデックス |
+| No index | インデックスなし | docCount 内部値 `No index` の表示変換 | 索引未作成 |
+| Documents | ドキュメント数 | インデックス済みドキュメント数 | 文書数 |
+| Provisioned Resources | プロビジョニング済みリソース | デプロイ済み Azure リソース表示 | 既存リソース |
+| Resource Group | リソースグループ | Azure リソースグループ名 (固有名) | リソース グループ |
+| Search Service (Foundry IQ) | Search サービス | Azure AI Search のリソース名 (Search は維持) | 検索サービス |
+| OpenAI Account (Foundry IQ) | OpenAI アカウント | Azure OpenAI のリソース名 (OpenAI は維持) | OpenAI リソース |
+| Run Indexing | インデックスを実行 | 手動インデックス実行ボタンです | 索引実行 |
+| Save & Create Index | 保存してインデックス作成 | 設定保存 + ensure-index API 実行 | 保存して索引作成 |
+| Search your memories... | メモリを検索... | 検索入力プレースホルダ | 記憶を検索... |
+| No results | 結果なし | 検索結果ゼロ時の表示 | 該当なし |
+| Enable Foundry IQ | Foundry IQ を有効化 | 有効化チェックボックス | Foundry IQ をオン |
+
+### Workspace / Customization
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Workspace | ワークスペース | ページ名およびファイル一覧を指します | 作業領域 |
+| Empty directory | 空のディレクトリです | 空のディレクトリ表示 | ディレクトリは空です |
+| Binary file - cannot preview | バイナリファイルのため表示できません | バイナリファイルのプレビュー不可表示 | バイナリは表示不可 |
+| SOUL | ソウル | Customization ページのカード見出し (§1 SOUL は併記、ここではカード短縮形) | 魂 |
+| Skills (nav card) | スキル | Customization ページのカード見出し (§1 既出) | スキル一覧 |
+| Plugins (nav card) | プラグイン | Customization ページのカード見出し (§1 既出) | プラグイン一覧 |
+| MCP servers (nav card) | MCP サーバー | Customization ページのカード見出し (§1 既出) | MCP サーバ |
+
 
 
 - "Memory" は LLM 文脈では「メモリ」に統一します。一般文脈でも混在を避けるため、原則として「メモリ」を使います。
