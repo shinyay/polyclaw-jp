@@ -1337,18 +1337,18 @@ function MemoryTab({ azureLoggedIn }: { azureLoggedIn: boolean }) {
         method: 'POST',
         body: JSON.stringify({ location: deployLocation, resource_group: deployRg }),
       })
-      showToast('Foundry IQ resources provisioned', 'success')
+      showToast('Foundry IQ リソースをプロビジョニングしました', 'success')
       await loadConfig()
     } catch (e: any) { showToast(e.message, 'error') }
     setLoading(p => ({ ...p, deploy: false }))
   }
 
   const handleDecommission = async () => {
-    if (!confirm('Decommission Foundry IQ? This will remove search and OpenAI resources.')) return
+    if (!confirm('Foundry IQ を破棄しますか？ Search と OpenAI のリソースが削除されます。')) return
     setLoading(p => ({ ...p, decommission: true }))
     try {
       await api('foundry-iq/provision', { method: 'DELETE' })
-      showToast('Foundry IQ resources removed', 'success')
+      showToast('Foundry IQ リソースを削除しました', 'success')
       setConfig(null)
       await loadConfig()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -1363,31 +1363,31 @@ function MemoryTab({ azureLoggedIn }: { azureLoggedIn: boolean }) {
       <div className="voice">
         <div className="voice__status-card">
           <div className="voice__status-header">
-            <h3>Memory / Foundry IQ</h3>
-            <span className="badge badge--ok">Provisioned</span>
+            <h3>メモリ / Foundry IQ</h3>
+            <span className="badge badge--ok">プロビジョニング済み</span>
           </div>
           <div className="voice__resource-grid">
             {config.search_resource_name && (
               <div className="voice__resource-item">
-                <label>Search Service</label>
+                <label>Search サービス</label>
                 <span>{config.search_resource_name}</span>
               </div>
             )}
             {config.openai_resource_name && (
               <div className="voice__resource-item">
-                <label>OpenAI Account</label>
+                <label>OpenAI アカウント</label>
                 <span>{config.openai_resource_name}</span>
               </div>
             )}
             {config.resource_group && (
               <div className="voice__resource-item">
-                <label>Resource Group</label>
+                <label>リソースグループ</label>
                 <span>{config.resource_group}</span>
               </div>
             )}
             {config.location && (
               <div className="voice__resource-item">
-                <label>Location</label>
+                <label>リージョン</label>
                 <span>{config.location}</span>
               </div>
             )}
@@ -1399,9 +1399,9 @@ function MemoryTab({ azureLoggedIn }: { azureLoggedIn: boolean }) {
 
         {/* Decommission */}
         <div className="voice__danger-strip">
-          <p>Remove all Foundry IQ Azure resources and clear configuration.</p>
-          <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission}>
-            {loading.decommission ? 'Decommissioning...' : 'Decommission'}
+          <p>Foundry IQ の Azure リソースをすべて削除し、構成をクリアします。</p>
+          <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission} data-testid="memory-decommission-btn">
+            {loading.decommission ? '破棄中...' : '破棄'}
           </button>
         </div>
       </div>
@@ -1416,25 +1416,27 @@ function MemoryTab({ azureLoggedIn }: { azureLoggedIn: boolean }) {
         <button
           className={`voice__mode-btn${mode === 'deploy' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => setMode('deploy')}
+          data-testid="memory-mode-deploy"
         >
           <div className="voice__mode-icon voice__mode-icon--new">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
           </div>
           <div>
-            <h4>Deploy New</h4>
-            <p>Provision Azure AI Search + OpenAI for memory indexing</p>
+            <h4>新規デプロイ</h4>
+            <p>メモリインデックス用に Azure AI Search と OpenAI をプロビジョニング</p>
           </div>
         </button>
         <button
           className={`voice__mode-btn${mode === 'connect' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => setMode('connect')}
+          data-testid="memory-mode-connect"
         >
           <div className="voice__mode-icon voice__mode-icon--link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           </div>
           <div>
-            <h4>Connect Existing</h4>
-            <p>Provide endpoints for existing search and embedding resources</p>
+            <h4>既存に接続</h4>
+            <p>既存の Search と埋め込みリソースのエンドポイントを入力</p>
           </div>
         </button>
       </div>
@@ -1444,29 +1446,29 @@ function MemoryTab({ azureLoggedIn }: { azureLoggedIn: boolean }) {
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Deploy New Foundry IQ Resources</h4>
-              <p className="text-muted">Creates a resource group with Azure AI Search (Basic) and Azure OpenAI with a text-embedding-3-large deployment.</p>
+              <h4>Foundry IQ リソースを新規デプロイ</h4>
+              <p className="text-muted">Azure AI Search (Basic) と Azure OpenAI (text-embedding-3-large デプロイ含む) のリソースグループを作成します。</p>
             </div>
           </div>
           <div className="voice__panel-body">
             {!azureLoggedIn ? (
-              <p className="text-muted">Sign in to Azure first (Overview tab) to provision resources.</p>
+              <p className="text-muted">リソースをプロビジョニングするには、まず Azure にサインインしてください (概要タブ)。</p>
             ) : (
               <div className="form">
                 <div className="form__row">
                   <div className="form__group">
-                    <label className="form__label">Resource Group</label>
-                    <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} />
+                    <label className="form__label">リソースグループ</label>
+                    <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} data-testid="memory-deploy-rg" />
                   </div>
                   <div className="form__group">
-                    <label className="form__label">Location</label>
-                    <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} />
-                    <span className="form__hint">Must support Azure OpenAI embeddings (e.g. eastus, swedencentral).</span>
+                    <label className="form__label">リージョン</label>
+                    <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} data-testid="memory-deploy-location" />
+                    <span className="form__hint">Azure OpenAI Embeddings をサポートするリージョンを指定してください (例: eastus, swedencentral)。</span>
                   </div>
                 </div>
                 <div className="form__actions">
-                  <button className="btn btn--primary" onClick={handleProvision} disabled={loading.deploy}>
-                    {loading.deploy ? 'Provisioning...' : 'Deploy Foundry IQ'}
+                  <button className="btn btn--primary" onClick={handleProvision} disabled={loading.deploy} data-testid="memory-provision-btn">
+                    {loading.deploy ? 'プロビジョニング中...' : 'Foundry IQ をデプロイ'}
                   </button>
                 </div>
               </div>
@@ -1611,8 +1613,8 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
   }
 
   const handleConnectExisting = async () => {
-    if (!selectedAoai) { showToast('Select an Azure OpenAI resource', 'error'); return }
-    if (!selectedAoaiDep) { showToast('Select a deployment', 'error'); return }
+    if (!selectedAoai) { showToast('Azure OpenAI リソースを選択してください', 'error'); return }
+    if (!selectedAoaiDep) { showToast('デプロイを選択してください', 'error'); return }
     setLoading(p => ({ ...p, connect: true }))
     try {
       const body: Record<string, string> = {
@@ -1627,7 +1629,7 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
       if (phoneNumber) body.phone_number = phoneNumber
       if (connectTargetPhone) body.target_number = connectTargetPhone
       await api('setup/voice/connect', { method: 'POST', body: JSON.stringify(body) })
-      showToast('Connected to existing resources', 'success')
+      showToast('既存リソースに接続しました', 'success')
       await loadConfig()
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -1641,7 +1643,7 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
         method: 'POST',
         body: JSON.stringify({ location: deployLocation, voice_resource_group: deployRg }),
       })
-      showToast('Voice infrastructure deployed', 'success')
+      showToast('音声インフラをデプロイしました', 'success')
       await loadConfig()
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -1655,7 +1657,7 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
       if (sourcePhone) body.phone_number = sourcePhone
       if (targetPhone) body.target_number = targetPhone
       await api('setup/voice/phone', { method: 'POST', body: JSON.stringify(body) })
-      showToast('Phone number(s) saved', 'success')
+      showToast('電話番号を保存しました', 'success')
       await loadConfig()
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -1663,11 +1665,11 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
   }
 
   const handleDecommission = async () => {
-    if (!confirm('Decommission voice infrastructure? This will remove ACS and AOAI resources.')) return
+    if (!confirm('音声インフラを破棄しますか？ ACS と AOAI のリソースが削除されます。')) return
     setLoading(p => ({ ...p, decommission: true }))
     try {
       await api('setup/voice/decommission', { method: 'POST' })
-      showToast('Voice infrastructure decommissioned', 'success')
+      showToast('音声インフラを破棄しました', 'success')
       setVoiceConfig(null)
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -1682,14 +1684,14 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
       <div className="voice">
         <div className="voice__status-card">
           <div className="voice__status-header">
-            <h3>Voice Call Infrastructure</h3>
-            <span className="badge badge--ok">Configured</span>
+            <h3>音声通話インフラ</h3>
+            <span className="badge badge--ok">構成済み</span>
           </div>
 
           <div className="voice__resource-grid">
             {voiceConfig.acs_resource_name && (
               <div className="voice__resource-item">
-                <label>ACS Resource</label>
+                <label>ACS リソース</label>
                 <span>{voiceConfig.acs_resource_name}</span>
               </div>
             )}
@@ -1701,31 +1703,31 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
             )}
             {voiceConfig.azure_openai_realtime_deployment && (
               <div className="voice__resource-item">
-                <label>Deployment</label>
+                <label>デプロイ</label>
                 <span>{voiceConfig.azure_openai_realtime_deployment}</span>
               </div>
             )}
             {(voiceConfig.voice_resource_group || voiceConfig.resource_group) && (
               <div className="voice__resource-item">
-                <label>Resource Group</label>
+                <label>リソースグループ</label>
                 <span>{voiceConfig.voice_resource_group || voiceConfig.resource_group}</span>
               </div>
             )}
             {voiceConfig.location && (
               <div className="voice__resource-item">
-                <label>Location</label>
+                <label>リージョン</label>
                 <span>{voiceConfig.location}</span>
               </div>
             )}
             {voiceConfig.acs_source_number && (
               <div className="voice__resource-item">
-                <label>Source Phone</label>
+                <label>発信元電話番号</label>
                 <span>{voiceConfig.acs_source_number}</span>
               </div>
             )}
             {voiceConfig.voice_target_number && (
               <div className="voice__resource-item">
-                <label>Target Phone</label>
+                <label>発信先電話番号</label>
                 <span>{voiceConfig.voice_target_number}</span>
               </div>
             )}
@@ -1733,7 +1735,7 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
 
           {voiceConfig.portal_phone_url && (
             <a href={voiceConfig.portal_phone_url} target="_blank" rel="noopener" className="btn btn--outline btn--sm">
-              Manage Phone Numbers in Azure Portal
+              Azure ポータルで電話番号を管理
             </a>
           )}
         </div>
@@ -1742,36 +1744,36 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Phone Numbers</h4>
-              <p className="text-muted">ACS source number and your phone number (the only number the AI is allowed to call).</p>
+              <h4>電話番号</h4>
+              <p className="text-muted">ACS の発信元番号と、あなたの電話番号 (AI が発信を許可される唯一の番号) を設定します。</p>
             </div>
           </div>
           <div className="voice__panel-body">
             <div className="form">
               <div className="form__row">
                 <div className="form__group">
-                  <label className="form__label">ACS Source Number</label>
+                  <label className="form__label">ACS 発信元番号</label>
                   {configuredPhones.length > 0 ? (
-                    <select className="input" value={sourcePhone} onChange={e => setSourcePhone(e.target.value)}>
-                      <option value="">Select a purchased number...</option>
+                    <select className="input" value={sourcePhone} onChange={e => setSourcePhone(e.target.value)} data-testid="voice-source-phone-select">
+                      <option value="">購入済み番号を選択...</option>
                       {configuredPhones.map(p => (
                         <option key={p} value={p}>{p}</option>
                       ))}
                     </select>
                   ) : (
-                    <input className="input" value={sourcePhone} onChange={e => setSourcePhone(e.target.value)} placeholder="+14155551234" />
+                    <input className="input" value={sourcePhone} onChange={e => setSourcePhone(e.target.value)} placeholder="+14155551234" data-testid="voice-source-phone-input" />
                   )}
-                  <span className="form__hint">The phone number purchased in ACS that the AI calls from.</span>
+                  <span className="form__hint">AI が発信に使用する、ACS で購入済みの電話番号です。</span>
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Your Phone Number</label>
-                  <input className="input" value={targetPhone} onChange={e => setTargetPhone(e.target.value)} placeholder="+41781234567" />
-                  <span className="form__hint">Your personal number. The AI is only allowed to call this number.</span>
+                  <label className="form__label">あなたの電話番号</label>
+                  <input className="input" value={targetPhone} onChange={e => setTargetPhone(e.target.value)} placeholder="+41781234567" data-testid="voice-target-phone-input" />
+                  <span className="form__hint">あなた個人の電話番号です。AI はこの番号のみ発信を許可されます。</span>
                 </div>
               </div>
               <div className="form__actions">
-                <button className="btn btn--primary btn--sm" onClick={handleSavePhone} disabled={loading.phone || (!sourcePhone && !targetPhone)}>
-                  {loading.phone ? 'Saving...' : 'Save Phone Numbers'}
+                <button className="btn btn--primary btn--sm" onClick={handleSavePhone} disabled={loading.phone || (!sourcePhone && !targetPhone)} data-testid="voice-save-phone-btn">
+                  {loading.phone ? '保存中...' : '電話番号を保存'}
                 </button>
               </div>
             </div>
@@ -1780,9 +1782,9 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
 
         {/* Decommission */}
         <div className="voice__danger-strip">
-          <p>Remove voice infrastructure and clear all configuration.</p>
-          <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission}>
-            {loading.decommission ? 'Decommissioning...' : 'Decommission'}
+          <p>音声インフラを削除し、すべての構成をクリアします。</p>
+          <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission} data-testid="voice-decommission-btn">
+            {loading.decommission ? '破棄中...' : '破棄'}
           </button>
         </div>
       </div>
@@ -1797,25 +1799,27 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
         <button
           className={`voice__mode-btn${mode === 'connect' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => { setMode('connect'); discoverResources() }}
+          data-testid="voice-mode-connect"
         >
           <div className="voice__mode-icon voice__mode-icon--link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           </div>
           <div>
-            <h4>Connect Existing</h4>
-            <p>Link to resources already in your subscription</p>
+            <h4>既存に接続</h4>
+            <p>サブスクリプション内の既存リソースに接続</p>
           </div>
         </button>
         <button
           className={`voice__mode-btn${mode === 'deploy' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => setMode('deploy')}
+          data-testid="voice-mode-deploy"
         >
           <div className="voice__mode-icon voice__mode-icon--new">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
           </div>
           <div>
-            <h4>Deploy New</h4>
-            <p>Provision new ACS + Azure OpenAI resources</p>
+            <h4>新規デプロイ</h4>
+            <p>ACS と Azure OpenAI リソースを新規プロビジョニング</p>
           </div>
         </button>
       </div>
@@ -1825,11 +1829,11 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Connect to Existing Resources</h4>
-              <p className="text-muted">Select Azure OpenAI and optionally ACS resources from your subscription.</p>
+              <h4>既存リソースに接続</h4>
+              <p className="text-muted">サブスクリプションから Azure OpenAI と (オプションで) ACS リソースを選択してください。</p>
             </div>
-            <button className="btn btn--outline btn--sm" onClick={discoverResources} disabled={loading.discover}>
-              {loading.discover ? 'Scanning...' : 'Refresh'}
+            <button className="btn btn--outline btn--sm" onClick={discoverResources} disabled={loading.discover} data-testid="voice-discover-btn">
+              {loading.discover ? 'スキャン中...' : '更新'}
             </button>
           </div>
           <div className="voice__panel-body">
@@ -1837,16 +1841,17 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
               <div className="voice__section-label">Azure OpenAI</div>
 
               <div className="form__group">
-                <label className="form__label">Resource</label>
+                <label className="form__label">リソース</label>
                 {aoaiList.length === 0 ? (
                   <p className="text-muted" style={{ fontSize: 13 }}>
-                    {loading.discover ? 'Scanning subscription...' : 'No Azure OpenAI resources found. Click Refresh or use Deploy New.'}
+                    {loading.discover ? 'サブスクリプションをスキャン中...' : 'Azure OpenAI リソースが見つかりません。「更新」をクリックするか、「新規デプロイ」を使用してください。'}
                   </p>
                 ) : (
                   <select
                     className="input"
                     value={selectedAoai ? aoaiList.indexOf(selectedAoai) : ''}
                     onChange={e => handleSelectAoai(Number(e.target.value))}
+                    data-testid="voice-aoai-select"
                   >
                     {aoaiList.map((r, i) => (
                       <option key={r.name} value={i}>{r.name} ({r.resource_group} / {r.location})</option>
@@ -1857,14 +1862,15 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
 
               {selectedAoai && (
                 <div className="form__group">
-                  <label className="form__label">Realtime Deployment</label>
+                  <label className="form__label">Realtime デプロイ</label>
                   {aoaiDeployments.length === 0 ? (
-                    <p className="text-muted" style={{ fontSize: 13 }}>No deployments found. Deploy a realtime model (e.g. gpt-realtime-mini) first.</p>
+                    <p className="text-muted" style={{ fontSize: 13 }}>デプロイが見つかりません。まず realtime モデル (例: gpt-realtime-mini) をデプロイしてください。</p>
                   ) : (
                     <select
                       className="input"
                       value={selectedAoaiDep}
                       onChange={e => setSelectedAoaiDep(e.target.value)}
+                      data-testid="voice-aoai-dep-select"
                     >
                       {aoaiDeployments.map(d => (
                         <option key={d.deployment_name} value={d.deployment_name}>
@@ -1873,7 +1879,7 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
                       ))}
                     </select>
                   )}
-                  <span className="form__hint">Requires a realtime-capable model (gpt-realtime-mini, gpt-4o-realtime-preview).</span>
+                  <span className="form__hint">realtime 対応モデル (gpt-realtime-mini, gpt-4o-realtime-preview) が必要です。</span>
                 </div>
               )}
 
@@ -1881,19 +1887,20 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
 
               <div className="form__group">
                 <label className="form__check">
-                  <input type="checkbox" checked={skipAcs} onChange={e => { setSkipAcs(e.target.checked); if (e.target.checked) setSelectedAcs(null) }} />
-                  Create a new ACS resource automatically
+                  <input type="checkbox" checked={skipAcs} onChange={e => { setSkipAcs(e.target.checked); if (e.target.checked) setSelectedAcs(null) }} data-testid="voice-skip-acs-toggle" />
+                  ACS リソースを自動で新規作成
                 </label>
                 {!skipAcs && (
                   acsList.length === 0 ? (
-                    <p className="text-muted" style={{ fontSize: 13 }}>No ACS resources found. Enable the checkbox above to create one.</p>
+                    <p className="text-muted" style={{ fontSize: 13 }}>ACS リソースが見つかりません。上のチェックを有効にして新規作成してください。</p>
                   ) : (
                     <select
                       className="input"
                       value={selectedAcs ? acsList.indexOf(selectedAcs) : ''}
                       onChange={e => handleSelectAcs(Number(e.target.value))}
+                      data-testid="voice-acs-select"
                     >
-                      <option value="">Select an ACS resource...</option>
+                      <option value="">ACS リソースを選択...</option>
                       {acsList.map((r, i) => (
                         <option key={r.name} value={i}>{r.name} ({r.resource_group})</option>
                       ))}
@@ -1902,27 +1909,27 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
                 )}
               </div>
 
-              <div className="voice__section-label">Phone Numbers</div>
+              <div className="voice__section-label">電話番号</div>
 
               <div className="form__group">
-                <label className="form__label">ACS Source Number</label>
+                <label className="form__label">ACS 発信元番号</label>
                 {acsPhones.length > 0 ? (
-                  <select className="input" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}>
-                    <option value="">Select a purchased number...</option>
+                  <select className="input" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} data-testid="voice-acs-phone-select">
+                    <option value="">購入済み番号を選択...</option>
                     {acsPhones.map(p => (
                       <option key={p} value={p}>{p}</option>
                     ))}
                   </select>
                 ) : (
-                  <input className="input" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+14155551234" />
+                  <input className="input" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+14155551234" data-testid="voice-acs-phone-input" />
                 )}
-                <span className="form__hint">{selectedAcs && acsPhones.length === 0 ? 'No purchased numbers found on this ACS resource. You can add one later.' : 'The number the AI calls from. Can be configured later.'}</span>
+                <span className="form__hint">{selectedAcs && acsPhones.length === 0 ? 'この ACS リソースには購入済み番号がありません。後で追加できます。' : 'AI が発信に使用する番号です。後で構成することもできます。'}</span>
               </div>
 
               <div className="form__group">
-                <label className="form__label">Your Phone Number</label>
-                <input className="input" value={connectTargetPhone} onChange={e => setConnectTargetPhone(e.target.value)} placeholder="+41781234567" />
-                <span className="form__hint">Your personal number. The AI is only allowed to call this number.</span>
+                <label className="form__label">あなたの電話番号</label>
+                <input className="input" value={connectTargetPhone} onChange={e => setConnectTargetPhone(e.target.value)} placeholder="+41781234567" data-testid="voice-connect-target-phone-input" />
+                <span className="form__hint">あなた個人の電話番号です。AI はこの番号のみ発信を許可されます。</span>
               </div>
 
               <div className="form__actions">
@@ -1930,8 +1937,9 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
                   className="btn btn--primary"
                   onClick={handleConnectExisting}
                   disabled={loading.connect || !selectedAoai || !selectedAoaiDep}
+                  data-testid="voice-connect-btn"
                 >
-                  {loading.connect ? 'Connecting...' : 'Connect Resources'}
+                  {loading.connect ? '接続中...' : 'リソースに接続'}
                 </button>
               </div>
             </div>
@@ -1944,26 +1952,26 @@ function VoiceTab({ status, onReload }: { status: SetupStatus | null; onReload: 
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Deploy New Voice Infrastructure</h4>
-              <p className="text-muted">Creates a resource group with ACS and Azure OpenAI (gpt-realtime-mini).</p>
+              <h4>音声インフラを新規デプロイ</h4>
+              <p className="text-muted">ACS と Azure OpenAI (gpt-realtime-mini) のリソースグループを作成します。</p>
             </div>
           </div>
           <div className="voice__panel-body">
             <div className="form">
               <div className="form__row">
                 <div className="form__group">
-                  <label className="form__label">Resource Group</label>
-                  <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} />
+                  <label className="form__label">リソースグループ</label>
+                  <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} data-testid="voice-deploy-rg" />
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Location</label>
-                  <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} />
-                  <span className="form__hint">Must support Azure OpenAI realtime models (e.g. swedencentral, eastus2).</span>
+                  <label className="form__label">リージョン</label>
+                  <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} data-testid="voice-deploy-location" />
+                  <span className="form__hint">Azure OpenAI realtime モデルをサポートするリージョンを指定してください (例: swedencentral, eastus2)。</span>
                 </div>
               </div>
               <div className="form__actions">
-                <button className="btn btn--primary" onClick={handleDeployNew} disabled={loading.deploy}>
-                  {loading.deploy ? 'Deploying...' : 'Deploy Voice Infrastructure'}
+                <button className="btn btn--primary" onClick={handleDeployNew} disabled={loading.deploy} data-testid="voice-deploy-btn">
+                  {loading.deploy ? 'デプロイ中...' : '音声インフラをデプロイ'}
                 </button>
               </div>
             </div>
