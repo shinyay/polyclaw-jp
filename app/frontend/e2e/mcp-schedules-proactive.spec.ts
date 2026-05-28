@@ -123,7 +123,7 @@ test.describe('Schedules page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/schedules')
-    await expect(page.getByRole('heading', { name: 'Schedules' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'スケジュール' })).toBeVisible()
   })
 
   test('lists configured schedules', async ({ page }) => {
@@ -145,17 +145,17 @@ test.describe('Schedules page', () => {
 
   test('New Schedule button opens modal', async ({ page }) => {
     await page.goto('/schedules')
-    await page.getByRole('button', { name: 'New Schedule' }).click()
-    await expect(page.locator('.modal')).toBeVisible()
-    await expect(page.getByText('New Schedule').last()).toBeVisible()
+    await page.getByTestId('schedules-new-btn').click()
+    await expect(page.getByTestId('schedule-modal')).toBeVisible()
+    await expect(page.getByTestId('schedule-modal').getByRole('heading', { name: '新規スケジュール' })).toBeVisible()
   })
 
   test('schedule modal has correct fields', async ({ page }) => {
     await page.goto('/schedules')
-    await page.getByRole('button', { name: 'New Schedule' }).click()
-    await expect(page.locator('.modal').getByText('Name')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Cron Schedule')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Prompt')).toBeVisible()
+    await page.getByTestId('schedules-new-btn').click()
+    await expect(page.getByTestId('schedule-form-description')).toBeVisible()
+    await expect(page.getByTestId('schedule-form-cron')).toBeVisible()
+    await expect(page.getByTestId('schedule-form-prompt')).toBeVisible()
   })
 
   test('saving schedule sends POST', async ({ page }) => {
@@ -168,10 +168,9 @@ test.describe('Schedules page', () => {
       return route.continue()
     })
     await page.goto('/schedules')
-    await page.getByRole('button', { name: 'New Schedule' }).click()
-    const modal = page.locator('.modal')
-    await modal.locator('input.input').first().fill('Test Schedule')
-    await modal.getByRole('button', { name: 'Save' }).click()
+    await page.getByTestId('schedules-new-btn').click()
+    await page.getByTestId('schedule-form-description').fill('Test Schedule')
+    await page.getByTestId('schedule-modal-save').click()
     expect(postCalled).toBe(true)
   })
 
@@ -184,9 +183,8 @@ test.describe('Schedules page', () => {
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok' }) })
     })
     await page.goto('/schedules')
-    // Weekly Digest is disabled — click Enable
-    const item = page.locator('.list-item', { hasText: 'Weekly Digest' })
-    await item.getByRole('button', { name: 'Enable' }).click()
+    // Weekly Digest is disabled — click enable
+    await page.getByTestId('schedule-toggle-sched-002').click()
     expect(putCalled).toBe(true)
   })
 
@@ -195,7 +193,7 @@ test.describe('Schedules page', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schedules: [] }) }),
     )
     await page.goto('/schedules')
-    await expect(page.getByText('No schedules configured')).toBeVisible()
+    await expect(page.getByTestId('schedules-empty-state')).toBeVisible()
   })
 })
 
@@ -207,14 +205,14 @@ test.describe('Proactive page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/proactive')
-    await expect(page.getByRole('heading', { name: 'Proactive' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'プロアクティブ通信' })).toBeVisible()
   })
 
   test('shows stats', async ({ page }) => {
     await page.goto('/proactive')
-    await expect(page.locator('.stats-bar')).toBeVisible()
-    await expect(page.getByText('Sent Today')).toBeVisible()
-    await expect(page.getByText('Last Sent')).toBeVisible()
+    await expect(page.locator('.stats-bar').first()).toBeVisible()
+    await expect(page.getByText('本日の送信数')).toBeVisible()
+    await expect(page.getByText('最終送信')).toBeVisible()
   })
 
   test('shows pending follow-up when present', async ({ page }) => {
