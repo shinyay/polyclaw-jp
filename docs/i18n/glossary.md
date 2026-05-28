@@ -253,7 +253,33 @@
 | Included Skills | 同梱スキル | プラグインに含まれるスキル一覧の見出しです | 内包スキル |
 | Copy & Open on GitHub | コピーして GitHub を開く | 貢献モーダルのアクションラベルです | クリップボードにコピーして GitHub を開く |
 
-## 訳語ブレを避けるための注意
+## 11. MCP (PR-2.7)
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| MCP | MCP | Model Context Protocol の略称として維持します | モデルコンテキストプロトコル |
+| MCP Servers (page) | MCP サーバー | 設定ページ名として使います (§1 既出) | MCP サーバ |
+| My Servers (tab) | マイサーバー | 登録済みサーバー一覧タブです | 登録済み |
+| Discover (tab) | ディスカバー | 公開レジストリ閲覧タブです | 探索 |
+| Local (stdio) | ローカル (stdio) | stdin/stdout で接続するローカルプロセス型 | ローカル (標準入出力) |
+| HTTP (Streamable) | HTTP (ストリーミング) | HTTP ストリーム接続型 | HTTP (ストリーマブル) |
+| SSE | SSE | Server-Sent Events の略称として維持します | サーバー送信イベント |
+| Command (MCP) | コマンド | 起動コマンドの入力欄です | 実行コマンド |
+| Arguments (one per line) | 引数 (1 行に 1 つ) | コマンド引数の入力欄です | 引数 (各行に 1 個) |
+| Environment (KEY=VALUE per line) | 環境変数 (1 行に KEY=VALUE) | 環境変数の入力欄です | 環境変数 (KEY=VALUE 形式) |
+| Search MCP servers... | MCP サーバーを検索... | ディスカバータブの検索プレースホルダです | サーバー検索 |
+| Page N | N ページ目 | ページネーション表記です | ページ N |
+| Prev / Next | 前へ / 次へ | ページネーションボタンです (§6 既出) | 前 / 次 |
+| Stars (registry) | スター | GitHub Stars 数を指します | スター数 |
+| License (registry) | ライセンス | パッケージのライセンス表記です | 利用条件 |
+| Open (registry) | 開く | レジストリ詳細を新タブで開きます | 表示 |
+| Added (registry badge) | 追加済み | レジストリから登録済みであることを示します (§7 既出) | 登録済み |
+| Topics (registry) | トピック | GitHub Topics タグを指します | タグ |
+| No MCP servers configured | MCP サーバーは未登録です | 空状態メッセージです | MCP サーバー未登録 |
+| built-in (server badge) | ビルトイン | 組み込みサーバー識別バッジです (§9 既出と整合) | 組み込み |
+| disabled (server badge) | 無効 | 無効状態識別バッジです (§9 既出) | 停止 |
+
+
 
 - "Memory" は LLM 文脈では「メモリ」に統一します。一般文脈でも混在を避けるため、原則として「メモリ」を使います。
 - "Schedule" は UI 名詞では「スケジュール」を使います。文章中で日程を指す場合のみ「予定」も許容します。
