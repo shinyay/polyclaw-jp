@@ -14,15 +14,15 @@ function relativeTime(ts: number | string): string {
     if (isNaN(d.getTime())) return ''
     const now = Date.now()
     const diffS = Math.floor((now - d.getTime()) / 1000)
-    if (diffS < 60) return 'just now'
+    if (diffS < 60) return 'たった今'
     const diffM = Math.floor(diffS / 60)
-    if (diffM < 60) return `${diffM}m ago`
+    if (diffM < 60) return `${diffM} 分前`
     const diffH = Math.floor(diffM / 60)
-    if (diffH < 24) return `${diffH}h ago`
+    if (diffH < 24) return `${diffH} 時間前`
     const diffD = Math.floor(diffH / 24)
-    if (diffD < 7) return `${diffD}d ago`
-    if (diffD < 30) return `${Math.floor(diffD / 7)}w ago`
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    if (diffD < 7) return `${diffD} 日前`
+    if (diffD < 30) return `${Math.floor(diffD / 7)} 週間前`
+    return d.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })
   } catch { return '' }
 }
 
@@ -85,10 +85,10 @@ export default function Sessions() {
   }
 
   const deleteSession = async (id: string) => {
-    if (!confirm('Delete this session?')) return
+    if (!confirm('このセッションを削除しますか?')) return
     try {
       await api(`sessions/${id}`, { method: 'DELETE' })
-      showToast('Session deleted', 'success')
+      showToast('セッションを削除しました', 'success')
       setSelectedId(null)
       setDetail(null)
       load()
@@ -105,10 +105,10 @@ export default function Sessions() {
     <div className="page page--sessions">
       {/* ── header ── */}
       <div className="page__header">
-        <h1>Sessions</h1>
-        <button className="btn btn--ghost btn--sm" onClick={load} title="Refresh">
+        <h1>セッション</h1>
+        <button className="btn btn--ghost btn--sm" onClick={load} title="更新">
           <IconRefresh width={14} height={14} />
-          <span>Refresh</span>
+          <span>更新</span>
         </button>
       </div>
 
@@ -119,14 +119,14 @@ export default function Sessions() {
             <div className="sess-stat__icon sess-stat__icon--sessions"><IconMessage width={16} height={16} /></div>
             <div className="sess-stat__body">
               <span className="sess-stat__value">{stats.total_sessions}</span>
-              <span className="sess-stat__label">Sessions</span>
+              <span className="sess-stat__label">セッション数</span>
             </div>
           </div>
           <div className="sess-stat">
             <div className="sess-stat__icon sess-stat__icon--messages"><IconZap width={16} height={16} /></div>
             <div className="sess-stat__body">
               <span className="sess-stat__value">{stats.total_messages}</span>
-              <span className="sess-stat__label">Messages</span>
+              <span className="sess-stat__label">メッセージ数</span>
             </div>
           </div>
           <div className="sess-stat">
@@ -135,7 +135,7 @@ export default function Sessions() {
               <span className="sess-stat__value">
                 {stats.total_sessions ? (stats.total_messages / stats.total_sessions).toFixed(1) : '0'}
               </span>
-              <span className="sess-stat__label">Avg / Session</span>
+              <span className="sess-stat__label">平均 / セッション</span>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function Sessions() {
             <input
               type="text"
               className="sess-search__input"
-              placeholder="Search sessions..."
+              placeholder="セッションを検索…"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -167,7 +167,7 @@ export default function Sessions() {
             {!loading && filtered.length === 0 && (
               <div className="sess-list__empty">
                 <IconMessage width={28} height={28} style={{ opacity: 0.2 }} />
-                <p>{search ? 'No matching sessions' : 'No sessions yet'}</p>
+                <p>{search ? '該当するセッションがありません' : 'セッションがまだありません'}</p>
               </div>
             )}
 
@@ -186,10 +186,10 @@ export default function Sessions() {
                     <span className="sess-card__time">{relativeTime(s.created_at)}</span>
                   </div>
                   <div className="sess-card__preview">
-                    {s.title || 'Empty session'}
+                    {s.title || '空のセッション'}
                   </div>
                   <div className="sess-card__footer">
-                    <span className="sess-card__count">{s.message_count} msg{s.message_count !== 1 ? 's' : ''}</span>
+                    <span className="sess-card__count">{s.message_count} 件のメッセージ</span>
                   </div>
                 </button>
               )
@@ -202,7 +202,7 @@ export default function Sessions() {
           {!selectedId && (
             <div className="sess-detail__empty">
               <IconMessage width={40} height={40} style={{ opacity: 0.12 }} />
-              <p>Select a session to view its conversation</p>
+              <p>セッションを選択して会話を表示</p>
             </div>
           )}
 
@@ -214,7 +214,7 @@ export default function Sessions() {
             <>
               <div className="sess-detail__header">
                 <div className="sess-detail__title">
-                  <h3>Session {selectedId.slice(0, 8)}</h3>
+                  <h3>セッション {selectedId.slice(0, 8)}</h3>
                   {selectedSession && (
                     <span className="sess-detail__model" style={{ color: modelColor(selectedSession.model) }}>
                       {selectedSession.model}
@@ -222,11 +222,11 @@ export default function Sessions() {
                   )}
                 </div>
                 <div className="sess-detail__actions">
-                  <button className="btn btn--danger btn--sm" onClick={() => deleteSession(selectedId)} title="Delete session">
+                  <button className="btn btn--danger btn--sm" onClick={() => deleteSession(selectedId)} title="セッションを削除">
                     <IconTrash width={13} height={13} />
-                    <span>Delete</span>
+                    <span>削除</span>
                   </button>
-                  <button className="btn btn--ghost btn--sm" onClick={closeDetail} title="Close">
+                  <button className="btn btn--ghost btn--sm" onClick={closeDetail} title="閉じる">
                     <IconX width={14} height={14} />
                   </button>
                 </div>
@@ -235,7 +235,7 @@ export default function Sessions() {
               <div className="sess-messages">
                 {detail.messages.length === 0 && (
                   <div className="sess-detail__empty" style={{ padding: '40px 0' }}>
-                    <p>No messages in this session</p>
+                    <p>このセッションにはメッセージがありません</p>
                   </div>
                 )}
                 {detail.messages.map((m, i) => (
@@ -247,7 +247,7 @@ export default function Sessions() {
                     </div>
                     <div className="sess-bubble__body">
                       <div className="sess-bubble__head">
-                        <span className="sess-bubble__role">{m.role === 'user' ? 'You' : 'Assistant'}</span>
+                        <span className="sess-bubble__role">{m.role === 'user' ? 'あなた' : 'アシスタント'}</span>
                         <span className="sess-bubble__time">{relativeTime(m.timestamp)}</span>
                       </div>
                       <p className="sess-bubble__text">{m.content}</p>

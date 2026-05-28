@@ -11,23 +11,23 @@ const MockReasoningPanel = isMock ? lazy(() => import('../components/MockReasoni
 interface SlashEntry { cmd: string; desc: string; skill?: boolean }
 
 const SLASH_COMMANDS: SlashEntry[] = [
-  { cmd: '/new', desc: 'Start a new session' },
-  { cmd: '/model', desc: 'Switch AI model' },
-  { cmd: '/models', desc: 'List available models' },
-  { cmd: '/status', desc: 'System status' },
-  { cmd: '/session', desc: 'Current session info' },
-  { cmd: '/sessions', desc: 'List recent sessions' },
-  { cmd: '/config', desc: 'View/set runtime config' },
-  { cmd: '/clear', desc: 'Clear all memory' },
-  { cmd: '/help', desc: 'Show all commands' },
-  { cmd: '/skills', desc: 'List installed skills' },
-  { cmd: '/plugins', desc: 'List plugins' },
-  { cmd: '/mcp', desc: 'Manage MCP servers' },
-  { cmd: '/schedules', desc: 'List scheduled tasks' },
-  { cmd: '/profile', desc: 'Agent profile' },
-  { cmd: '/preflight', desc: 'Run security checks' },
-  { cmd: '/call', desc: 'Call configured number' },
-  { cmd: '/change', desc: 'Switch session' },
+  { cmd: '/new', desc: '新しいセッションを開始' },
+  { cmd: '/model', desc: 'AI モデルを切り替え' },
+  { cmd: '/models', desc: '利用可能なモデル一覧' },
+  { cmd: '/status', desc: 'システム状態を表示' },
+  { cmd: '/session', desc: '現在のセッション情報' },
+  { cmd: '/sessions', desc: '最近のセッション一覧' },
+  { cmd: '/config', desc: 'ランタイム設定を表示/変更' },
+  { cmd: '/clear', desc: 'メモリをすべてクリア' },
+  { cmd: '/help', desc: '全コマンドを表示' },
+  { cmd: '/skills', desc: 'インストール済みスキル一覧' },
+  { cmd: '/plugins', desc: 'プラグイン一覧' },
+  { cmd: '/mcp', desc: 'MCP サーバーを管理' },
+  { cmd: '/schedules', desc: 'スケジュール済みタスク一覧' },
+  { cmd: '/profile', desc: 'エージェントプロファイル' },
+  { cmd: '/preflight', desc: 'セキュリティチェックを実行' },
+  { cmd: '/call', desc: '設定済みの番号に発信' },
+  { cmd: '/change', desc: 'セッションを切り替え' },
 ]
 
 export default function Chat() {
@@ -128,13 +128,13 @@ export default function Chat() {
       {isEmpty ? (
         <div className="chat__empty">
           <img src="/logo.png" alt="polyclaw" className="chat__empty-logo" />
-          <h1 className="chat__empty-title">What can I help you with?</h1>
+          <h1 className="chat__empty-title">何かお手伝いしましょうか？</h1>
           <p className="chat__empty-sub">
-            Start a conversation, run a slash command, or pick a skill.
+            会話を始めるか、スラッシュコマンドを実行するか、スキルを選択してください。
           </p>
           {suggestions.length > 0 && (
             <div className="chat__suggestions">
-              <span className="chat__suggestions-label">Try asking</span>
+              <span className="chat__suggestions-label">質問の例</span>
               <div className="chat__suggestions-chips">
                 {suggestions.map((s, i) => (
                   <button
@@ -181,7 +181,7 @@ export default function Chat() {
                   onMouseDown={e => { e.preventDefault(); setInput(c.cmd + ' '); setShowAc(false) }}
                 >
                   <span className="autocomplete__cmd">{c.cmd}</span>
-                  {c.skill && <span className="autocomplete__tag">skill</span>}
+                  {c.skill && <span className="autocomplete__tag">スキル</span>}
                   <span className="autocomplete__desc">{c.desc}</span>
                 </button>
               ))}
@@ -190,7 +190,7 @@ export default function Chat() {
           {skillPickerOpen && (
             <div className="chat__skill-picker" ref={pickerRef}>
               <div className="chat__picker-col chat__picker-col--model">
-                <span className="chat__picker-label">Model</span>
+                <span className="chat__picker-label">モデル</span>
                 <div className="chat__picker-scroll">
                   {models.map(m => (
                     <button
@@ -203,20 +203,20 @@ export default function Chat() {
                       }}
                     >
                       {m.id}
-                      {m.id === currentModel && <span className="chat__picker-current">current</span>}
+                      {m.id === currentModel && <span className="chat__picker-current">現在</span>}
                       {m.policy && m.policy !== 'enabled' && <span className="chat__picker-badge">{m.policy}</span>}
                     </button>
                   ))}
                 </div>
               </div>
               <div className="chat__picker-col chat__picker-col--mode">
-                <span className="chat__picker-label">Mode</span>
+                <span className="chat__picker-label">モード</span>
                 <div className="chat__picker-scroll">
                   <button
                     className={`chat__skill-picker-item ${!selectedSkill ? 'chat__skill-picker-item--active' : ''}`}
                     onMouseDown={e => { e.preventDefault(); setSelectedSkill(''); setSkillPickerOpen(false) }}
                   >
-                    Chat
+                    チャット
                   </button>
                   {skills.map(s => {
                     const verb = s.verb || s.name
@@ -240,7 +240,7 @@ export default function Chat() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={connected ? 'Message polyclaw...' : 'Connecting...'}
+            placeholder={connected ? 'polyclaw にメッセージを送信…' : '接続中…'}
             disabled={!connected}
             rows={1}
           />
@@ -260,18 +260,18 @@ export default function Chat() {
               <button
                 className="chat__skill-trigger"
                 onClick={() => setSkillPickerOpen(o => !o)}
-                title="Select skill"
+                title="スキルを選択"
               >
-                {selectedSkill ? `/${selectedSkill}` : 'Chat'}
+                {selectedSkill ? `/${selectedSkill}` : 'チャット'}
                 <IconChevronDown width={12} height={12} />
               </button>
               <button
                 className="chat__send"
                 onClick={handleSend}
                 disabled={!input.trim() || !connected}
-                title="Send"
+                title="送信"
               >
-                Send
+                送信
               </button>
             </div>
           </div>
@@ -300,8 +300,8 @@ function MessageBubble({ msg, onApproveToolCall }: { msg: ChatMessage; onApprove
           <span className="bubble__skill-name">{msg.skill}</span>
         </div>
       )}
-      {isSystem && <span className="bubble__label">System</span>}
-      {isError && <span className="bubble__label bubble__label--err">Error</span>}
+      {isSystem && <span className="bubble__label">システム</span>}
+      {isError && <span className="bubble__label bubble__label--err">エラー</span>}
       {msg.content && (
         <div
           dangerouslySetInnerHTML={isUser ? undefined : { __html: renderMarkdown(msg.content) }}
@@ -329,13 +329,13 @@ function MessageBubble({ msg, onApproveToolCall }: { msg: ChatMessage; onApprove
       {hasPendingApproval && pendingApprovals.map(tc => (
         <div key={tc.call_id} className="bubble__approval-banner">
           {tc.status === 'pending_phone' ? (
-            <span className="bubble__approval-label">Phone verification for <strong>{tc.tool}</strong> in progress...</span>
+            <span className="bubble__approval-label"><strong>{tc.tool}</strong> の電話認証中…</span>
           ) : (
             <>
-              <span className="bubble__approval-label">Allow <strong>{tc.tool}</strong> to execute?</span>
+              <span className="bubble__approval-label"><strong>{tc.tool}</strong> の実行を許可しますか?</span>
               <div className="bubble__approval-actions">
-                <button className="btn btn--primary btn--sm" onClick={() => onApproveToolCall?.(tc.call_id, true)}>Allow</button>
-                <button className="btn btn--danger btn--sm" onClick={() => onApproveToolCall?.(tc.call_id, false)}>Deny</button>
+                <button className="btn btn--primary btn--sm" onClick={() => onApproveToolCall?.(tc.call_id, true)}>許可</button>
+                <button className="btn btn--danger btn--sm" onClick={() => onApproveToolCall?.(tc.call_id, false)}>拒否</button>
               </div>
             </>
           )}
@@ -347,7 +347,7 @@ function MessageBubble({ msg, onApproveToolCall }: { msg: ChatMessage; onApprove
             <button
               className={`bubble__action-btn ${showReasoning ? 'bubble__action-btn--active' : ''}`}
               onClick={() => setShowReasoning(v => !v)}
-              title="Reasoning"
+              title="推論"
             >
               <IconBrain width={14} height={14} />
             </button>
@@ -356,7 +356,7 @@ function MessageBubble({ msg, onApproveToolCall }: { msg: ChatMessage; onApprove
             <button
               className={`bubble__action-btn ${showTools ? 'bubble__action-btn--active' : ''}`}
               onClick={() => setShowTools(v => !v)}
-              title={`${msg.toolCalls!.length} tool call${msg.toolCalls!.length > 1 ? 's' : ''}`}
+              title={`${msg.toolCalls!.length} 件のツール呼び出し`}
             >
               <IconTerminal width={14} height={14} />
               <span className="bubble__action-count">{msg.toolCalls!.length}</span>
@@ -402,25 +402,25 @@ function ToolCallRow({ tc, onApprove }: { tc: ToolCall; onApprove?: (callId: str
 
       {tc.status === 'denied' && (
         <div className="tool-call__denied">
-          <span className="tool-call__denied-label">Denied by user</span>
+          <span className="tool-call__denied-label">ユーザーが拒否しました</span>
         </div>
       )}
       {expanded && (
         <div className="tool-call__detail">
           {tc.arguments && (
             <div className="tool-call__section">
-              <span className="tool-call__section-label">Arguments</span>
+              <span className="tool-call__section-label">引数</span>
               <pre className="tool-call__pre">{tc.arguments}</pre>
             </div>
           )}
           {tc.result && (
             <div className="tool-call__section">
-              <span className="tool-call__section-label">Result</span>
+              <span className="tool-call__section-label">結果</span>
               <pre className="tool-call__pre">{tc.result}</pre>
             </div>
           )}
           {!tc.result && tc.status === 'running' && (
-            <span className="tool-call__running">Running...</span>
+            <span className="tool-call__running">実行中…</span>
           )}
         </div>
       )}
@@ -519,7 +519,7 @@ function ReasoningTicker({ words, mode = 'highlight' }: { words: WindowWord[]; m
   const [boldPart, restPart] = useBionic ? bionicSplit(focal.text) : [focal.text, '']
 
   return (
-    <div className={`ticker ticker--${mode}`} aria-label="Reasoning">
+    <div className={`ticker ticker--${mode}`} aria-label="推論">
       {/* Left context: right-aligned, flows toward center */}
       <div className="ticker__left">
         {leftWords.map((w, i) => (
