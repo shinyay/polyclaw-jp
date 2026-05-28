@@ -41,7 +41,7 @@
 |---|---|---:|---:|---:|---|---:|
 | 事前準備 | `docs/i18n/` 整備 | （済） | （済） | （済） | `docs/i18n/` + `scripts/` | 1（完了） |
 | Phase 1 | LLM プロンプト / 人格 / スキル | 664 | 20 | 656 | `app/runtime/templates/`、`skills/` | 5 |
-| Phase 2 | Frontend（Web UI） | 794 | 26 | 611 | `app/frontend/src/` | 12 |
+| Phase 2 | Frontend（Web UI） | 794 | 26 | 611 | `app/frontend/src/` | 13 |
 | Phase 3 | Backend ユーザ可視 | 98 | 16 | 80 | `app/runtime/` のユーザ可視のみ | 3 |
 | Phase 4 | TUI | 840 | 24 | 657 | `app/tui/src/` | 6 |
 | Phase 5 | テスト / ドキュメント / リリース | 影響全体 | 約 80+ | 該当なし | `tests/`、`docs/`、`README.md` | 6 |
@@ -329,20 +329,25 @@ flowchart TD
 
 ### 2.5 PR 分割案
 
+並び順は **ユーザー可視性順** とします。Chat / SetupWizard / Sessions のような「最初にユーザーが触れる面」を先に翻訳し、デモ可能な日本語状態を早期に作ります。設定系の大規模ページ（Guardrails / InfrastructureSettings）は後半に回します。
+
+PR-2.0 は基盤整備で、後続全 PR の前提となります。Phase 1 検証で発見した課題（emotional_state の英語逆戻り、bootstrap 発火条件の脆さ）への対策もここで導入します。`inventory.csv` は CSV 検証時点で frontend 794 件すべてが `pending` で揃っており、クレンジング作業は不要です。
+
 | PR | 対象 | 規模目安 | 依存 | 主な検証 |
 |---|---|---:|---|---|
-| PR-2.0 | `data-testid` 付与と E2E locator 方針 | Frontend 全体 | 単独 | `npm run test:e2e` の対象 spec |
-| PR-2.1 | 共通コンポーネント | 29 件 | PR-2.0 推奨 | auth / navigation smoke |
-| PR-2.2 | Chat ページ + SessionsPanel | 約 29 件 | PR-2.1 | `chat.spec.ts`、`sessions.spec.ts` |
-| PR-2.3 | SetupWizard + 人格選択 + voice 選択 UI | 25 件 + 新規文言 | PR-2.1、Phase 1 voice 検証 | `setup.spec.ts` |
-| PR-2.4 | Settings 系ページ（Messaging / Profile / AgentIdentity） | 約 42 件 | PR-2.1 | `settings-profile.spec.ts` |
-| PR-2.5 | InfrastructureSettings | 136 件 | PR-2.1 | `environments-workspace-foundry.spec.ts` |
-| PR-2.6 | Guardrails | 235 件 | PR-2.1 | Guardrails smoke、関連 route mock |
-| PR-2.7 | ToolActivity | 101 件 | PR-2.1 | 状態ラベル表示確認 |
-| PR-2.8 | スキル / プラグイン | 48 件 | PR-2.1、PR-1.5 | `skills-plugins.spec.ts` |
-| PR-2.9 | Schedules / Proactive | 48 件 | PR-2.1 | `mcp-schedules-proactive.spec.ts` |
-| PR-2.10 | MCP Servers / Environments / FoundryIQ | 88 件 | PR-2.1 | `environments-workspace-foundry.spec.ts` |
-| PR-2.11 | Auth / Login / 残り小規模ページ | 約 20 件 | PR-2.1 | `auth.spec.ts` |
+| PR-2.0 | 基盤整備（`data-testid` 規約 + `emotional_state` 日本語 8 値固定 + 最小付与 3 コンポーネント） | 規約 + 9 ファイル + 3 コンポーネント | 単独 | `pytest test_profile.py test_prompt.py`、`npm run test:e2e` の既存 spec を破壊しないこと |
+| PR-2.1 | 共通コンポーネント（Sidebar / TopBar / Disclaimer / LoginOverlay / Toast / Breadcrumb / SessionsPanel / MockReasoningPanel） | 29 件 | PR-2.0 | auth / navigation smoke |
+| PR-2.2 | Chat ページ + Sessions ページ | 約 37 件 | PR-2.1 | `chat.spec.ts`、`sessions.spec.ts` |
+| PR-2.3 | SetupWizard 拡張（4 step + 人格選択 + voice 選択 + 完了時 bootstrap 自動発火） | 25 件 + 新規文言 | PR-2.1、Phase 1 voice 検証 | `setup.spec.ts`、実機 fresh data で wizard 完走 |
+| PR-2.4 | Profile + AgentIdentity + MessagingSettings | 約 42 件 | PR-2.1 | `settings-profile.spec.ts`、emotional_state が日本語表示 |
+| PR-2.5 | スキル / プラグイン | 48 件 | PR-2.1、PR-1.5 | `skills-plugins.spec.ts` |
+| PR-2.6 | Schedules / Proactive（`PROACTIVE_ENABLED` 切替 UI 追加） | 48 件 | PR-2.1 | `mcp-schedules-proactive.spec.ts`、Phase 1 verify-proactive 解禁 |
+| PR-2.7 | MCP Servers / Environments / FoundryIQ / Workspace / Customization | 88 件 | PR-2.1 | `environments-workspace-foundry.spec.ts` |
+| PR-2.8 | ToolActivity | 101 件 | PR-2.1 | 状態ラベル表示確認 |
+| PR-2.9 | InfrastructureSettings | 136 件 | PR-2.1 | `environments-workspace-foundry.spec.ts`、Phase 3 backend と用語整合 |
+| PR-2.10 | Guardrails（最大規模） | 235 件 | PR-2.1 | Guardrails smoke、関連 route mock、2 commits 分割推奨 |
+| PR-2.11 | 仕上げ（Auth / Login / 残り小規模 + CSS レイアウト調整） | 約 20 件 | PR-2.0 〜 PR-2.10 | フル `npm run test:e2e`、全 18 ページ目視 |
+| PR-2.12 | Phase 2 スモークテスト記録（`docs/i18n/phase2-smoke.md`） | 文書 | PR-2.11 | verify-ui-render / verify-wizard-flow / verify-chat-i18n / verify-e2e-suite |
 
 ### 2.6 セットアップウィザード拡張仕様（PR-2.3）
 
@@ -353,9 +358,10 @@ PR-2.3 では、この構成を日本語化しつつ、人格と voice の選択
 |---|---|---|
 | Step 型 | `'azure' | 'foundry'` | `'azure' | 'foundry' | 'persona' | 'voice'` |
 | 主要 API | `setup/status`、`setup/azure/*`、`setup/foundry/deploy` | 既存 API + `profile` / voice config の保存 API |
-| 完了条件 | Azure ready + Foundry deployed | Azure + Foundry + persona saved + voice selected |
+| 完了条件 | Azure ready + Foundry deployed | Azure + Foundry + persona saved + voice selected + bootstrap fired |
 | 表示言語 | 英語 | 日本語 |
 | E2E | text locator 中心 | `data-testid` 中心 |
+| 完了後動作 | なし | 内部的に「あなた自身の初期化を完了してください」プロンプトを 1 回送出し、bootstrap_prompt 経由で SOUL.md 生成を確実に発火させる |
 
 #### 2.6.1 人格名選択
 
@@ -404,10 +410,14 @@ PR-2.3 では、この構成を日本語化しつつ、人格と voice の選択
 - [ ] テキスト assert は日本語化済みです。
 - [ ] セットアップウィザードで人格選択が動作します。
 - [ ] セットアップウィザードで voice 選択が動作します。
+- [ ] セットアップウィザード完了時に bootstrap_prompt が確実に発火し、SOUL.md と `agent_profile.json` が自動生成されます。
+- [ ] `agent_profile.json` の `emotional_state` が日本語 8 値（平常 / 好奇心 / 集中 / 達成感 / 高揚 / 思索 / 警戒 / 困惑）のいずれかに正規化されます。
+- [ ] LLM が英語値（`focused` 等）を出力しても `normalize_emotional_state()` で対応する日本語値へマップされます。
 - [ ] 選択結果が `app/runtime/state/` の永続データへ保存されます。
 - [ ] `placeholder_soul.md` と UI 表示名が矛盾していません。
 - [ ] CSS レイアウトが主要ページで崩れていません。
 - [ ] スクリーンショット baseline は Phase 5 まで凍結します。
+- [ ] Phase 2 スモーク 4 種（verify-ui-render / verify-wizard-flow / verify-chat-i18n / verify-e2e-suite）が PR-2.12 で完走しています。
 
 ### 2.9 リスク
 
@@ -417,6 +427,9 @@ PR-2.3 では、この構成を日本語化しつつ、人格と voice の選択
 | 日本語の文字幅でレイアウトが崩れる | UX 低下 | 主要ページを目視確認し、必要に応じて CSS を調整します。 |
 | セットアップウィザードが肥大化する | 初期設定の理解が難しくなる | step を短く分け、説明文を簡潔にします。 |
 | Voice 選択と voice infrastructure 設定が混同される | 設定ミス | 「声の種類」と「通話インフラ」を UI 上で明確に分けます。 |
+| LLM が `emotional_state` を英語値で書き出す（Phase 1 実機で `focused` を観測） | 日本語固定方針が崩れる | PR-2.0 で `normalize_emotional_state()` を導入し、英語→日本語の決定論的マッピングと未知値の `平常` フォールバックで防御します。 |
+| bootstrap_prompt が初回起動時に発火しないケース | SOUL.md と `agent_profile.json` が生成されない | PR-2.3 でセットアップウィザード完了時に内部的な初期化プロンプトを 1 回送出します。 |
+| PR-2.10（Guardrails 235 件）が肥大化してレビュー困難 | レビュー品質低下 | 1 PR を 2 commits（セクション単位）に分割し、glossary.md に専門用語を先行登録してから翻訳します。 |
 
 ## 3. Phase 3: Backend ユーザ可視メッセージ
 
@@ -858,7 +871,7 @@ PY
 |---|---|---|---|
 | M0: 事前準備完了 | 事前準備 | 完了 | `docs/i18n/` 規範文書 |
 | M1: LLM 日本語化 | Phase 1 | PR-1.1〜PR-1.5 | templates、skills、voice evaluation |
-| M2: Web UI 日本語化 | Phase 2 | PR-2.0〜PR-2.11 | Frontend、セットアップウィザード、E2E locator |
+| M2: Web UI 日本語化 | Phase 2 | PR-2.0〜PR-2.12 | Frontend、セットアップウィザード、E2E locator、Phase 2 スモーク記録 |
 | M3: Backend 日本語化 | Phase 3 | PR-3.1〜PR-3.3 | API message、Bot reply |
 | M4: TUI 日本語化 | Phase 4 | PR-4.0〜PR-4.5 | TUI、CJK 幅対応 |
 | M5: リリース | Phase 5 | PR-5.1〜PR-5.6 | tests、docs、`v6.0.0-jp.1` |
@@ -869,12 +882,12 @@ PY
 |---|---:|
 | 事前準備 | 1（完了） |
 | Phase 1 | 5 |
-| Phase 2 | 12 |
+| Phase 2 | 13 |
 | Phase 3 | 3 |
 | Phase 4 | 6 |
 | Phase 5 | 6 |
-| **Phase 1〜5 合計** | **32** |
-| **事前準備込み合計** | **33** |
+| **Phase 1〜5 合計** | **33** |
+| **事前準備込み合計** | **34** |
 
 ### 8.6 最大規模 Phase
 
