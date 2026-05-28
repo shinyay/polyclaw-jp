@@ -835,7 +835,7 @@ function MonitoringTab() {
   const handleTest = async () => {
     const cs = connectionString || ''
     if (!cs) {
-      showToast('Enter a connection string to test', 'error')
+      showToast('検証する接続文字列を入力してください', 'error')
       return
     }
     setLoading(p => ({ ...p, test: true }))
@@ -868,7 +868,7 @@ function MonitoringTab() {
   }
 
   const handleDecommission = async () => {
-    if (!confirm('Decommission Application Insights? This will delete the App Insights resource, Log Analytics workspace, and stop telemetry export.')) return
+    if (!confirm('Application Insights を破棄しますか？ App Insights リソースと Log Analytics ワークスペースが削除され、テレメトリのエクスポートが停止します。')) return
     setLoading(p => ({ ...p, decommission: true }))
     try {
       const res = await api<{ status: string; message: string }>('monitoring/provision', {
@@ -891,11 +891,11 @@ function MonitoringTab() {
         {/* Status card */}
         <div className="voice__status-card">
           <div className="voice__status-header">
-            <h3>OpenTelemetry Monitoring</h3>
+            <h3>OpenTelemetry モニタリング</h3>
             <span className={`badge ${otelActive ? 'badge--ok' : config.enabled ? 'badge--warn' : 'badge--muted'}`}>
-              {otelActive ? 'Active' : config.enabled ? 'Enabled (not exporting)' : 'Disabled'}
+              {otelActive ? 'アクティブ' : config.enabled ? '有効化済み (エクスポートなし)' : '無効'}
             </span>
-            {config.provisioned && <span className="badge badge--ok">Provisioned</span>}
+            {config.provisioned && <span className="badge badge--ok">プロビジョニング済み</span>}
           </div>
 
           <PipelineFlow active={!!otelActive} />
@@ -907,8 +907,8 @@ function MonitoringTab() {
                 <span className={`status-dot__indicator ${otelActive ? 'status-dot__indicator--ok' : 'status-dot__indicator--err'}`} style={{ width: 10, height: 10 }} />
               </div>
               <div className="mon__info-body">
-                <label>Status</label>
-                <span>{otelActive ? 'Exporting telemetry' : 'Not exporting'}</span>
+                <label>状態</label>
+                <span>{otelActive ? 'テレメトリをエクスポート中' : 'エクスポートなし'}</span>
               </div>
             </div>
 
@@ -939,7 +939,7 @@ function MonitoringTab() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 </div>
                 <div className="mon__info-body">
-                  <label>Log Analytics Workspace</label>
+                  <label>Log Analytics ワークスペース</label>
                   <span>{config.workspace_name}</span>
                 </div>
               </div>
@@ -952,7 +952,7 @@ function MonitoringTab() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <div className="mon__info-body">
-                  <label>Resource Group</label>
+                  <label>リソースグループ</label>
                   <span>{config.resource_group}</span>
                 </div>
               </div>
@@ -965,7 +965,7 @@ function MonitoringTab() {
                   {getRegionFlag(config.location)}
                 </div>
                 <div className="mon__info-body">
-                  <label>Location</label>
+                  <label>リージョン</label>
                   <span>{getRegionLabel(config.location)}</span>
                 </div>
               </div>
@@ -978,7 +978,7 @@ function MonitoringTab() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div className="mon__info-body">
-                  <label>Connection String</label>
+                  <label>接続文字列</label>
                   <span className="mon__secret-value">{config.connection_string_masked}</span>
                 </div>
               </div>
@@ -991,7 +991,7 @@ function MonitoringTab() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <div className="mon__info-body">
-                  <label>Tracer Provider</label>
+                  <label>トレーサープロバイダー</label>
                   <span>{config.otel_status.tracer_provider}</span>
                 </div>
               </div>
@@ -1004,8 +1004,8 @@ function MonitoringTab() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                 </div>
                 <div className="mon__info-body">
-                  <label>Agent Dashboard</label>
-                  <span>Performance, tokens, cost, errors, and traces</span>
+                  <label>エージェントダッシュボード</label>
+                  <span>パフォーマンス、トークン、コスト、エラー、トレースの集約</span>
                 </div>
                 <a
                   href={config.grafana_dashboard_url}
@@ -1013,7 +1013,7 @@ function MonitoringTab() {
                   rel="noopener noreferrer"
                   className="btn btn--primary btn--sm"
                 >
-                  Open in Grafana
+                  Grafana で開く
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 </a>
               </div>
@@ -1025,37 +1025,38 @@ function MonitoringTab() {
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Configuration</h4>
-              <p className="text-muted">Adjust monitoring settings. Changes take effect immediately.</p>
+              <h4>構成</h4>
+              <p className="text-muted">モニタリング設定を調整します。変更は即座に反映されます。</p>
             </div>
           </div>
           <div className="voice__panel-body">
             <div className="form">
               <label className="form__check">
-                <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />
-                Enable OpenTelemetry monitoring
+                <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} data-testid="monitoring-enabled-toggle" />
+                OpenTelemetry モニタリングを有効化
               </label>
 
               {!config.provisioned && (
                 <div className="form__group">
-                  <label className="form__label">Application Insights Connection String</label>
+                  <label className="form__label">Application Insights 接続文字列</label>
                   <input
                     className="input"
                     value={connectionString}
                     onChange={e => setConnectionString(e.target.value)}
-                    placeholder={config.connection_string_set ? '(configured -- enter new value to replace)' : 'InstrumentationKey=...;IngestionEndpoint=...'}
+                    placeholder={config.connection_string_set ? '(構成済み -- 新しい値を入力すると置換)' : 'InstrumentationKey=...;IngestionEndpoint=...'}
                     type="password"
+                    data-testid="monitoring-connection-string"
                   />
                   <span className="form__hint">
-                    Find this in the Azure portal under your Application Insights resource &gt; Overview &gt; Connection String.
+                    Azure ポータルの Application Insights リソース &gt; 概要 &gt; 接続文字列から取得できます。
                   </span>
                 </div>
               )}
 
               {connectionString && (
                 <div style={{ marginBottom: 12 }}>
-                  <button className="btn btn--outline btn--sm" onClick={handleTest} disabled={loading.test}>
-                    {loading.test ? 'Validating...' : 'Validate Connection String'}
+                  <button className="btn btn--outline btn--sm" onClick={handleTest} disabled={loading.test} data-testid="monitoring-validate-btn">
+                    {loading.test ? '検証中...' : '接続文字列を検証'}
                   </button>
                   {testResult && (
                     <div style={{ marginTop: 8 }}>
@@ -1064,7 +1065,7 @@ function MonitoringTab() {
                       </span>
                       {testResult.instrumentation_key && (
                         <div className="text-muted" style={{ fontSize: 12, marginTop: 4 }}>
-                          Key: {testResult.instrumentation_key} | Endpoint: {testResult.ingestion_endpoint}
+                          キー: {testResult.instrumentation_key} | エンドポイント: {testResult.ingestion_endpoint}
                         </div>
                       )}
                     </div>
@@ -1073,9 +1074,9 @@ function MonitoringTab() {
               )}
 
               <div className="form__group">
-                <label className="form__label">Sampling Ratio</label>
+                <label className="form__label">サンプリング率</label>
                 <div className="mon__sampling-value">
-                  {(samplingRatio * 100).toFixed(0)}<small>% of traces exported</small>
+                  {(samplingRatio * 100).toFixed(0)}<small>% のトレースをエクスポート</small>
                 </div>
                 <div className="mon__sampling-bar">
                   <div className="mon__sampling-fill" style={{ width: `${samplingRatio * 100}%` }} />
@@ -1088,20 +1089,21 @@ function MonitoringTab() {
                   value={samplingRatio}
                   onChange={e => setSamplingRatio(parseFloat(e.target.value))}
                   style={{ width: '100%', marginTop: 4 }}
+                  data-testid="monitoring-sampling-ratio"
                 />
                 <span className="form__hint">
-                  100% = all traces, 5% = 1 in 20. Lower values reduce cost and noise. Metrics and logs are unaffected.
+                  100% = 全トレース、5% = 20 件に 1 件。低い値はコストとノイズを抑えます。メトリクスとログは影響を受けません。
                 </span>
               </div>
 
               <label className="form__check">
-                <input type="checkbox" checked={enableLiveMetrics} onChange={e => setEnableLiveMetrics(e.target.checked)} />
-                Enable Live Metrics (real-time dashboard in Azure portal)
+                <input type="checkbox" checked={enableLiveMetrics} onChange={e => setEnableLiveMetrics(e.target.checked)} data-testid="monitoring-live-metrics-toggle" />
+                ライブメトリクスを有効化 (Azure ポータルのリアルタイムダッシュボード)
               </label>
 
               <div className="form__actions">
-                <button className="btn btn--primary" onClick={handleSave} disabled={loading.save}>
-                  {loading.save ? 'Saving...' : 'Save Configuration'}
+                <button className="btn btn--primary" onClick={handleSave} disabled={loading.save} data-testid="monitoring-save-btn">
+                  {loading.save ? '保存中...' : '構成を保存'}
                 </button>
               </div>
             </div>
@@ -1112,8 +1114,8 @@ function MonitoringTab() {
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>What Gets Collected</h4>
-              <p className="text-muted">The Azure Monitor OpenTelemetry Distro automatically instruments these signals.</p>
+              <h4>収集される情報</h4>
+              <p className="text-muted">Azure Monitor OpenTelemetry Distro が以下のシグナルを自動計装します。</p>
             </div>
           </div>
           <div className="voice__panel-body">
@@ -1124,9 +1126,9 @@ function MonitoringTab() {
         {/* Decommission (only for provisioned resources) */}
         {config.provisioned && (
           <div className="voice__danger-strip">
-            <p>Remove Application Insights and Log Analytics resources and stop telemetry export.</p>
-            <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission}>
-              {loading.decommission ? 'Decommissioning...' : 'Decommission'}
+            <p>Application Insights と Log Analytics リソースを削除し、テレメトリのエクスポートを停止します。</p>
+            <button className="btn btn--danger btn--sm" onClick={handleDecommission} disabled={loading.decommission} data-testid="monitoring-decommission-btn">
+              {loading.decommission ? '破棄中...' : '破棄'}
             </button>
           </div>
         )}
@@ -1142,25 +1144,27 @@ function MonitoringTab() {
         <button
           className={`voice__mode-btn${mode === 'deploy' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => setMode('deploy')}
+          data-testid="monitoring-mode-deploy"
         >
           <div className="voice__mode-icon voice__mode-icon--new">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
           </div>
           <div>
-            <h4>Deploy New</h4>
-            <p>Provision Application Insights + Log Analytics workspace</p>
+            <h4>新規デプロイ</h4>
+            <p>Application Insights と Log Analytics ワークスペースをプロビジョニング</p>
           </div>
         </button>
         <button
           className={`voice__mode-btn${mode === 'connect' ? ' voice__mode-btn--active' : ''}`}
           onClick={() => setMode('connect')}
+          data-testid="monitoring-mode-connect"
         >
           <div className="voice__mode-icon voice__mode-icon--link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           </div>
           <div>
-            <h4>Connect Existing</h4>
-            <p>Provide a connection string from an existing Application Insights resource</p>
+            <h4>既存に接続</h4>
+            <p>既存の Application Insights リソースの接続文字列を入力</p>
           </div>
         </button>
       </div>
@@ -1170,8 +1174,8 @@ function MonitoringTab() {
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Deploy New Application Insights</h4>
-              <p className="text-muted">Provisions the full monitoring stack in a single step. The runtime is automatically instrumented to export telemetry.</p>
+              <h4>Application Insights を新規デプロイ</h4>
+              <p className="text-muted">モニタリングスタック全体を 1 ステップでプロビジョニングします。ランタイムは自動的に計装され、テレメトリのエクスポートを開始します。</p>
             </div>
           </div>
           <div className="voice__panel-body">
@@ -1179,18 +1183,18 @@ function MonitoringTab() {
             <div className="form">
               <div className="form__row">
                 <div className="form__group">
-                  <label className="form__label">Resource Group</label>
-                  <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} />
+                  <label className="form__label">リソースグループ</label>
+                  <input className="input" value={deployRg} onChange={e => setDeployRg(e.target.value)} data-testid="monitoring-deploy-rg" />
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Location</label>
-                  <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} />
-                  <span className="form__hint">Azure region (e.g. eastus, westeurope, swedencentral).</span>
+                  <label className="form__label">リージョン</label>
+                  <input className="input" value={deployLocation} onChange={e => setDeployLocation(e.target.value)} data-testid="monitoring-deploy-location" />
+                  <span className="form__hint">Azure リージョン (例: eastus, westeurope, swedencentral)。</span>
                 </div>
               </div>
               <div className="form__actions">
-                <button className="btn btn--primary" onClick={handleProvision} disabled={loading.deploy}>
-                  {loading.deploy ? 'Provisioning...' : 'Deploy Application Insights'}
+                <button className="btn btn--primary" onClick={handleProvision} disabled={loading.deploy} data-testid="monitoring-provision-btn">
+                  {loading.deploy ? 'プロビジョニング中...' : 'Application Insights をデプロイ'}
                 </button>
               </div>
               <ProvisionSteps steps={provisionSteps} />
@@ -1204,35 +1208,36 @@ function MonitoringTab() {
         <div className="voice__panel">
           <div className="voice__panel-header">
             <div>
-              <h4>Connect to Existing Application Insights</h4>
-              <p className="text-muted">Provide the connection string from an existing Application Insights resource in the Azure portal.</p>
+              <h4>既存の Application Insights に接続</h4>
+              <p className="text-muted">Azure ポータルにある既存の Application Insights リソースの接続文字列を入力してください。</p>
             </div>
           </div>
           <div className="voice__panel-body">
             <div className="form">
               <label className="form__check">
-                <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />
-                Enable OpenTelemetry monitoring
+                <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} data-testid="monitoring-connect-enabled-toggle" />
+                OpenTelemetry モニタリングを有効化
               </label>
 
               <div className="form__group">
-                <label className="form__label">Application Insights Connection String</label>
+                <label className="form__label">Application Insights 接続文字列</label>
                 <input
                   className="input"
                   value={connectionString}
                   onChange={e => setConnectionString(e.target.value)}
                   placeholder="InstrumentationKey=...;IngestionEndpoint=..."
                   type="password"
+                  data-testid="monitoring-connect-connection-string"
                 />
                 <span className="form__hint">
-                  Find this in the Azure portal under your Application Insights resource &gt; Overview &gt; Connection String.
+                  Azure ポータルの Application Insights リソース &gt; 概要 &gt; 接続文字列から取得できます。
                 </span>
               </div>
 
               {connectionString && (
                 <div style={{ marginBottom: 12 }}>
-                  <button className="btn btn--outline btn--sm" onClick={handleTest} disabled={loading.test}>
-                    {loading.test ? 'Validating...' : 'Validate Connection String'}
+                  <button className="btn btn--outline btn--sm" onClick={handleTest} disabled={loading.test} data-testid="monitoring-connect-validate-btn">
+                    {loading.test ? '検証中...' : '接続文字列を検証'}
                   </button>
                   {testResult && (
                     <div style={{ marginTop: 8 }}>
@@ -1241,7 +1246,7 @@ function MonitoringTab() {
                       </span>
                       {testResult.instrumentation_key && (
                         <div className="text-muted" style={{ fontSize: 12, marginTop: 4 }}>
-                          Key: {testResult.instrumentation_key} | Endpoint: {testResult.ingestion_endpoint}
+                          キー: {testResult.instrumentation_key} | エンドポイント: {testResult.ingestion_endpoint}
                         </div>
                       )}
                     </div>
@@ -1250,9 +1255,9 @@ function MonitoringTab() {
               )}
 
               <div className="form__group">
-                <label className="form__label">Sampling Ratio</label>
+                <label className="form__label">サンプリング率</label>
                 <div className="mon__sampling-value">
-                  {(samplingRatio * 100).toFixed(0)}<small>% of traces exported</small>
+                  {(samplingRatio * 100).toFixed(0)}<small>% のトレースをエクスポート</small>
                 </div>
                 <div className="mon__sampling-bar">
                   <div className="mon__sampling-fill" style={{ width: `${samplingRatio * 100}%` }} />
@@ -1265,20 +1270,21 @@ function MonitoringTab() {
                   value={samplingRatio}
                   onChange={e => setSamplingRatio(parseFloat(e.target.value))}
                   style={{ width: '100%', marginTop: 4 }}
+                  data-testid="monitoring-connect-sampling-ratio"
                 />
                 <span className="form__hint">
-                  100% = all traces, 5% = 1 in 20. Lower values reduce cost and noise. Metrics and logs are unaffected.
+                  100% = 全トレース、5% = 20 件に 1 件。低い値はコストとノイズを抑えます。メトリクスとログは影響を受けません。
                 </span>
               </div>
 
               <label className="form__check">
-                <input type="checkbox" checked={enableLiveMetrics} onChange={e => setEnableLiveMetrics(e.target.checked)} />
-                Enable Live Metrics (real-time dashboard in Azure portal)
+                <input type="checkbox" checked={enableLiveMetrics} onChange={e => setEnableLiveMetrics(e.target.checked)} data-testid="monitoring-connect-live-metrics-toggle" />
+                ライブメトリクスを有効化 (Azure ポータルのリアルタイムダッシュボード)
               </label>
 
               <div className="form__actions">
-                <button className="btn btn--primary" onClick={handleSave} disabled={loading.save}>
-                  {loading.save ? 'Saving...' : 'Save Configuration'}
+                <button className="btn btn--primary" onClick={handleSave} disabled={loading.save} data-testid="monitoring-connect-save-btn">
+                  {loading.save ? '保存中...' : '構成を保存'}
                 </button>
               </div>
             </div>
@@ -1290,8 +1296,8 @@ function MonitoringTab() {
       <div className="voice__panel">
         <div className="voice__panel-header">
           <div>
-            <h4>What Gets Collected</h4>
-            <p className="text-muted">The Azure Monitor OpenTelemetry Distro automatically instruments these signals.</p>
+            <h4>収集される情報</h4>
+            <p className="text-muted">Azure Monitor OpenTelemetry Distro が以下のシグナルを自動計装します。</p>
           </div>
         </div>
         <div className="voice__panel-body">
