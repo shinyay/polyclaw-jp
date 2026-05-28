@@ -104,6 +104,7 @@ class SetupRoutes:
     # -- Status --
 
     async def status(self, _req: web.Request) -> web.Response:
+        from ...agent.prompt import soul_exists
         from ..tunnel_status import resolve_tunnel_info
 
         account = self._az.account_info()
@@ -137,6 +138,7 @@ class SetupRoutes:
             "model": cfg.copilot_model,
             "env_path": str(cfg.env.path),
             "data_dir": str(cfg.data_dir),
+            "soul_exists": soul_exists(),
         })
 
     # -- Copilot --

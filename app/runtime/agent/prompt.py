@@ -91,10 +91,29 @@ def _build_sandbox_section() -> str:
     return "\n\n---\n\n" + _load_template("sandbox_prompt.md")
 
 
+def _build_persona_name_directive(profile_name: str) -> str:
+    """Build the persona name instruction for the bootstrap prompt.
+
+    If the user picked a name via the setup wizard (anything other than the
+    default ``polyclaw`` placeholder), instruct the agent to adopt it.
+    Otherwise fall back to the original "choose your own name" wording.
+    """
+    default_name = "polyclaw"
+    name = (profile_name or "").strip()
+    if name and name != default_name:
+        return (
+            f"あなたの名前は **{name}** です（ユーザーがセットアップで選択しました）。"
+            "SOUL.md ではこの名前を使ってください"
+        )
+    return "ユニークな名前（「Copilot」や「Assistant」は避け、創造的に付けてください）"
+
+
 def build_system_prompt() -> str:
     from ..state.profile import load_profile
 
     soul_content = load_soul()
+
+    profile = load_profile()
 
     bootstrap_section = ""
     if not soul_exists():
@@ -102,11 +121,11 @@ def build_system_prompt() -> str:
             _load_template("bootstrap_prompt.md").format(
                 soul_path=cfg.soul_path,
                 profile_path=cfg.data_dir / "agent_profile.json",
+                persona_name_directive=_build_persona_name_directive(profile.get("name", "")),
             )
             + "\n\n---\n\n"
         )
 
-    profile = load_profile()
     profile_lines: list[str] = []
     if profile.get("emotional_state") and profile["emotional_state"] != "平常":
         profile_lines.append(

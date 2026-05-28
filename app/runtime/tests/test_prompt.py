@@ -9,6 +9,7 @@ import pytest
 
 from app.runtime.agent.prompt import (
     _build_mcp_section,
+    _build_persona_name_directive,
     _build_sandbox_section,
     _load_mcp_guidance,
     build_system_prompt,
@@ -153,3 +154,88 @@ class TestBuildSystemPrompt:
         mock_template.return_value = "{bootstrap}{soul}{mcp_servers}"
         result = build_system_prompt()
         assert "formal" in result or "Agent" in result
+
+
+class TestBuildPersonaNameDirective:
+    """Tests for _build_persona_name_directive (PR-2.3 C1).
+
+    Verifies the bootstrap prompt persona-name placeholder substitution:
+    - User-selected names (anything other than ``polyclaw``) → directive
+      tells the agent to adopt that name.
+    - Default ``polyclaw`` or empty → directive falls back to the
+      "choose your own name" wording.
+    """
+
+    def test_user_selected_japanese_name(self):
+        directive = _build_persona_name_directive("八雲")
+        assert "八雲" in directive
+        assert "ユーザーがセットアップで選択しました" in directive
+        assert "SOUL.md" in directive
+
+    def test_user_selected_preset_octo(self):
+        directive = _build_persona_name_directive("オクト")
+        assert "オクト" in directive
+        assert "ユーザー" in directive
+
+    def test_user_selected_custom_english_name(self):
+        directive = _build_persona_name_directive("Zephyr")
+        assert "Zephyr" in directive
+        assert "ユーザー" in directive
+
+    def test_default_polyclaw_name_falls_back(self):
+        directive = _build_persona_name_directive("polyclaw")
+        assert "polyclaw" not in directive
+        assert "ユニークな名前" in directive
+        assert "Copilot" in directive  # The "avoid these" example
+
+    def test_empty_name_falls_back(self):
+        directive = _build_persona_name_directive("")
+        assert "ユニークな名前" in directive
+
+    def test_none_name_falls_back(self):
+        directive = _build_persona_name_directive(None)  # type: ignore[arg-type]
+        assert "ユニークな名前" in directive
+
+    def test_whitespace_name_falls_back(self):
+        directive = _build_persona_name_directive("   ")
+        assert "ユニークな名前" in directive
+
+    def test_name_with_surrounding_whitespace_is_trimmed(self):
+        directive = _build_persona_name_directive("  雷神  ")
+        assert "雷神" in directive
+        assert "  雷神  " not in directive  # Trimmed in output
+
+
+class TestBootstrapPromptFormatting:
+    """End-to-end format() check on the real bootstrap_prompt.md template.
+
+    Ensures the persona_name_directive placeholder is wired correctly and
+    that all required substitution keys are present.
+    """
+
+    def test_template_format_with_user_name(self):
+        from app.runtime.agent.prompt import _load_template
+
+        template = _load_template("bootstrap_prompt.md")
+        result = template.format(
+            soul_path="/data/SOUL.md",
+            profile_path="/data/agent_profile.json",
+            persona_name_directive=_build_persona_name_directive("八雲"),
+        )
+        assert "八雲" in result
+        assert "/data/SOUL.md" in result
+        assert "/data/agent_profile.json" in result
+        assert "ユーザーがセットアップで選択しました" in result
+
+    def test_template_format_with_default_name(self):
+        from app.runtime.agent.prompt import _load_template
+
+        template = _load_template("bootstrap_prompt.md")
+        result = template.format(
+            soul_path="/data/SOUL.md",
+            profile_path="/data/agent_profile.json",
+            persona_name_directive=_build_persona_name_directive("polyclaw"),
+        )
+        assert "ユニークな名前" in result
+        assert "polyclaw" not in result.split("###")[1].split("###")[0]  # not in Step 1
+
