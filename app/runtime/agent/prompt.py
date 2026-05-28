@@ -23,7 +23,10 @@ def load_soul() -> str:
 def soul_exists() -> bool:
     if not cfg.soul_path.exists():
         return False
-    return "placeholder identity" not in cfg.soul_path.read_text().lower()
+    content = cfg.soul_path.read_text()
+    if "POLYCLAW_PLACEHOLDER_SOUL" in content:
+        return False
+    return "placeholder identity" not in content.lower()
 
 
 def _load_mcp_guidance() -> dict[str, str]:
