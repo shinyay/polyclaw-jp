@@ -215,6 +215,24 @@ export interface ActivityStats {
   streak: number
 }
 
+// Mirrors app/runtime/state/profile.py EMOTIONAL_STATES_JP.
+// Backend `normalize_emotional_state()` ensures incoming values are coerced
+// into this set, so the dropdown only needs to expose these 8 options.
+export const EMOTIONAL_STATES_JP = [
+  '平常',
+  '好奇心',
+  '集中',
+  '達成感',
+  '高揚',
+  '思索',
+  '警戒',
+  '困惑',
+] as const
+
+export const EMOTIONAL_STATE_DEFAULT = '平常' as const
+
+export type EmotionalState = typeof EMOTIONAL_STATES_JP[number]
+
 // -- Proactive -----------------------------------------------------------
 
 export interface MemoryAgentStatus {

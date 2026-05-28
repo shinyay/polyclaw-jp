@@ -1,7 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import { api } from '../api'
 import { showToast } from '../components/Toast'
-import type { AgentProfile, ContributionDay } from '../types'
+import {
+  EMOTIONAL_STATES_JP,
+  EMOTIONAL_STATE_DEFAULT,
+  type AgentProfile,
+  type ContributionDay,
+} from '../types'
 
 /* ── Responsive viewport hook ── */
 
@@ -241,11 +246,15 @@ export default function Profile() {
           </div>
         </div>
         <div className="prof-hero__right">
-          {profile.emotional_state && profile.emotional_state !== 'neutral' && (
+          {profile.emotional_state && profile.emotional_state !== EMOTIONAL_STATE_DEFAULT && (
             <span className="prof-hero__mood">{profile.emotional_state}</span>
           )}
-          <button className="btn btn--ghost btn--sm" onClick={() => setEditing(!editing)}>
-            {editing ? 'Cancel' : 'Edit'}
+          <button
+            className="btn btn--ghost btn--sm"
+            data-testid="profile-edit-toggle"
+            onClick={() => setEditing(!editing)}
+          >
+            {editing ? 'キャンセル' : '編集'}
           </button>
         </div>
       </div>
@@ -268,11 +277,24 @@ export default function Profile() {
               <input className="input" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} />
             </div>
             <div className="form__group">
-              <label className="form__label">Emotional state</label>
-              <input className="input" value={form.emotional_state} onChange={e => setForm(f => ({ ...f, emotional_state: e.target.value }))} />
+              <label className="form__label">感情状態</label>
+              <select
+                className="input"
+                data-testid="profile-emotional-state-select"
+                value={form.emotional_state || EMOTIONAL_STATE_DEFAULT}
+                onChange={e => setForm(f => ({ ...f, emotional_state: e.target.value }))}
+              >
+                {EMOTIONAL_STATES_JP.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
             </div>
           </div>
-          <button className="btn btn--primary" onClick={save}>Save Changes</button>
+          <button
+            className="btn btn--primary"
+            data-testid="profile-save-changes"
+            onClick={save}
+          >変更を保存</button>
         </div>
       )}
 
@@ -317,8 +339,8 @@ export default function Profile() {
           <h3>Status</h3>
           <div className="prof-meta">
             <div className="prof-meta__row">
-              <span className="prof-meta__label">Emotional state</span>
-              <span className="prof-meta__badge">{profile.emotional_state || 'neutral'}</span>
+              <span className="prof-meta__label">感情状態</span>
+              <span className="prof-meta__badge">{profile.emotional_state || EMOTIONAL_STATE_DEFAULT}</span>
             </div>
             {prefEntries.length > 0 && prefEntries.map(([key, val]) => (
               <div className="prof-meta__row" key={key}>
