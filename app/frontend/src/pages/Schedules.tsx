@@ -22,16 +22,16 @@ const SCHED_COLORS = [
 /** Format a date/time string for display */
 function fmtDate(d?: string | null) {
   if (!d) return null
-  try { return new Date(d).toLocaleString() } catch { return d }
+  try { return new Date(d).toLocaleString('ja-JP') } catch { return d }
 }
 
 /** Describe when a schedule fires */
 function triggerLabel(s: Schedule) {
   if (s.cron) return `cron: ${s.cron}`
   if (s.run_at) {
-    try { return `once: ${new Date(s.run_at).toLocaleString()}` } catch { return `once: ${s.run_at}` }
+    try { return `1 回: ${new Date(s.run_at).toLocaleString('ja-JP')}` } catch { return `1 回: ${s.run_at}` }
   }
-  return 'no trigger'
+  return 'トリガーなし'
 }
 
 /* ── Heatmap computation ─────────────────────────────────────────────── */
@@ -107,14 +107,14 @@ function* cronFireTimes(cron: string, from: Date, to: Date): Generator<Date> {
 function buildWeekPreview(schedules: Schedule[]): HeatCell[] {
   const now = new Date()
   const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const dayNames = ['日', '月', '火', '水', '木', '金', '土']
 
   const cells: HeatCell[] = []
   for (let d = 0; d < 7; d++) {
     const date = new Date(today)
     date.setUTCDate(date.getUTCDate() + d)
     const key = date.toISOString().slice(0, 10)
-    const dayLabel = d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : dayNames[date.getUTCDay()]
+    const dayLabel = d === 0 ? '今日' : d === 1 ? '明日' : dayNames[date.getUTCDay()]
     const hours: HeatCell['hours'] = []
     for (let h = 0; h < 24; h++) hours.push({ hour: h, items: [] })
     cells.push({ date: key, dayLabel, hours })
@@ -205,17 +205,17 @@ export default function Schedules() {
       } else {
         await api('schedules', { method: 'POST', body: JSON.stringify(body) })
       }
-      showToast(editId ? 'Schedule updated' : 'Schedule created', 'success')
+      showToast(editId ? 'スケジュールを更新しました' : 'スケジュールを作成しました', 'success')
       setShowModal(false)
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
 
   const remove = async (id: string) => {
-    if (!confirm('Delete this schedule?')) return
+    if (!confirm('このスケジュールを削除しますか？')) return
     try {
       await api(`schedules/${id}`, { method: 'DELETE' })
-      showToast('Deleted', 'success')
+      showToast('削除しました', 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
@@ -243,12 +243,12 @@ export default function Schedules() {
 
   return (
     <div className="page">
-      <Breadcrumb current="Schedules" parentPath="/customization" parentLabel="Customization" />
+      <Breadcrumb current="スケジュール" parentPath="/customization" parentLabel="カスタマイズ" />
       <div className="page__header">
-        <h1>Schedules</h1>
+        <h1>スケジュール</h1>
         <div className="page__actions">
-          <button className="btn btn--primary btn--sm" onClick={openAdd}>New Schedule</button>
-          <button className="btn btn--ghost btn--sm" onClick={load}>Refresh</button>
+          <button className="btn btn--primary btn--sm" onClick={openAdd} data-testid="schedules-new-btn">新規スケジュール</button>
+          <button className="btn btn--ghost btn--sm" onClick={load} data-testid="schedules-refresh-btn">更新</button>
         </div>
       </div>
 
@@ -257,10 +257,10 @@ export default function Schedules() {
       {/* ── Week Preview ────────────────────────────────────────────── */}
       {!loading && schedules.length > 0 && (
         <div className="card" style={{ marginBottom: 20, padding: '16px 20px' }}>
-          <h3 style={{ fontSize: 13, marginBottom: 4 }}>Upcoming Schedule (next 7 days)</h3>
+          <h3 style={{ fontSize: 13, marginBottom: 4 }}>今後 7 日間の予定</h3>
           {!hasUpcoming && (
             <p className="text-muted" style={{ fontSize: 12, margin: '8px 0 0' }}>
-              No upcoming firings in the next 7 days.
+              今後 7 日間に実行予定はありません。
             </p>
           )}
           {hasUpcoming && (
@@ -339,11 +339,11 @@ export default function Schedules() {
       )}
 
       {/* ── List ─────────────────────────────────────────────────────── */}
-      {!loading && schedules.length === 0 && <p className="text-muted">No schedules configured</p>}
+      {!loading && schedules.length === 0 && <p className="text-muted" data-testid="schedules-empty-state">設定済みのスケジュールはありません</p>}
 
       <div className="list">
         {schedules.map((s, idx) => (
-          <div key={s.id} className={`list-item ${!s.enabled ? 'list-item--disabled' : ''}`}>
+          <div key={s.id} className={`list-item ${!s.enabled ? 'list-item--disabled' : ''}`} data-testid={`schedule-item-${s.id}`}>
             <span
               className="sched-dot"
               style={{ background: SCHED_COLORS[idx % SCHED_COLORS.length] }}
@@ -352,18 +352,18 @@ export default function Schedules() {
               <div className="list-item__top">
                 <strong className="list-item__title">{s.description}</strong>
                 <code className="text-muted text-sm">{triggerLabel(s)}</code>
-                {!s.enabled && <span className="badge badge--muted">disabled</span>}
+                {!s.enabled && <span className="badge badge--muted">無効</span>}
               </div>
               <div className="list-item__desc text-muted">{s.prompt}</div>
               <div className="list-item__meta">
-                {s.last_run && <span>Last run: {fmtDate(s.last_run)}</span>}
-                {s.created_at && <span>Created: {fmtDate(s.created_at)}</span>}
+                {s.last_run && <span>最終実行: {fmtDate(s.last_run)}</span>}
+                {s.created_at && <span>作成日時: {fmtDate(s.created_at)}</span>}
               </div>
             </div>
             <div className="list-item__actions">
-              <button className="btn btn--ghost btn--sm" onClick={() => toggle(s)}>{s.enabled ? 'Disable' : 'Enable'}</button>
-              <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)}>Edit</button>
-              <button className="btn btn--danger btn--sm" onClick={() => remove(s.id)}>Delete</button>
+              <button className="btn btn--ghost btn--sm" onClick={() => toggle(s)} data-testid={`schedule-toggle-${s.id}`}>{s.enabled ? '無効化' : '有効化'}</button>
+              <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)} data-testid={`schedule-edit-${s.id}`}>編集</button>
+              <button className="btn btn--danger btn--sm" onClick={() => remove(s.id)} data-testid={`schedule-delete-${s.id}`}>削除</button>
             </div>
           </div>
         ))}
@@ -372,40 +372,40 @@ export default function Schedules() {
       {/* ── Modal ────────────────────────────────────────────────────── */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal" onClick={e => e.stopPropagation()} data-testid="schedule-modal">
             <div className="modal__header">
-              <h2>{editId ? 'Edit Schedule' : 'New Schedule'}</h2>
+              <h2>{editId ? 'スケジュールを編集' : '新規スケジュール'}</h2>
               <button className="btn btn--ghost btn--sm" onClick={() => setShowModal(false)}>&times;</button>
             </div>
             <div className="modal__body">
               <div className="form">
                 <div className="form__group">
-                  <label className="form__label">Description</label>
-                  <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="What is this schedule for?" />
+                  <label className="form__label">説明</label>
+                  <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="このスケジュールの用途を入力してください" data-testid="schedule-form-description" />
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Cron Schedule</label>
-                  <input className="input" value={form.cron} onChange={e => setForm(f => ({ ...f, cron: e.target.value }))} placeholder="0 9 * * *" />
-                  <span className="text-muted text-sm">Standard cron syntax (min hour day month weekday). Leave empty for one-time schedules.</span>
+                  <label className="form__label">cron 設定</label>
+                  <input className="input" value={form.cron} onChange={e => setForm(f => ({ ...f, cron: e.target.value }))} placeholder="0 9 * * *" data-testid="schedule-form-cron" />
+                  <span className="text-muted text-sm">標準 cron 構文 (分 時 日 月 曜日)。1 回限りのスケジュールは空欄にしてください。</span>
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Run At (one-time)</label>
-                  <input className="input" type="datetime-local" value={form.run_at ? form.run_at.slice(0, 16) : ''} onChange={e => setForm(f => ({ ...f, run_at: e.target.value }))} />
-                  <span className="text-muted text-sm">For one-time schedules. Ignored if a cron expression is set.</span>
+                  <label className="form__label">実行日時 (1 回のみ)</label>
+                  <input className="input" type="datetime-local" value={form.run_at ? form.run_at.slice(0, 16) : ''} onChange={e => setForm(f => ({ ...f, run_at: e.target.value }))} data-testid="schedule-form-runat" />
+                  <span className="text-muted text-sm">1 回限り実行する場合に指定してください。cron 設定がある場合は無視されます。</span>
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Prompt</label>
-                  <textarea className="input" rows={4} value={form.prompt} onChange={e => setForm(f => ({ ...f, prompt: e.target.value }))} placeholder="What should the agent do?" />
+                  <label className="form__label">プロンプト</label>
+                  <textarea className="input" rows={4} value={form.prompt} onChange={e => setForm(f => ({ ...f, prompt: e.target.value }))} placeholder="エージェントに何をさせますか？" data-testid="schedule-form-prompt" />
                 </div>
                 <label className="form__check">
-                  <input type="checkbox" checked={form.enabled} onChange={e => setForm(f => ({ ...f, enabled: e.target.checked }))} />
-                  Enabled
+                  <input type="checkbox" checked={form.enabled} onChange={e => setForm(f => ({ ...f, enabled: e.target.checked }))} data-testid="schedule-form-enabled" />
+                  有効
                 </label>
               </div>
             </div>
             <div className="modal__footer">
-              <button className="btn btn--secondary" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="btn btn--primary" onClick={save}>Save</button>
+              <button className="btn btn--secondary" onClick={() => setShowModal(false)} data-testid="schedule-modal-cancel">キャンセル</button>
+              <button className="btn btn--primary" onClick={save} data-testid="schedule-modal-save">保存</button>
             </div>
           </div>
         </div>
