@@ -45,16 +45,16 @@ export default function McpServers() {
   const toggleServer = async (name: string, enabled: boolean) => {
     try {
       await api(`mcp/servers/${encodeURIComponent(name)}/${enabled ? 'enable' : 'disable'}`, { method: 'POST' })
-      showToast(`Server ${enabled ? 'enabled' : 'disabled'}`, 'success')
+      showToast(`サーバーを${enabled ? '有効化' : '無効化'}しました`, 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
 
   const removeServer = async (name: string) => {
-    if (!confirm(`Remove MCP server "${name}"?`)) return
+    if (!confirm(`MCP サーバー「${name}」を削除しますか？`)) return
     try {
       await api(`mcp/servers/${encodeURIComponent(name)}`, { method: 'DELETE' })
-      showToast('Server removed', 'success')
+      showToast('サーバーを削除しました', 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
@@ -106,7 +106,7 @@ export default function McpServers() {
       } else {
         await api('mcp/servers', { method: 'POST', body: JSON.stringify(body) })
       }
-      showToast(editServer ? 'Server updated' : 'Server added', 'success')
+      showToast(editServer ? 'サーバーを更新しました' : 'サーバーを追加しました', 'success')
       setShowModal(false)
       load()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -116,47 +116,47 @@ export default function McpServers() {
 
   return (
     <div className="page">
-      <Breadcrumb current="MCP Servers" parentPath="/customization" parentLabel="Customization" />
+      <Breadcrumb current="MCP サーバー" parentPath="/customization" parentLabel="カスタマイズ" />
       <div className="page__header">
-        <h1>MCP Servers</h1>
+        <h1>MCP サーバー</h1>
         <div className="page__actions">
-          <button className="btn btn--primary btn--sm" onClick={() => openAdd()}>Add Server</button>
-          <button className="btn btn--ghost btn--sm" onClick={load}>Refresh</button>
+          <button className="btn btn--primary btn--sm" onClick={() => openAdd()} data-testid="mcp-add-btn">サーバーを追加</button>
+          <button className="btn btn--ghost btn--sm" onClick={load} data-testid="mcp-refresh-btn">更新</button>
         </div>
       </div>
 
       <div className="tabs">
-        <button className={`tab ${tab === 'servers' ? 'tab--active' : ''}`} onClick={() => setTab('servers')}>My Servers</button>
-        <button className={`tab ${tab === 'discover' ? 'tab--active' : ''}`} onClick={() => setTab('discover')}>Discover</button>
+        <button className={`tab ${tab === 'servers' ? 'tab--active' : ''}`} onClick={() => setTab('servers')} data-testid="mcp-tab-servers">マイサーバー</button>
+        <button className={`tab ${tab === 'discover' ? 'tab--active' : ''}`} onClick={() => setTab('discover')} data-testid="mcp-tab-discover">ディスカバー</button>
       </div>
 
       {tab === 'servers' && (
         <>
           {loading && <div className="spinner" />}
-          {!loading && servers.length === 0 && <p className="text-muted">No MCP servers configured</p>}
+          {!loading && servers.length === 0 && <p className="text-muted" data-testid="mcp-empty-state">設定済みの MCP サーバーはありません</p>}
           <div className="list">
             {servers.map(srv => (
-              <div key={srv.name} className={`list-item ${!srv.enabled ? 'list-item--disabled' : ''}`}>
+              <div key={srv.name} className={`list-item ${!srv.enabled ? 'list-item--disabled' : ''}`} data-testid={`mcp-server-${srv.name}`}>
                 <span className={`status-indicator ${srv.enabled ? 'status-indicator--ok' : 'status-indicator--err'}`} />
                 <div className="list-item__body">
                   <div className="list-item__top">
                     <strong>{srv.name}</strong>
                     <span className="badge">{srv.type}</span>
-                    {srv.builtin && <span className="badge badge--muted">built-in</span>}
-                    {!srv.enabled && <span className="badge badge--err">disabled</span>}
+                    {srv.builtin && <span className="badge badge--muted">ビルトイン</span>}
+                    {!srv.enabled && <span className="badge badge--err">無効</span>}
                   </div>
                   <div className="list-item__desc text-muted">
                     {srv.description || srv.url || `${srv.command || ''} ${(srv.args || []).join(' ')}`}
                   </div>
                 </div>
                 <div className="list-item__actions">
-                  <button className="btn btn--ghost btn--sm" onClick={() => toggleServer(srv.name, !srv.enabled)}>
-                    {srv.enabled ? 'Disable' : 'Enable'}
+                  <button className="btn btn--ghost btn--sm" onClick={() => toggleServer(srv.name, !srv.enabled)} data-testid={`mcp-toggle-${srv.name}`}>
+                    {srv.enabled ? '無効化' : '有効化'}
                   </button>
                   {!srv.builtin && (
                     <>
-                      <button className="btn btn--ghost btn--sm" onClick={() => openEdit(srv)}>Edit</button>
-                      <button className="btn btn--danger btn--sm" onClick={() => removeServer(srv.name)}>Remove</button>
+                      <button className="btn btn--ghost btn--sm" onClick={() => openEdit(srv)} data-testid={`mcp-edit-${srv.name}`}>編集</button>
+                      <button className="btn btn--danger btn--sm" onClick={() => removeServer(srv.name)} data-testid={`mcp-remove-${srv.name}`}>削除</button>
                     </>
                   )}
                 </div>
@@ -171,24 +171,25 @@ export default function McpServers() {
           <div className="search-bar">
             <input
               className="input"
-              placeholder="Search MCP servers..."
+              placeholder="MCP サーバーを検索..."
               value={regQuery}
               onChange={e => setRegQuery(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') { setRegPage(1); loadRegistry(1, regQuery) } }}
+              data-testid="mcp-discover-search"
             />
-            <button className="btn btn--secondary btn--sm" onClick={() => { setRegPage(1); loadRegistry(1, regQuery) }}>Search</button>
+            <button className="btn btn--secondary btn--sm" onClick={() => { setRegPage(1); loadRegistry(1, regQuery) }} data-testid="mcp-discover-search-btn">検索</button>
           </div>
           <div className="grid grid--cards">
             {registry.map(srv => {
               const key = (srv.id || srv.full_name || srv.name || '').replace(/\//g, '-').toLowerCase()
               const added = configuredNames.has(key) || configuredNames.has(srv.name)
               return (
-                <div key={srv.id || srv.name} className="card mcp-reg-card">
+                <div key={srv.id || srv.name} className="card mcp-reg-card" data-testid={`mcp-reg-card-${key}`}>
                   <div className="mcp-reg-card__top">
                     {srv.avatar_url && <img src={srv.avatar_url} alt="" className="mcp-reg-card__avatar" />}
                     <div>
                       <strong>{srv.name}</strong>
-                      {srv.stars > 0 && <span className="text-muted"> {srv.stars >= 1000 ? `${(srv.stars/1000).toFixed(1)}k` : srv.stars} stars</span>}
+                      {srv.stars > 0 && <span className="text-muted"> {srv.stars >= 1000 ? `${(srv.stars/1000).toFixed(1)}k` : srv.stars} スター</span>}
                       {srv.full_name && <div className="text-muted text-sm">{srv.full_name}</div>}
                     </div>
                   </div>
@@ -201,14 +202,14 @@ export default function McpServers() {
                   <div className="mcp-reg-card__footer">
                     {srv.license && <span className="text-muted text-sm">{srv.license}</span>}
                     <div className="mcp-reg-card__actions">
-                      {srv.url && <a href={srv.url} target="_blank" rel="noopener" className="btn btn--ghost btn--sm">Open</a>}
+                      {srv.url && <a href={srv.url} target="_blank" rel="noopener" className="btn btn--ghost btn--sm">開く</a>}
                       {added ? (
-                        <span className="badge badge--ok">Added</span>
+                        <span className="badge badge--ok">追加済み</span>
                       ) : (
-                        <button className="btn btn--primary btn--sm" onClick={() => openAdd({
+                        <button className="btn btn--primary btn--sm" data-testid={`mcp-reg-add-${key}`} onClick={() => openAdd({
                           name: key, description: srv.description || '',
                           type: 'local', command: 'npx', args: `-y\n${srv.id || key}`,
-                        })}>Add</button>
+                        })}>追加</button>
                       )}
                     </div>
                   </div>
@@ -217,9 +218,9 @@ export default function McpServers() {
             })}
           </div>
           <div className="pagination">
-            <button className="btn btn--ghost btn--sm" disabled={regPage <= 1} onClick={() => setRegPage(p => p - 1)}>Prev</button>
-            <span>Page {regPage}</span>
-            <button className="btn btn--ghost btn--sm" disabled={registry.length < 10} onClick={() => setRegPage(p => p + 1)}>Next</button>
+            <button className="btn btn--ghost btn--sm" disabled={regPage <= 1} onClick={() => setRegPage(p => p - 1)} data-testid="mcp-pagination-prev">前へ</button>
+            <span data-testid="mcp-pagination-label">{regPage} ページ目</span>
+            <button className="btn btn--ghost btn--sm" disabled={registry.length < 10} onClick={() => setRegPage(p => p + 1)} data-testid="mcp-pagination-next">次へ</button>
           </div>
         </>
       )}
@@ -227,59 +228,59 @@ export default function McpServers() {
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal" onClick={e => e.stopPropagation()} data-testid="mcp-modal">
             <div className="modal__header">
-              <h2>{editServer ? 'Edit MCP Server' : 'Add MCP Server'}</h2>
+              <h2>{editServer ? 'MCP サーバーを編集' : 'MCP サーバーを追加'}</h2>
               <button className="btn btn--ghost btn--sm" onClick={() => setShowModal(false)}>&times;</button>
             </div>
             <div className="modal__body">
               <div className="form">
                 <div className="form__group">
-                  <label className="form__label">Name</label>
-                  <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} disabled={!!editServer} />
+                  <label className="form__label">名前</label>
+                  <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} disabled={!!editServer} data-testid="mcp-form-name" />
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Type</label>
-                  <select className="input" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as typeof form.type }))}>
-                    <option value="local">Local (stdio)</option>
-                    <option value="http">HTTP (Streamable)</option>
+                  <label className="form__label">種別</label>
+                  <select className="input" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as typeof form.type }))} data-testid="mcp-form-type">
+                    <option value="local">ローカル (stdio)</option>
+                    <option value="http">HTTP (ストリーミング)</option>
                     <option value="sse">SSE</option>
                   </select>
                 </div>
                 <div className="form__group">
-                  <label className="form__label">Description</label>
-                  <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+                  <label className="form__label">説明</label>
+                  <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} data-testid="mcp-form-description" />
                 </div>
                 {form.type === 'local' ? (
                   <>
                     <div className="form__group">
-                      <label className="form__label">Command</label>
-                      <input className="input" value={form.command} onChange={e => setForm(f => ({ ...f, command: e.target.value }))} placeholder="npx" />
+                      <label className="form__label">コマンド</label>
+                      <input className="input" value={form.command} onChange={e => setForm(f => ({ ...f, command: e.target.value }))} placeholder="npx" data-testid="mcp-form-command" />
                     </div>
                     <div className="form__group">
-                      <label className="form__label">Arguments (one per line)</label>
-                      <textarea className="input" rows={3} value={form.args} onChange={e => setForm(f => ({ ...f, args: e.target.value }))} />
+                      <label className="form__label">引数 (1 行に 1 つ)</label>
+                      <textarea className="input" rows={3} value={form.args} onChange={e => setForm(f => ({ ...f, args: e.target.value }))} data-testid="mcp-form-args" />
                     </div>
                     <div className="form__group">
-                      <label className="form__label">Environment (KEY=VALUE per line)</label>
-                      <textarea className="input" rows={3} value={form.env} onChange={e => setForm(f => ({ ...f, env: e.target.value }))} />
+                      <label className="form__label">環境変数 (1 行に KEY=VALUE)</label>
+                      <textarea className="input" rows={3} value={form.env} onChange={e => setForm(f => ({ ...f, env: e.target.value }))} data-testid="mcp-form-env" />
                     </div>
                   </>
                 ) : (
                   <div className="form__group">
                     <label className="form__label">URL</label>
-                    <input className="input" value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))} placeholder="https://..." />
+                    <input className="input" value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))} placeholder="https://..." data-testid="mcp-form-url" />
                   </div>
                 )}
                 <label className="form__check">
-                  <input type="checkbox" checked={form.enabled} onChange={e => setForm(f => ({ ...f, enabled: e.target.checked }))} />
-                  Enabled
+                  <input type="checkbox" checked={form.enabled} onChange={e => setForm(f => ({ ...f, enabled: e.target.checked }))} data-testid="mcp-form-enabled" />
+                  有効
                 </label>
               </div>
             </div>
             <div className="modal__footer">
-              <button className="btn btn--secondary" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="btn btn--primary" onClick={saveServer}>Save</button>
+              <button className="btn btn--secondary" onClick={() => setShowModal(false)} data-testid="mcp-modal-cancel">キャンセル</button>
+              <button className="btn btn--primary" onClick={saveServer} data-testid="mcp-modal-save">保存</button>
             </div>
           </div>
         </div>
