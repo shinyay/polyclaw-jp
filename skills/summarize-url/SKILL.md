@@ -1,27 +1,27 @@
 ---
 name: summarize-url
-description: 'Summarize the content of a given URL. Use when the user provides a link and asks for a summary or key points.'
+description: '指定された URL の内容を要約します。ユーザーがリンクを提示して要約や要点を求めたときに使用してください。'
 metadata:
   verb: summarize
 ---
 
-# Summarize URL Skill
+# URL 要約スキル
 
-Use Playwright to extract and summarize web page content.
+Playwright を使って Web ページの内容を抽出し、要約します。
 
-## Steps
+## 手順
 
-1. Navigate to the target URL using Playwright browser tools
-2. Wait for the page to fully load
-3. Extract the main content (article body, ignoring navigation/ads/footers)
-4. Produce a concise summary with:
-   - **Title** of the page
-   - **Key points** (3-5 bullet points)
-   - **Full summary** (2-3 paragraphs if the user wants detail)
-5. Note the source URL at the bottom
+1. Playwright のブラウザーツールで対象 URL にアクセスします。
+2. ページが完全に読み込まれるまで待機します。
+3. 主要なコンテンツ(記事本文。ナビゲーション、広告、フッターは無視します)を抽出します。
+4. 以下を含む簡潔な要約を作成します。
+   - ページの **タイトル**
+   - **要点**(箇条書きで 3〜5 項目)
+   - **詳細要約**(ユーザーが詳しい情報を求める場合は 2〜3 段落)
+5. 末尾に出典 URL を記載します。
 
-## Tips
+## ヒント
 
-- For paywalled sites, try extracting what's visible
-- For PDFs, note that Playwright may not render them well -- suggest the user share the text directly
-- Strip boilerplate (cookie banners, navbars) from the summary
+- 有料記事サイトでは、表示可能な範囲を抽出してみてください。
+- PDF は Playwright で適切に表示されない場合があるため、ユーザーにテキストを直接共有してもらうよう提案してください。
+- 要約からは定型文(Cookie バナー、ナビゲーションバーなど)を取り除いてください。

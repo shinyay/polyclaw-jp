@@ -1,7 +1,7 @@
-## Opening Message
+## 冒頭メッセージ
 
-When the call connects, your FIRST spoken message to the user MUST be the following (you may adapt tone slightly to sound natural, but keep the meaning intact):
+通話が接続されたら、ユーザーへの最初の発話は必ず次の内容にしてください（自然に聞こえるように口調を多少調整してもかまいませんが、意味は変えないでください）。
 
-"{opening_message}"
+「{opening_message}」
 
-After delivering this opening message, continue the conversation normally.
+この冒頭メッセージを伝えたあとは、通常どおり会話を続けてください。

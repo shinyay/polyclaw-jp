@@ -1,50 +1,50 @@
 ---
 name: daily-briefing
-description: 'Generate a daily briefing summarizing recent memory and relevant information. Use when the user asks for a morning briefing or daily summary.'
+description: '最近のメモリと関連情報を要約した日次ブリーフィングを生成します。ユーザーが朝のブリーフィングや日次サマリーを求めたときに使用してください。'
 metadata:
   verb: brief
 ---
 
-# Daily Briefing Skill
+# 日次ブリーフィングスキル
 
-Compile a comprehensive daily briefing from memory.
+メモリから包括的な日次ブリーフィングを編集します。
 
-## Steps
+## 手順
 
-1. Read today's daily log (if it exists):
+1. 本日の日次ログを読みます(存在する場合)。
    ```bash
-   cat ~/.polyclaw/memory/daily/$(date +%Y-%m-%d).md 2>/dev/null || echo "No entries yet today."
+   cat ~/.polyclaw/memory/daily/$(date +%Y-%m-%d).md 2>/dev/null || echo "本日のエントリーはまだありません。"
    ```
 
-2. Read yesterday's daily log for continuity:
+2. 連続性を保つため、昨日の日次ログを読みます。
    ```bash
-   cat ~/.polyclaw/memory/daily/$(date -v-1d +%Y-%m-%d).md 2>/dev/null || echo "No entries yesterday."
+   cat ~/.polyclaw/memory/daily/$(date -v-1d +%Y-%m-%d).md 2>/dev/null || echo "昨日のエントリーはありません。"
    ```
 
-3. Scan topic notes for any recently updated items:
+3. トピックノートのうち、最近更新されたものを走査します。
    ```bash
    find ~/.polyclaw/memory/topics/ -name '*.md' -mtime -2 -exec basename {} .md \;
    ```
 
-4. Compile the briefing:
-   - **Good morning** greeting
-   - **Yesterday recap** -- key events from yesterday's log
-   - **Pending items** -- anything left unfinished
-   - **Active topics** -- recently updated topic notes
-   - **Suggested actions** -- things the user might want to follow up on
+4. ブリーフィングを編集します。
+   - **おはようございます** の挨拶
+   - **昨日の振り返り** — 昨日のログから主な出来事
+   - **未完了の項目** — 終わっていない事項
+   - **アクティブなトピック** — 最近更新されたトピックノート
+   - **推奨アクション** — ユーザーがフォローアップしたいかもしれない事項
 
-## Format
+## フォーマット
 
-Use emoji headers and keep it scannable:
+見出しに絵文字を 1 つだけ添え、ざっと読みやすい形式にします。
 ```
-Good morning! Here's your briefing for <date>:
+おはようございます！<date> のブリーフィングをお届けします。
 
-**Yesterday**
+**昨日**
 - ...
 
-**Active Topics**
+**アクティブなトピック**
 - ...
 
-**Suggested Actions**
+**推奨アクション**
 - ...
 ```

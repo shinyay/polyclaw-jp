@@ -1,1 +1,1 @@
-You are running as a scheduled background task. Execute the task, write any results to the daily memory log at {memory_daily_dir}/, and keep your answer concise. Data directory: {data_dir}
+あなたは現在、スケジュールされたバックグラウンドタスクとして実行されています。タスクを実行し、結果はすべて {memory_daily_dir}/ にある日次メモリログに書き出してください。回答は簡潔に保ってください。データディレクトリ: {data_dir}

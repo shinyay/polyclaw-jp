@@ -1,86 +1,86 @@
 ---
 name: note-taking
-description: 'Create, read, update, and organize personal notes. Use when the user asks to take a note, jot something down, save information for later, or manage their notes.'
+description: '個人のノートを作成、閲覧、更新、整理します。ユーザーがノートを取る、何かを書き留める、後で参照するために情報を保存する、またはノートを管理するよう依頼したときに使用してください。'
 metadata:
   verb: note
 ---
 
-# Note Taking Skill
+# ノート作成スキル
 
-Manage the user's notes as plain text/markdown files in the data directory.
+ユーザーのノートを、データディレクトリ内のプレーンテキスト/Markdown ファイルとして管理します。
 
-## Storage
+## ストレージ
 
-All notes are stored as plain `.md` files in the home (data) directory at `~/notes/`.
-Do NOT use a database, JSON blob, or any other structured format -- just simple files on disk.
-This makes notes portable, grep-able, and easy to back up.
+すべてのノートは、ホーム(データ)ディレクトリ配下の `~/notes/` にプレーンな `.md` ファイルとして保存します。
+データベース、JSON ブロブ、その他の構造化フォーマットは使用してはいけません。ディスク上のシンプルなファイルだけを使ってください。
+これによりノートは可搬性が高く、grep でき、バックアップも容易になります。
 
-## Directory Structure
+## ディレクトリ構造
 
 ```
 ~/notes/
-  quick.md            # Scratch pad for quick one-liners
-  ideas.md            # Ideas and brainstorming
+  quick.md            # 短いメモ用のスクラッチパッド
+  ideas.md            # アイデアとブレインストーミング
   meetings/
-    2026-02-09.md     # Meeting notes by date
+    2026-02-09.md     # 日付別の会議ノート
   projects/
-    <project-name>.md # Per-project notes
+    <project-name>.md # プロジェクト別のノート
   topics/
-    <topic>.md        # Notes organized by topic
+    <topic>.md        # トピック別に整理したノート
 ```
 
-Create subdirectories as needed. Default to the top-level `~/notes/` for simple notes.
+必要に応じてサブディレクトリを作成してください。シンプルなノートはトップレベルの `~/notes/` をデフォルトとします。
 
-## Creating a Note
+## ノートの作成
 
-1. Determine the appropriate file based on context:
-   - Quick thought or no category specified: append to `~/notes/quick.md`
-   - Meeting notes: `~/notes/meetings/<date>.md`
-   - Project-specific: `~/notes/projects/<project>.md`
-   - Topic-specific: `~/notes/topics/<topic>.md`
+1. コンテキストに応じて適切なファイルを判断します。
+   - 短い思いつき、またはカテゴリが指定されていない場合: `~/notes/quick.md` に追記
+   - 会議ノート: `~/notes/meetings/<date>.md`
+   - プロジェクト固有: `~/notes/projects/<project>.md`
+   - トピック固有: `~/notes/topics/<topic>.md`
 
-2. Ensure the directory exists:
+2. ディレクトリが存在することを確認します。
    ```bash
    mkdir -p ~/notes/meetings ~/notes/projects ~/notes/topics
    ```
 
-3. Append the note with a timestamp header:
+3. タイムスタンプ付きの見出しを添えてノートを追記します。
    ```bash
    echo -e "\n## $(date '+%Y-%m-%d %H:%M')\n\n<content>" >> ~/notes/<file>.md
    ```
 
-## Reading Notes
+## ノートの閲覧
 
-- Show a specific note file:
+- 特定のノートファイルを表示する。
   ```bash
   cat ~/notes/<file>.md
   ```
 
-- List all notes:
+- すべてのノートを一覧表示する。
   ```bash
   find ~/notes -name '*.md' -type f | sort
   ```
 
-- Search across all notes:
+- すべてのノートを横断検索する。
   ```bash
   grep -rl "<search term>" ~/notes/
   ```
 
-## Updating Notes
+## ノートの更新
 
-- To edit an existing note, read the file, modify the content, and write it back.
-- When appending, always add a new timestamped section rather than overwriting.
+- 既存のノートを編集する場合は、ファイルを読み込み、内容を変更してから書き戻します。
+- 追記する際は、上書きせず必ず新しいタイムスタンプ付きセクションを追加してください。
 
-## Deleting Notes
+## ノートの削除
 
-- Only delete when the user explicitly asks:
+- ユーザーが明示的に依頼した場合にのみ削除します。
   ```bash
   rm ~/notes/<file>.md
   ```
 
-## Tips
+## ヒント
 
-- Always confirm with the user before deleting or overwriting notes.
-- When the user says "note that..." or "remember that...", save it to `quick.md` unless a better category is obvious.
-- Keep note content concise but complete -- capture the user's intent faithfully.
-- Use markdown formatting (headers, lists, bold) to keep notes scannable.
+- ノートを削除または上書きする前に、必ずユーザーに確認してください。
+- ユーザーが「メモして」や「覚えておいて」と言った場合は、より適切なカテゴリが明らかでない限り `quick.md` に保存してください。
+- ノートの内容は簡潔かつ必要十分にし、ユーザーの意図を忠実に捉えてください。
+- ノートをざっと読めるように、Markdown 書式(見出し、リスト、太字)を活用してください。

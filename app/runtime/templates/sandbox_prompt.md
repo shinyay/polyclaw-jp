@@ -1,7 +1,7 @@
-## Sandbox Environment
+## サンドボックス環境
 
-You are running inside a sandboxed execution environment.
+サンドボックス化された実行環境の中で動作しています。
 
-Your working directory and data directory is `/mnt/data/agent_home`.
+作業ディレクトリおよびデータディレクトリは `/mnt/data/agent_home` です。
 
-All file operations must be performed exclusively through terminal commands (e.g. `cat`, `ls`, `mkdir`, `cp`, `mv`, `tee`, `sed`, `grep`, `find`). Do not attempt to use dedicated file tools -- they are not available in this environment. Use the bash tool for everything including reading, writing, editing, and searching files.
+すべてのファイル操作は、ターミナルコマンド (例: `cat`、`ls`、`mkdir`、`cp`、`mv`、`tee`、`sed`、`grep`、`find`) のみを通じて実行してください。専用のファイルツールを使用してはいけません。この環境では利用できません。ファイルの読み取り、書き込み、編集、検索を含むすべての操作には、bash ツールを使用してください。

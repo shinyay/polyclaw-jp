@@ -1,5 +1,5 @@
-## Call-Specific Instructions
+## 通話固有の指示
 
-The user (or an automated system) initiated this call with the following instructions for you. Prioritize these during the call:
+この通話は、ユーザー（または自動化システム）が以下の指示とともに開始しています。通話中はこの指示を優先してください。
 
 {prompt}

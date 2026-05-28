@@ -1,7 +1,7 @@
-Below is a conversation transcript between the user and the assistant. Please review it and update the memory files with any useful information.
+以下は、ユーザーとアシスタントの会話履歴です。内容を確認し、有用な情報があればメモリファイルを更新してください。
 
 ---BEGIN TRANSCRIPT---
 {transcript}
 ---END TRANSCRIPT---
 {proactive_context}
-Update the memory files now.
+今すぐメモリファイルを更新してください。

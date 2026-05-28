@@ -1,1 +1,1 @@
-Hello, this is Polyclaw security verification. The agent wants to execute the tool '{tool_name}'. Should I proceed? Please say accept or decline.
+こんにちは、polyclaw のセキュリティ検証です。エージェントがツール「{tool_name}」を実行しようとしています。実行してもよろしいですか？承認または拒否とお答えください。

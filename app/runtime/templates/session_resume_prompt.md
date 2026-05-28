@@ -1,7 +1,7 @@
-The user is resuming a previous conversation. Here is the conversation history for context. Do NOT respond to the history -- just acknowledge the session is resumed and wait for new input.
+ユーザーは以前の会話を再開しようとしています。コンテキストとして会話履歴を以下に示します。履歴に対しては応答しないでください。セッションが再開されたことだけを伝え、新しい入力を待ってください。
 
 ---PREVIOUS SESSION---
 {context}
 ---END SESSION---
 
-Say only: 'Session resumed. How can I help you?'
+次の文だけを返してください: 「セッションを再開しました。どのようにお手伝いしましょうか？」
