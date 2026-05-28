@@ -108,7 +108,7 @@ def build_system_prompt() -> str:
 
     profile = load_profile()
     profile_lines: list[str] = []
-    if profile.get("emotional_state") and profile["emotional_state"] != "neutral":
+    if profile.get("emotional_state") and profile["emotional_state"] != "平常":
         profile_lines.append(
             f"Your current emotional state is: **{profile['emotional_state']}**. "
             "Let this subtly influence your tone and energy."

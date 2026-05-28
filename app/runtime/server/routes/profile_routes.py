@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from aiohttp import web
 
-from ...state.profile import get_full_profile, load_profile, save_profile
+from ...state.profile import (
+    get_full_profile,
+    load_profile,
+    normalize_emotional_state,
+    save_profile,
+)
 from ._helpers import ok_response, parse_json
 
 
@@ -21,9 +26,11 @@ class ProfileRoutes:
     async def _update(self, req: web.Request) -> web.Response:
         data = await parse_json(req)
         current = load_profile()
-        for key in ("name", "emoji", "location", "emotional_state"):
+        for key in ("name", "emoji", "location"):
             if key in data:
                 current[key] = data[key]
+        if "emotional_state" in data:
+            current["emotional_state"] = normalize_emotional_state(data["emotional_state"])
         if "preferences" in data and isinstance(data["preferences"], dict):
             current["preferences"].update(data["preferences"])
         save_profile(current)

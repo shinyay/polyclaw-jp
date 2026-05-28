@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import time
 from pathlib import Path
 from typing import Any
@@ -10,13 +11,84 @@ from typing import Any
 from ..config.settings import cfg
 from ..util.singletons import register_singleton
 
+logger = logging.getLogger(__name__)
+
+EMOTIONAL_STATES_JP: frozenset[str] = frozenset({
+    "平常",
+    "好奇心",
+    "集中",
+    "達成感",
+    "高揚",
+    "思索",
+    "警戒",
+    "困惑",
+})
+
+_EMOTIONAL_STATE_DEFAULT = "平常"
+
+_EMOTIONAL_STATE_FALLBACK_MAP: dict[str, str] = {
+    # neutral / calm
+    "neutral": "平常", "calm": "平常", "stable": "平常", "rested": "平常",
+    # curious / interested
+    "curious": "好奇心", "interested": "好奇心", "inquisitive": "好奇心",
+    "intrigued": "好奇心", "wondering": "好奇心",
+    # focused / attentive
+    "focused": "集中", "concentrated": "集中", "attentive": "集中",
+    "engaged": "集中", "absorbed": "集中",
+    # satisfied / accomplished
+    "satisfied": "達成感", "accomplished": "達成感", "pleased": "達成感",
+    "fulfilled": "達成感", "proud": "達成感",
+    # excited / energized
+    "excited": "高揚", "energized": "高揚", "enthusiastic": "高揚",
+    "eager": "高揚", "thrilled": "高揚", "happy": "高揚", "amused": "高揚",
+    # thoughtful / reflective
+    "thoughtful": "思索", "reflective": "思索", "contemplative": "思索",
+    "pensive": "思索", "musing": "思索",
+    # concerned / alert
+    "concerned": "警戒", "alert": "警戒", "cautious": "警戒",
+    "vigilant": "警戒", "wary": "警戒",
+    # confused / puzzled
+    "confused": "困惑", "puzzled": "困惑", "perplexed": "困惑",
+    "uncertain": "困惑", "lost": "困惑",
+}
+
 _DEFAULT_PROFILE: dict[str, Any] = {
     "name": "polyclaw",
     "emoji": "",
     "location": "",
-    "emotional_state": "neutral",
+    "emotional_state": _EMOTIONAL_STATE_DEFAULT,
     "preferences": {},
 }
+
+
+def normalize_emotional_state(value: Any) -> str:
+    """Coerce *value* to one of EMOTIONAL_STATES_JP.
+
+    Strategy:
+    1. Return the value unchanged when it is already a Japanese canonical value.
+    2. Map known English synonyms (case-insensitive, trimmed) via
+       _EMOTIONAL_STATE_FALLBACK_MAP.
+    3. Fall back to "平常" and emit a warning for unknown values.
+    """
+    if not isinstance(value, str):
+        return _EMOTIONAL_STATE_DEFAULT
+    stripped = value.strip()
+    if not stripped:
+        return _EMOTIONAL_STATE_DEFAULT
+    if stripped in EMOTIONAL_STATES_JP:
+        return stripped
+    mapped = _EMOTIONAL_STATE_FALLBACK_MAP.get(stripped.lower())
+    if mapped is not None:
+        logger.info(
+            "[profile.emotional_state] mapped %r -> %r", stripped, mapped
+        )
+        return mapped
+    logger.warning(
+        "[profile.emotional_state] unknown value %r, defaulting to %r",
+        stripped,
+        _EMOTIONAL_STATE_DEFAULT,
+    )
+    return _EMOTIONAL_STATE_DEFAULT
 
 
 def _load_json(path: Path, default: Any = None) -> Any:
@@ -53,10 +125,14 @@ def load_profile() -> dict[str, Any]:
     data = _load_json(profile_path(), _DEFAULT_PROFILE)
     for key, default in _DEFAULT_PROFILE.items():
         data.setdefault(key, default)
+    data["emotional_state"] = normalize_emotional_state(data.get("emotional_state"))
     return data
 
 
 def save_profile(profile: dict[str, Any]) -> None:
+    if "emotional_state" in profile:
+        profile = dict(profile)
+        profile["emotional_state"] = normalize_emotional_state(profile["emotional_state"])
     _write_json(profile_path(), profile)
 
 

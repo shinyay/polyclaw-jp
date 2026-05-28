@@ -68,7 +68,7 @@ async def cmd_profile(dispatcher: CommandDispatcher, ctx: CommandContext) -> Non
         "Agent Profile",
         f"  Name: {profile.get('name') or '(not set)'}",
         f"  Location: {profile.get('location') or '(not set)'}",
-        f"  Emotional state: {profile.get('emotional_state', 'neutral')}",
+        f"  Emotional state: {profile.get('emotional_state', '平常')}",
     ]
     prefs = profile.get("preferences", {})
     if prefs:

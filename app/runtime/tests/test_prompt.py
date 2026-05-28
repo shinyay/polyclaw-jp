@@ -116,7 +116,7 @@ class TestBuildSystemPrompt:
     def test_builds_prompt(
         self, mock_soul, mock_exists, mock_profile, mock_mcp, mock_sandbox, mock_template
     ):
-        mock_profile.return_value = {"name": "TestBot", "emotional_state": "happy", "location": "Cloud"}
+        mock_profile.return_value = {"name": "TestBot", "emotional_state": "高揚", "location": "Cloud"}
         mock_template.return_value = "{bootstrap}{soul}{mcp_servers}"
         result = build_system_prompt()
         assert "My Soul" in result
@@ -130,7 +130,7 @@ class TestBuildSystemPrompt:
     def test_bootstrap_section_when_no_soul(
         self, mock_soul, mock_exists, mock_profile, mock_mcp, mock_sandbox, mock_template
     ):
-        mock_profile.return_value = {"name": "", "emotional_state": "neutral"}
+        mock_profile.return_value = {"name": "", "emotional_state": "平常"}
         mock_template.return_value = "{bootstrap}{soul}{mcp_servers}"
         result = build_system_prompt()
         assert "placeholder" in result
@@ -146,7 +146,7 @@ class TestBuildSystemPrompt:
     ):
         mock_profile.return_value = {
             "name": "Agent",
-            "emotional_state": "neutral",
+            "emotional_state": "平常",
             "location": "NYC",
             "preferences": {"style": "formal"},
         }
