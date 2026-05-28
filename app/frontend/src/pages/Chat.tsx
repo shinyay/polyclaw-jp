@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback, useMemo, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useChat } from '../hooks/useChat'
+import { api } from '../api'
 import { IconChevronDown, IconBrain, IconTerminal } from '../components/Icons'
 import AdaptiveCardRenderer from '../components/AdaptiveCardRenderer'
-import type { ChatMessage, ToolCall, WindowWord, ModelInfo } from '../types'
+import type { ChatMessage, ToolCall, WindowWord, ModelInfo, SetupStatus } from '../types'
 
 const isMock = (import.meta as unknown as { env: Record<string, string> }).env?.VITE_MOCK === '1'
 const MockReasoningPanel = isMock ? lazy(() => import('../components/MockReasoningPanel')) : null
@@ -46,6 +47,7 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const pickerRef = useRef<HTMLDivElement>(null)
+  const bootstrapFiredRef = useRef(false)
   const [searchParams] = useSearchParams()
 
   // Resume session from URL param (reacts to navigation changes)
@@ -61,6 +63,50 @@ export default function Chat() {
 
   // Focus input
   useEffect(() => { inputRef.current?.focus() }, [])
+
+  // Bootstrap autofire: on a fresh install (no SOUL.md generated yet),
+  // automatically send a greeting so the bootstrap_prompt fires and the
+  // agent introduces itself. PR-2.3 §31.1 decision F (plan.md).
+  //
+  // Guards (cheap → expensive):
+  //   1. ref      — survives intra-mount re-runs of this effect
+  //   2. !connected — WS handshake must be complete
+  //   3. sessionParam — resumed sessions never autofire
+  //   4. sessionStorage — survives /chat → /settings → /chat remount
+  //                       while SOUL.md is still being written (LLM is
+  //                       slow; user can navigate away and back)
+  //   5. real user message in history — defensive against future
+  //                                     system/banner messages that
+  //                                     would inflate messages.length
+  useEffect(() => {
+    if (bootstrapFiredRef.current) return
+    if (!connected) return
+    if (sessionParam) return
+    if (sessionStorage.getItem('polyclaw.bootstrap.fired') === '1') {
+      bootstrapFiredRef.current = true
+      return
+    }
+    if (messages.some(m => m.role === 'user')) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const status = await api<SetupStatus>('setup/status')
+        if (cancelled) return
+        if (status?.soul_exists !== false) return
+        if (bootstrapFiredRef.current) return
+        // Mark fired BEFORE send so concurrent re-runs bail; persist to
+        // sessionStorage too so cross-mount races during SOUL.md
+        // generation cannot double-fire.
+        bootstrapFiredRef.current = true
+        sessionStorage.setItem('polyclaw.bootstrap.fired', '1')
+        sendMessage('こんにちは。自己紹介してくれますか？')
+      } catch {
+        // 401 → api() already cleared the token; auth flow will redirect.
+        // Network/abort → bail silently; next mount will retry.
+      }
+    })()
+    return () => { cancelled = true }
+  }, [connected, sessionParam, messages, sendMessage])
 
   // Close skill picker on outside click
   useEffect(() => {
