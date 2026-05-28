@@ -4,18 +4,18 @@ import { showToast } from '../components/Toast'
 import type { ProactiveState } from '../types'
 
 function timeAgo(iso: string | null | undefined): string {
-  if (!iso) return 'Never'
+  if (!iso) return '未実行'
   const then = new Date(iso)
   const now = new Date()
   const diffMs = now.getTime() - then.getTime()
-  if (diffMs < 0) return 'just now'
+  if (diffMs < 0) return 'たった今'
   const mins = Math.floor(diffMs / 60000)
-  if (mins < 1) return 'just now'
-  if (mins < 60) return `${mins}m ago`
+  if (mins < 1) return 'たった今'
+  if (mins < 60) return `${mins} 分前`
   const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ${mins % 60}m ago`
+  if (hrs < 24) return `${hrs} 時間 ${mins % 60} 分前`
   const days = Math.floor(hrs / 24)
-  return `${days}d ago`
+  return `${days} 日前`
 }
 
 export function ProactiveContent() {
@@ -47,7 +47,7 @@ export function ProactiveContent() {
     setForming(true)
     try {
       const res = await api<{ status: string; message?: string }>('proactive/memory/form', { method: 'POST' })
-      if (res.status === 'ok') showToast('Memory formation complete', 'success')
+      if (res.status === 'ok') showToast('メモリ生成が完了しました', 'success')
       else showToast(res.message || res.status, 'error')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -81,55 +81,55 @@ export function ProactiveContent() {
           avoided_topics: prefs.avoidedTopics.split(',').map(s => s.trim()).filter(Boolean),
         }),
       })
-      showToast('Preferences saved', 'success')
+      showToast('設定を保存しました', 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
 
   if (loading) return <div className="spinner" />
-  if (!state) return <p className="text-muted">Failed to load</p>
+  if (!state) return <p className="text-muted">読み込みに失敗しました</p>
 
   return (
     <>
       <div className="page__header">
-        <h1>Proactive Follow-ups</h1>
-        <button className="btn btn--ghost btn--sm" onClick={load}>Refresh</button>
+        <h1>プロアクティブ通信</h1>
+        <button className="btn btn--ghost btn--sm" onClick={load} data-testid="proactive-refresh-btn">更新</button>
       </div>
 
       <div className="stats-bar">
         <div className="stat">
           <span className="stat__value">{state.messages_sent_today ?? 0}</span>
-          <span className="stat__label">Sent Today</span>
+          <span className="stat__label">本日の送信数</span>
         </div>
         <div className="stat">
-          <span className="stat__value">{state.hours_since_last_sent != null ? `${state.hours_since_last_sent.toFixed(1)}h` : 'Never'}</span>
-          <span className="stat__label">Last Sent</span>
+          <span className="stat__value">{state.hours_since_last_sent != null ? `${state.hours_since_last_sent.toFixed(1)} 時間前` : '未実行'}</span>
+          <span className="stat__label">最終送信</span>
         </div>
         <div className="stat">
           <span className="stat__value">{state.conversation_refs ?? 0}</span>
-          <span className="stat__label">Channels</span>
+          <span className="stat__label">チャネル数</span>
         </div>
       </div>
 
       {state.memory && (
         <div className="card">
-          <h3>Memory Agent</h3>
+          <h3>メモリエージェント</h3>
           <div className="stats-bar">
             <div className="stat">
-              <span className="stat__value">{state.memory.forming_now ? 'Running' : 'Idle'}</span>
-              <span className="stat__label">Status</span>
+              <span className="stat__value">{state.memory.forming_now ? '実行中' : '待機中'}</span>
+              <span className="stat__label">状態</span>
             </div>
             <div className="stat">
               <span className="stat__value">{timeAgo(state.memory.last_formed_at)}</span>
-              <span className="stat__label">Last Run</span>
+              <span className="stat__label">最終実行</span>
             </div>
             <div className="stat">
               <span className="stat__value">{state.memory.formation_count}</span>
-              <span className="stat__label">Total Runs</span>
+              <span className="stat__label">累計実行回数</span>
             </div>
             <div className="stat">
               <span className="stat__value">{state.memory.buffered_turns}</span>
-              <span className="stat__label">Buffered Turns</span>
+              <span className="stat__label">バッファ中のターン数</span>
             </div>
           </div>
           <div style={{marginTop: 12, display: 'flex', alignItems: 'center', gap: 12}}>
@@ -137,26 +137,27 @@ export function ProactiveContent() {
               className="btn btn--primary btn--sm"
               onClick={forceMemory}
               disabled={forming || state.memory.forming_now || state.memory.buffered_turns === 0}
+              data-testid="proactive-force-memory-btn"
             >
-              {forming || state.memory.forming_now ? 'Forming...' : 'Form Memory Now'}
+              {forming || state.memory.forming_now ? '生成中...' : '今すぐメモリを生成'}
             </button>
             {state.memory.buffered_turns === 0 && (
-              <span className="text-muted text-sm">No buffered turns to process</span>
+              <span className="text-muted text-sm">処理対象のターンがありません</span>
             )}
           </div>
           {state.memory.timer_active && (
             <p className="text-muted text-sm" style={{marginTop: 8}}>
-              Idle timer active -- will form memory after {state.memory.idle_minutes}m of inactivity
+              アイドルタイマー有効: {state.memory.idle_minutes} 分の非活性でメモリを生成します
             </p>
           )}
           {state.memory.last_error && (
             <p className="text-danger text-sm" style={{marginTop: 8}}>
-              Last error: {state.memory.last_error}
+              直前のエラー: {state.memory.last_error}
             </p>
           )}
           {state.memory.last_proactive_scheduled && (
             <p className="text-sm" style={{marginTop: 8, color: 'var(--gold)'}}>
-              Last run scheduled a proactive follow-up
+              直前の実行でプロアクティブ通信が予約されました
             </p>
           )}
         </div>
@@ -165,56 +166,56 @@ export function ProactiveContent() {
       <div className="card">
         <div className="card__row">
           <label className="form__check">
-            <input type="checkbox" checked={state.enabled} onChange={toggleEnabled} />
-            Enable proactive follow-ups
+            <input type="checkbox" checked={state.enabled} onChange={toggleEnabled} data-testid="proactive-enabled-toggle" />
+            プロアクティブ通信を有効にする
           </label>
         </div>
       </div>
 
       {state.pending && (
         <div className="card">
-          <h3>Pending Follow-up</h3>
-          <p><strong>Deliver at:</strong> {new Date(state.pending.deliver_at).toLocaleString()}</p>
-          <p><strong>Message:</strong> {state.pending.message}</p>
+          <h3>保留中のフォローアップ</h3>
+          <p><strong>送信予定日時:</strong> {new Date(state.pending.deliver_at).toLocaleString('ja-JP')}</p>
+          <p><strong>メッセージ:</strong> {state.pending.message}</p>
           {state.pending.context && <p className="text-muted">{state.pending.context}</p>}
-          <button className="btn btn--danger btn--sm" onClick={cancelPending}>Cancel</button>
+          <button className="btn btn--danger btn--sm" onClick={cancelPending} data-testid="proactive-cancel-pending-btn">キャンセル</button>
         </div>
       )}
 
       <div className="card">
-        <h3>Preferences</h3>
+        <h3>設定</h3>
         <div className="form">
           <div className="form__row">
             <div className="form__group">
-              <label className="form__label">Min gap (hours)</label>
-              <input type="number" className="input" value={prefs.minGap} onChange={e => setPrefs(p => ({ ...p, minGap: +e.target.value }))} />
+              <label className="form__label">最小間隔 (時間)</label>
+              <input type="number" className="input" value={prefs.minGap} onChange={e => setPrefs(p => ({ ...p, minGap: +e.target.value }))} data-testid="proactive-prefs-min-gap" />
             </div>
             <div className="form__group">
-              <label className="form__label">Max daily</label>
-              <input type="number" className="input" value={prefs.maxDaily} onChange={e => setPrefs(p => ({ ...p, maxDaily: +e.target.value }))} />
+              <label className="form__label">1 日の最大送信数</label>
+              <input type="number" className="input" value={prefs.maxDaily} onChange={e => setPrefs(p => ({ ...p, maxDaily: +e.target.value }))} data-testid="proactive-prefs-max-daily" />
             </div>
           </div>
           <div className="form__group">
-            <label className="form__label">Preferred times</label>
-            <input className="input" value={prefs.preferredTimes} onChange={e => setPrefs(p => ({ ...p, preferredTimes: e.target.value }))} placeholder="e.g. 9:00-12:00, 14:00-17:00" />
+            <label className="form__label">送信を推奨する時間帯</label>
+            <input className="input" value={prefs.preferredTimes} onChange={e => setPrefs(p => ({ ...p, preferredTimes: e.target.value }))} placeholder="例: 9:00-12:00, 14:00-17:00" data-testid="proactive-prefs-preferred-times" />
           </div>
           <div className="form__group">
-            <label className="form__label">Avoided topics (comma-separated)</label>
-            <input className="input" value={prefs.avoidedTopics} onChange={e => setPrefs(p => ({ ...p, avoidedTopics: e.target.value }))} />
+            <label className="form__label">避けるトピック (カンマ区切り)</label>
+            <input className="input" value={prefs.avoidedTopics} onChange={e => setPrefs(p => ({ ...p, avoidedTopics: e.target.value }))} data-testid="proactive-prefs-avoided" />
           </div>
-          <button className="btn btn--primary btn--sm" onClick={savePrefs}>Save Preferences</button>
+          <button className="btn btn--primary btn--sm" onClick={savePrefs} data-testid="proactive-save-prefs-btn">設定を保存</button>
         </div>
       </div>
 
       {state.history && state.history.length > 0 && (
         <div className="card">
-          <h3>History</h3>
+          <h3>履歴</h3>
           <div className="list">
             {[...state.history].reverse().map((h, i) => (
               <div key={i} className="list-item">
                 <div className="list-item__body">
                   <div className="list-item__top">
-                    <span className="text-muted">{new Date(h.delivered_at).toLocaleString()}</span>
+                    <span className="text-muted">{new Date(h.delivered_at).toLocaleString('ja-JP')}</span>
                     {h.reaction && <span className="badge">{h.reaction}</span>}
                   </div>
                   <div className="list-item__desc">{h.message}</div>
