@@ -9,13 +9,13 @@ test.describe('Skills page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/skills')
-    await expect(page.getByRole('heading', { name: 'Skills' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'スキル' })).toBeVisible()
   })
 
   test('shows installed and marketplace tabs', async ({ page }) => {
     await page.goto('/skills')
-    await expect(page.getByRole('button', { name: /Installed/ })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Marketplace' })).toBeVisible()
+    await expect(page.getByTestId('skills-tab-installed')).toBeVisible()
+    await expect(page.getByTestId('skills-tab-marketplace')).toBeVisible()
   })
 
   test('installed tab shows installed skills with verb badges', async ({ page }) => {
@@ -28,27 +28,27 @@ test.describe('Skills page', () => {
   test('remove button appears on non-builtin skills', async ({ page }) => {
     await page.goto('/skills')
     // web-search is not builtin
-    await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible()
+    await expect(page.getByTestId('skill-remove-web-search')).toBeVisible()
   })
 
   test('marketplace tab shows available skills', async ({ page }) => {
     await page.goto('/skills')
-    await page.getByRole('button', { name: 'Marketplace' }).click()
+    await page.getByTestId('skills-tab-marketplace').click()
     await expect(page.getByText('daily-briefing')).toBeVisible()
     await expect(page.getByText('note-taking')).toBeVisible()
   })
 
   test('marketplace shows GET button for not-installed skills', async ({ page }) => {
     await page.goto('/skills')
-    await page.getByRole('button', { name: 'Marketplace' }).click()
-    const getBtns = page.getByRole('button', { name: 'GET', exact: true })
+    await page.getByTestId('skills-tab-marketplace').click()
+    const getBtns = page.locator('button.btn-get')
     await expect(getBtns.first()).toBeVisible()
   })
 
   test('marketplace shows Installed badge for already installed skills', async ({ page }) => {
     await page.goto('/skills')
-    await page.getByRole('button', { name: 'Marketplace' }).click()
-    await expect(page.getByText('Installed').first()).toBeVisible()
+    await page.getByTestId('skills-tab-marketplace').click()
+    await expect(page.getByText('インストール済み').first()).toBeVisible()
   })
 
   test('install button sends POST request', async ({ page }) => {
@@ -77,12 +77,11 @@ test.describe('Skills page', () => {
       }) })
     })
     await page.goto('/skills')
-    await page.getByRole('button', { name: 'Marketplace' }).click()
+    await page.getByTestId('skills-tab-marketplace').click()
     await expect(page.getByText('daily-briefing')).toBeVisible()
-    const getBtns = page.getByRole('button', { name: 'GET', exact: true })
     await Promise.all([
       page.waitForResponse(resp => resp.url().includes('/skills/install')),
-      getBtns.first().click(),
+      page.getByTestId('store-card-install-daily-briefing').click(),
     ])
     expect(installCalled).toBe(true)
   })
@@ -96,7 +95,7 @@ test.describe('Plugins page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/plugins')
-    await expect(page.getByRole('heading', { name: 'Plugins' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'プラグイン' })).toBeVisible()
   })
 
   test('displays plugin cards', async ({ page }) => {
@@ -113,38 +112,39 @@ test.describe('Plugins page', () => {
 
   test('enabled plugin shows Disable button', async ({ page }) => {
     await page.goto('/plugins')
-    const ghCard = page.locator('.plugin-card', { hasText: 'GitHub Status' })
-    await expect(ghCard.getByRole('button', { name: 'Disable' })).toBeVisible()
+    // GitHub Status is enabled (id: github-status)
+    await expect(page.getByTestId('plugin-toggle-github-status')).toHaveText('無効化')
   })
 
   test('disabled plugin shows Enable button', async ({ page }) => {
     await page.goto('/plugins')
-    const wikiCard = page.locator('.plugin-card', { hasText: 'Wikipedia Lookup' })
-    await expect(wikiCard.getByRole('button', { name: 'Enable' })).toBeVisible()
+    // Wikipedia Lookup is disabled (id: wikipedia-lookup)
+    await expect(page.getByTestId('plugin-toggle-wikipedia-lookup')).toHaveText('有効化')
   })
 
   test('details button opens modal', async ({ page }) => {
     await page.goto('/plugins')
-    const card = page.locator('.plugin-card', { hasText: 'GitHub Status' })
-    await card.getByRole('button', { name: 'Details' }).click()
-    await expect(page.locator('.modal')).toBeVisible()
-    await expect(page.locator('.modal').getByText('GitHub Status')).toBeVisible()
+    await page.getByTestId('plugin-details-github-status').click()
+    await expect(page.getByTestId('plugin-detail-modal')).toBeVisible()
+    await expect(page.getByTestId('plugin-detail-modal').getByRole('heading', { name: 'GitHub Status' })).toBeVisible()
   })
 
   test('modal shows plugin details', async ({ page }) => {
     await page.goto('/plugins')
-    await page.locator('.plugin-card', { hasText: 'GitHub Status' }).getByRole('button', { name: 'Details' }).click()
-    await expect(page.locator('.modal')).toBeVisible()
-    await expect(page.locator('.modal').getByText('1.0.0')).toBeVisible()
-    await expect(page.locator('.modal').getByText('builtin')).toBeVisible()
+    await page.getByTestId('plugin-details-github-status').click()
+    const modal = page.getByTestId('plugin-detail-modal')
+    await expect(modal).toBeVisible()
+    await expect(modal.getByText('1.0.0')).toBeVisible()
+    await expect(modal.getByText('builtin')).toBeVisible()
   })
 
   test('modal closes on backdrop click', async ({ page }) => {
     await page.goto('/plugins')
-    page.locator('.plugin-card', { hasText: 'GitHub Status' }).getByRole('button', { name: 'Details' }).click()
-    await expect(page.locator('.modal')).toBeVisible()
+    await page.getByTestId('plugin-details-github-status').click()
+    const modal = page.getByTestId('plugin-detail-modal')
+    await expect(modal).toBeVisible()
     await page.locator('.modal-overlay').click({ position: { x: 5, y: 5 } })
-    await expect(page.locator('.modal')).not.toBeVisible()
+    await expect(modal).not.toBeVisible()
   })
 
   test('toggle plugin sends correct API call', async ({ page }) => {
@@ -154,8 +154,7 @@ test.describe('Plugins page', () => {
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok' }) })
     })
     await page.goto('/plugins')
-    const ghCard = page.locator('.plugin-card', { hasText: 'GitHub Status' })
-    await ghCard.getByRole('button', { name: 'Disable' }).click()
+    await page.getByTestId('plugin-toggle-github-status').click()
     expect(disableCalled).toBe(true)
   })
 
@@ -164,6 +163,6 @@ test.describe('Plugins page', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ plugins: [] }) }),
     )
     await page.goto('/plugins')
-    await expect(page.getByText('No plugins found')).toBeVisible()
+    await expect(page.getByTestId('plugins-empty-state')).toBeVisible()
   })
 })
