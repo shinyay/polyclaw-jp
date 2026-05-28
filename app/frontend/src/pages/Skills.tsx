@@ -7,17 +7,17 @@ import type { Skill, MarketplaceSkill, MarketplaceResponse } from '../types'
 /* ── Origin helpers ─────────────────────────────────────────────────── */
 
 const ORIGIN_LABEL: Record<string, string> = {
-  'built-in':      'Built-in',
-  'marketplace':   'Marketplace',
-  'plugin':        'Plugin',
-  'agent-created': 'Agent-created',
+  'built-in':      'ビルトイン',
+  'marketplace':   'マーケットプレイス',
+  'plugin':        'プラグイン',
+  'agent-created': 'エージェント生成',
 }
 
 const ORIGIN_TOOLTIP: Record<string, string> = {
-  'built-in':      'This skill is included with polyclaw',
-  'marketplace':   'Installed from the skills marketplace',
-  'plugin':        'Installed as part of a plugin',
-  'agent-created': 'This skill was created by your agent',
+  'built-in':      'polyclaw に同梱されているスキルです',
+  'marketplace':   'スキルマーケットプレイスからインストール済み',
+  'plugin':        'プラグインの一部としてインストール済み',
+  'agent-created': 'エージェントが作成したスキルです',
 }
 
 function originClass(origin: string) {
@@ -47,15 +47,15 @@ function skillInitial(name: string) {
 }
 
 function skillSourceLabel(skill: MarketplaceSkill) {
-  if (skill.origin === 'agent-created') return 'Agent-created'
-  if (skill.origin === 'built-in') return 'Built-in'
-  if (skill.origin === 'plugin') return 'Plugin'
-  if (skill.origin === 'marketplace') return 'Marketplace'
+  if (skill.origin === 'agent-created') return 'エージェント生成'
+  if (skill.origin === 'built-in') return 'ビルトイン'
+  if (skill.origin === 'plugin') return 'プラグイン'
+  if (skill.origin === 'marketplace') return 'マーケットプレイス'
   if (skill.category === 'github-awesome') return 'GitHub Awesome'
   if (skill.category === 'anthropic') return 'Anthropic'
   if (skill.source) return skill.source
-  if (skill.installed) return 'Local'
-  return 'Community'
+  if (skill.installed) return 'ローカル'
+  return 'コミュニティ'
 }
 
 /* ── Filter types ───────────────────────────────────────────────────── */
@@ -63,10 +63,10 @@ function skillSourceLabel(skill: MarketplaceSkill) {
 type SkillFilter = 'all' | 'installed' | 'available' | 'recommended' | 'github-awesome' | 'anthropic'
 
 const FILTER_LABELS: Record<SkillFilter, string> = {
-  'all':            'All',
-  'installed':      'Installed',
-  'available':      'Available',
-  'recommended':    'Recommended',
+  'all':            'すべて',
+  'installed':      'インストール済み',
+  'available':      '未インストール',
+  'recommended':    'おすすめ',
   'github-awesome': 'GitHub Awesome',
   'anthropic':      'Anthropic',
 }
@@ -87,11 +87,11 @@ interface ContributeData {
 /* ── Store Card sub-component ───────────────────────────────────────── */
 
 function StoreCard({ skill, onInstall }: { skill: MarketplaceSkill; onInstall: (name: string) => void }) {
-  const desc = cleanDesc(skill.description) || 'No description available.'
+  const desc = cleanDesc(skill.description) || '説明はありません'
   const originColor = skill.origin ? `store-card-origin-${skill.origin}` : ''
 
   return (
-    <div className={`store-card${skill.installed ? ' installed' : ''}`}>
+    <div className={`store-card${skill.installed ? ' installed' : ''}`} data-testid={`store-card-${skill.name}`}>
       <div className="store-card-top">
         <div className={`store-card-icon ${skillIconColor(skill.name)}`}>
           {skillInitial(skill.name)}
@@ -103,10 +103,10 @@ function StoreCard({ skill, onInstall }: { skill: MarketplaceSkill; onInstall: (
       </div>
 
       {skill.installed && (
-        <span className="store-card-badge badge-installed">Installed</span>
+        <span className="store-card-badge badge-installed">インストール済み</span>
       )}
       {!skill.installed && skill.recommended && (
-        <span className="store-card-badge badge-recommended">Recommended</span>
+        <span className="store-card-badge badge-recommended">おすすめ</span>
       )}
 
       <div className="store-card-desc">{desc}</div>
@@ -127,9 +127,9 @@ function StoreCard({ skill, onInstall }: { skill: MarketplaceSkill; onInstall: (
           )}
         </div>
         {skill.installed ? (
-          <button className="store-card-btn btn-installed">Installed</button>
+          <button className="store-card-btn btn-installed">インストール済み</button>
         ) : (
-          <button className="store-card-btn btn-get" onClick={(e) => { e.stopPropagation(); onInstall(skill.name) }}>GET</button>
+          <button className="store-card-btn btn-get" onClick={(e) => { e.stopPropagation(); onInstall(skill.name) }} data-testid={`store-card-install-${skill.name}`}>入手</button>
         )}
       </div>
     </div>
@@ -164,17 +164,17 @@ function StoreSection({ title, subtitle, skills, horizontal, onInstall }: {
 function FeaturedBanner({ skill, onInstall }: { skill: MarketplaceSkill | undefined; onInstall: (name: string) => void }) {
   if (!skill) return null
   const parts: string[] = []
-  if ((skill.edit_count ?? 0) > 0) parts.push(`${skill.edit_count} revisions`)
-  if ((skill.usage_count ?? 0) > 0) parts.push(`${skill.usage_count} uses`)
+  if ((skill.edit_count ?? 0) > 0) parts.push(`${skill.edit_count} リビジョン`)
+  if ((skill.usage_count ?? 0) > 0) parts.push(`${skill.usage_count} 回利用`)
   parts.push(skillSourceLabel(skill))
 
   return (
     <div className="store-featured">
-      <div className="store-featured-label">Featured Skill</div>
+      <div className="store-featured-label">おすすめスキル</div>
       <div className="store-featured-name">{skill.name}</div>
-      <div className="store-featured-desc">{cleanDesc(skill.description) || 'A powerful skill for your agent.'}</div>
+      <div className="store-featured-desc">{cleanDesc(skill.description) || 'エージェントを強化するスキルです。'}</div>
       <div className="store-featured-row">
-        <button className="store-featured-btn" onClick={() => onInstall(skill.name)}>Get</button>
+        <button className="store-featured-btn" onClick={() => onInstall(skill.name)}>入手</button>
         <span className="store-featured-meta">{parts.join('  \u00B7  ')}</span>
       </div>
     </div>
@@ -214,16 +214,16 @@ export default function Skills() {
   const installSkill = async (name: string) => {
     try {
       await api('skills/install', { method: 'POST', body: JSON.stringify({ name }) })
-      showToast(`Skill "${name}" installed`, 'success')
+      showToast(`スキル「${name}」をインストールしました`, 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
 
   const removeSkill = async (name: string) => {
-    if (!confirm(`Remove skill "${name}"?`)) return
+    if (!confirm(`スキル「${name}」を削除しますか？`)) return
     try {
       await api(`skills/${name}`, { method: 'DELETE' })
-      showToast(`Skill removed`, 'success')
+      showToast(`スキルを削除しました`, 'success')
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
@@ -238,10 +238,10 @@ export default function Skills() {
       if (r.status === 'ok') {
         setContributeData(r)
       } else {
-        showToast(r.message || 'Contribution failed', 'error')
+        showToast(r.message || '貢献処理に失敗しました', 'error')
       }
     } catch (e: any) {
-      showToast('Failed to prepare contribution: ' + e.message, 'error')
+      showToast('貢献処理の準備に失敗しました: ' + e.message, 'error')
     }
     setContributing(null)
   }
@@ -249,11 +249,11 @@ export default function Skills() {
   const copyAndOpen = async (content: string, url: string, btnEl: HTMLButtonElement) => {
     try {
       await navigator.clipboard.writeText(content)
-      btnEl.textContent = 'Copied!'
+      btnEl.textContent = 'コピー済み!'
       setTimeout(() => window.open(url, '_blank'), 300)
-      setTimeout(() => { btnEl.textContent = 'Copy & Open on GitHub' }, 2000)
+      setTimeout(() => { btnEl.textContent = 'コピーして GitHub を開く' }, 2000)
     } catch {
-      showToast('Failed to copy to clipboard', 'error')
+      showToast('クリップボードへのコピーに失敗しました', 'error')
     }
   }
 
@@ -278,18 +278,18 @@ export default function Skills() {
 
   return (
     <div className="page">
-      <Breadcrumb current="Skills" parentPath="/customization" parentLabel="Customization" />
+      <Breadcrumb current="スキル" parentPath="/customization" parentLabel="カスタマイズ" />
       <div className="page__header">
-        <h1>Skills</h1>
-        <button className="btn btn--ghost btn--sm" onClick={load}>Refresh</button>
+        <h1>スキル</h1>
+        <button className="btn btn--ghost btn--sm" onClick={load} data-testid="skills-refresh-btn">更新</button>
       </div>
 
       <div className="tabs">
-        <button className={`tab ${tab === 'installed' ? 'tab--active' : ''}`} onClick={() => setTab('installed')}>
-          Installed ({installed.filter(s => s.installed).length})
+        <button className={`tab ${tab === 'installed' ? 'tab--active' : ''}`} onClick={() => setTab('installed')} data-testid="skills-tab-installed">
+          インストール済み ({installed.filter(s => s.installed).length})
         </button>
-        <button className={`tab ${tab === 'marketplace' ? 'tab--active' : ''}`} onClick={() => setTab('marketplace')}>
-          Marketplace
+        <button className={`tab ${tab === 'marketplace' ? 'tab--active' : ''}`} onClick={() => setTab('marketplace')} data-testid="skills-tab-marketplace">
+          マーケットプレイス
         </button>
       </div>
 
@@ -302,7 +302,7 @@ export default function Skills() {
             const origin = skill.origin || 'built-in'
             const desc = cleanDesc(skill.description)
             return (
-              <div key={skill.name} className={`skill-card card skill-card--${origin}`}>
+              <div key={skill.name} className={`skill-card card skill-card--${origin}`} data-testid={`skill-card-${skill.name}`}>
                 <div className="skill-card__header">
                   <span className="skill-card__verb badge badge--accent">/{skill.verb}</span>
                   <h3>{skill.name}</h3>
@@ -319,19 +319,20 @@ export default function Skills() {
                         className="btn btn--outline btn--sm"
                         disabled={contributing === skill.name}
                         onClick={() => contributeSkill(skill.name)}
+                        data-testid={`skill-contribute-${skill.name}`}
                       >
-                        {contributing === skill.name ? 'Loading...' : 'Contribute'}
+                        {contributing === skill.name ? '読み込み中...' : '貢献する'}
                       </button>
                     )}
                     {!skill.builtin && (
-                      <button className="btn btn--danger btn--sm" onClick={() => removeSkill(skill.name)}>Remove</button>
+                      <button className="btn btn--danger btn--sm" onClick={() => removeSkill(skill.name)} data-testid={`skill-remove-${skill.name}`}>削除</button>
                     )}
                   </div>
                 </div>
               </div>
             )
           })}
-          {installed.filter(s => s.installed).length === 0 && <p className="text-muted">No skills installed</p>}
+          {installed.filter(s => s.installed).length === 0 && <p className="text-muted" data-testid="skills-empty-state">インストール済みのスキルはありません</p>}
         </div>
       )}
 
@@ -345,9 +346,10 @@ export default function Skills() {
             </span>
             <input
               type="text"
-              placeholder="Search skills..."
+              placeholder="スキルを検索..."
               value={search}
               onChange={e => setSearch(e.target.value)}
+              data-testid="skills-search-input"
             />
           </div>
 
@@ -358,6 +360,7 @@ export default function Skills() {
                 key={f}
                 className={`store-pill${filter === f ? ' active' : ''}`}
                 onClick={() => setFilter(f)}
+                data-testid={`skills-filter-${f}`}
               >
                 {FILTER_LABELS[f]}
               </button>
@@ -367,7 +370,7 @@ export default function Skills() {
           {/* Filtered/search view */}
           {isSearching && (
             <>
-              {filteredSkills.length === 0 && <p className="store-empty">No skills match your search.</p>}
+              {filteredSkills.length === 0 && <p className="store-empty">条件に一致するスキルはありません。</p>}
               <div className="store-grid">
                 {filteredSkills.map(skill => (
                   <StoreCard key={skill.name} skill={skill} onInstall={installSkill} />
@@ -382,24 +385,24 @@ export default function Skills() {
               <FeaturedBanner skill={featuredSkill} onInstall={installSkill} />
 
               <StoreSection
-                title="Recommended"
-                subtitle="Curated skills to supercharge your agent"
+                title="おすすめ"
+                subtitle="エージェントを強化するキュレーション済みスキル"
                 skills={marketplaceData.recommended || []}
                 horizontal
                 onInstall={installSkill}
               />
 
               <StoreSection
-                title="Loved by your Agent"
-                subtitle="Most frequently used skills"
+                title="よく使うスキル"
+                subtitle="最も頻繁に使用されているスキル"
                 skills={marketplaceData.loved || []}
                 horizontal
                 onInstall={installSkill}
               />
 
               <StoreSection
-                title="Trending"
-                subtitle="Most actively maintained and updated"
+                title="トレンド"
+                subtitle="最も活発に更新されているスキル"
                 skills={marketplaceData.popular || []}
                 horizontal
                 onInstall={installSkill}
@@ -407,15 +410,15 @@ export default function Skills() {
 
               <StoreSection
                 title="GitHub Awesome Copilot"
-                subtitle="Community-curated from github/awesome-copilot"
+                subtitle="github/awesome-copilot からのコミュニティキュレーション"
                 skills={marketplaceData.github_awesome || []}
                 horizontal={false}
                 onInstall={installSkill}
               />
 
               <StoreSection
-                title="Anthropic Skills"
-                subtitle="Official skills from Anthropic"
+                title="Anthropic スキル"
+                subtitle="Anthropic 公式スキル"
                 skills={marketplaceData.anthropic || []}
                 horizontal={false}
                 onInstall={installSkill}
@@ -424,7 +427,7 @@ export default function Skills() {
               {!(marketplaceData.recommended?.length || marketplaceData.loved?.length ||
                  marketplaceData.popular?.length || marketplaceData.github_awesome?.length ||
                  marketplaceData.anthropic?.length) && (
-                <p className="store-empty">No skills available. Check your network connection or Foundry endpoint configuration.</p>
+                <p className="store-empty">スキルが見つかりません。ネットワーク接続または Foundry エンドポイント設定を確認してください。</p>
               )}
             </div>
           )}
@@ -434,13 +437,13 @@ export default function Skills() {
       {/* ── Contribute modal ─────────────────────────────────────────── */}
       {contributeData && (
         <div className="modal-overlay" onClick={() => setContributeData(null)}>
-          <div className="modal contribute-modal" onClick={e => e.stopPropagation()}>
+          <div className="modal contribute-modal" onClick={e => e.stopPropagation()} data-testid="skill-contribute-modal">
             <div className="modal__header">
-              <h2>Contribute: {contributeData.skill_name}</h2>
-              <button className="btn btn--ghost btn--sm" onClick={() => setContributeData(null)}>Close</button>
+              <h2>貢献: {contributeData.skill_name}</h2>
+              <button className="btn btn--ghost btn--sm" onClick={() => setContributeData(null)}>閉じる</button>
             </div>
             <p className="text-muted" style={{ marginBottom: 16 }}>
-              Fork the repo on GitHub, then create each file below. Click a file to copy its content and open GitHub.
+              GitHub でリポジトリを Fork し、以下の各ファイルを作成してください。ファイルをクリックすると内容をコピーして GitHub を開きます。
             </p>
             {contributeData.files.map(file => (
               <div key={file.path} className="contribute-file">
@@ -450,21 +453,21 @@ export default function Skills() {
                     className="btn btn--outline btn--sm"
                     onClick={e => copyAndOpen(file.content, file.github_url, e.currentTarget)}
                   >
-                    Copy &amp; Open on GitHub
+                    コピーして GitHub を開く
                   </button>
                 </div>
                 <pre className="contribute-file__content"><code>{file.content}</code></pre>
               </div>
             ))}
             <div className="contribute-steps">
-              <strong>Steps:</strong><br />
-              1. Fork the repo on GitHub (if you haven't already)<br />
-              2. Click <em>Copy &amp; Open on GitHub</em> for each file above<br />
-              3. Paste the content into the GitHub editor and commit<br />
-              4. Open a Pull Request from your fork
+              <strong>手順:</strong><br />
+              1. まだの場合は GitHub でリポジトリを Fork してください<br />
+              2. 各ファイルの<em>「コピーして GitHub を開く」</em>をクリック<br />
+              3. 内容を GitHub エディタに貼り付けてコミット<br />
+              4. Fork から Pull Request を作成
             </div>
             <div className="modal__footer">
-              <button className="btn btn--primary btn--sm" onClick={() => setContributeData(null)}>Done</button>
+              <button className="btn btn--primary btn--sm" onClick={() => setContributeData(null)}>完了</button>
             </div>
           </div>
         </div>
