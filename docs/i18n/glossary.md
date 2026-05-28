@@ -443,3 +443,158 @@ InfrastructureSettings.tsx は Azure / Bot / Monitoring / Memory / Voice の 5 �
   - **破棄 (Decommission)**: リソースグループ単位での退役 (Azure リソース自体を削除)
   - **削除 (Delete)**: アプリ内設定や個別エントリの削除
 
+
+## §14 ToolActivity (PR-2.8)
+
+ツール呼び出しの監査ログビューア (`pages/ToolActivity.tsx`) で用いる用語。
+
+### 状態・分類
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Tool Activity | ツールアクティビティ | ページ名 | — |
+| Audit Log | 監査ログ | 副題 | — |
+| Activity Log | アクティビティログ | tab 名 | — |
+| Live | ライブ | 自動更新 ON 表示 | — |
+| Tool Call | ツール呼び出し | エントリの単位 | — |
+| Call ID | 呼び出し ID | DetailModal で表示 | — |
+| Calls | 呼び出し数 | 統計ラベル | — |
+| Total Calls | 総呼び出し数 | RiskDashboard ラベル | — |
+| Flagged | フラグ済み | 状態 / 件数 / カウント | — |
+| Denied | 拒否 | guardrails 拒否済み | §7 既出 |
+| Sessions | セッション | 統計ラベル | §1 既出 |
+| Tools Used | 使用ツール数 | SessionsView 列 | — |
+| Max Risk | 最大リスク | SessionsView 列 | — |
+| Last Activity | 最終アクティビティ | SessionsView 列 | — |
+
+### 状態ラベル (statusLabel)
+
+| 内部値 | 表示値 | 注釈 |
+|---|---|---|
+| `started` | 開始 | 実行中 (§7) と区別 (こちらは「開始イベントが記録された」状態) |
+| `completed` | 完了 | §7 既出 |
+| `denied` | 拒否 | guardrails 介入で拒否 |
+| `error` | エラー | §7 既出 |
+
+> [!NOTE]
+> ToolActivity の「開始 (started)」は「処理開始時点で記録、完了未確認」を指します。Schedules / Memory Agent の「実行中 (Running)」は「現在進行中」を指します。両方の表示テキストは別物として扱います。
+
+### リスク評価
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Risk | リスク | 共通プレフィックス | — |
+| Risk Score | リスクスコア | RiskIndicator title | — |
+| Risk Assessment | リスク評価 | DetailModal セクション見出し | — |
+| Risk Factors | リスク要因 | (本文未表示・assessment 内のリスト見出し) | — |
+| High Risk | 高リスク | score >= 70 | — |
+| Medium Risk | 中リスク | score >= 30 | — |
+| Low Risk | 低リスク | score > 0 | — |
+| No Risk Detected | リスク検出なし | score == 0 | — |
+
+### 実行時間・パフォーマンス
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Duration | 実行時間 | 単一エントリの実行時間 | — |
+| Avg Duration | 平均実行時間 | 統計ラベル | — |
+| P95 Duration | P95 実行時間 | 統計ラベル | — |
+| Performance | パフォーマンス | BreakdownView セクション見出し | — |
+| Average | 平均 | パフォーマンスカード | — |
+| P95 | P95 | パフォーマンスカード (95 パーセンタイル、英語維持) | — |
+| Max | 最大 | パフォーマンスカード | — |
+
+### フィルター・グループ化
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Filter | フィルター | §11 既出 | — |
+| Search tools... | ツール名で検索... | placeholder | — |
+| All Categories | すべてのカテゴリ | dropdown | — |
+| All Statuses | すべての状態 | dropdown | — |
+| All Times | すべての期間 | dropdown | — |
+| Last 1h / 6h / 24h / 7d / 30d | 1 時間 / 6 時間 / 24 時間 / 7 日間 / 30 日間 | dropdown options | — |
+| All Models | すべてのモデル | dropdown | — |
+| All Interactions | すべての対話タイプ | dropdown | — |
+| Allow (auto) | 自動許可 | dropdown / interaction type | — |
+| Filter by session ID... | セッション ID で絞り込み... | placeholder | — |
+| No Grouping | グループ化なし | dropdown | — |
+| Group by Tool / Category / Session / Model / Status | ツール別 / カテゴリ別 / セッション別 / モデル別 / 状態別 | dropdown options | — |
+| Flagged only | フラグ済みのみ | checkbox | — |
+| Clear Filters | フィルターをクリア | アクションボタン | — |
+| N filter(s) active | N 件のフィルター適用中 | tabs バッジ | — |
+
+### 表・分析
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Time | 時刻 | テーブルヘッダ | — |
+| Tool | ツール | テーブルヘッダ / MetaRow ラベル | — |
+| Category | カテゴリ | テーブルヘッダ / MetaRow ラベル | — |
+| Model | モデル | テーブルヘッダ / MetaRow ラベル | — |
+| Status | 状態 | テーブルヘッダ / MetaRow ラベル | — |
+| ITL | ITL | テーブルヘッダ (略語のまま) | — |
+| Session | セッション | テーブルヘッダ / MetaRow ラベル | — |
+| Actions | 操作 | テーブルヘッダ | — |
+| Tool Call Detail | ツール呼び出しの詳細 | DetailModal タイトル | — |
+| Interaction | 対話 | MetaRow ラベル | — |
+| Timestamp | タイムスタンプ | MetaRow ラベル | — |
+| Arguments | 引数 | DetailModal セクション見出し | — |
+| Result | 結果 | DetailModal セクション見出し | — |
+| (none) | (なし) | formatJson 空表示 | — |
+
+### グループ化・タイムライン・内訳
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Activity Over Time | 時系列アクティビティ | TimelineView 見出し | — |
+| Tool Usage Distribution | ツール使用分布 | BreakdownView 見出し | — |
+| No tool usage recorded yet | ツール使用の記録はまだありません | empty hint | — |
+| Categories & Models | カテゴリとモデル | サイドパネル見出し | — |
+| Interaction Types | 対話タイプ | サイドパネル見出し | — |
+| Breakdown | 内訳 | BreakdownCompact 見出し | — |
+| Top Tools | 上位ツール | BreakdownCompact セクションラベル | — |
+| By Category | カテゴリ別 | BreakdownView セクション見出し | — |
+| By Status | 状態別 | BreakdownView セクション見出し | — |
+| By Model | モデル別 | BreakdownView セクション見出し | — |
+| No model data recorded yet | モデルの記録はまだありません | empty hint | — |
+| No timeline data yet | タイムラインデータはまだありません | empty hint | — |
+| Total | 合計 | TimelineView tooltip | — |
+| flagged | フラグ済み | tooltip / 列ラベル | §13 既出 |
+| (empty) / no value | (未指定) | GroupedView の空グループキー | — |
+| N call(s) | N 件 | GroupedView カウント | — |
+| N flagged | N 件フラグ済み | GroupedView バッジ | — |
+
+### アクション・状態
+
+| 英語 | 訳語 | 注釈 | 代替案 |
+|---|---|---|---|
+| Export CSV | CSV エクスポート | ページヘッダボタン | — |
+| Import from history | 履歴をインポート | ページヘッダボタン | — |
+| Importing... | インポート中... | ローディング表示 | — |
+| Import from existing sessions | 既存のセッションからインポート | EmptyState ボタン | — |
+| Flag Suspicious | 不審としてフラグ | DetailModal / row action | — |
+| Remove Flag | フラグを解除 | DetailModal / row action | — |
+| Manually flagged | 手動フラグ | デフォルトフラグ理由 | — |
+| Reason for flagging... | フラグ理由... | input placeholder | — |
+| Flag Reason | フラグ理由 | MetaRow label | — |
+| View session activity | セッションアクティビティを表示 | SessionsView アクション | — |
+| Previous / Next | 前へ / 次へ | ページネーション | — |
+| No tool activity found | ツールアクティビティが見つかりません | EmptyState タイトル | — |
+| Tool calls will appear here as the agent executes actions. | エージェントがアクションを実行するとここに表示されます。 | EmptyState 説明 | — |
+
+### 英語維持
+
+| 用語 | 理由 |
+|---|---|
+| SDK / MCP / Custom / Skill | カテゴリ識別子。dropdown 内部値と表示値の両方を英語維持。Category dropdown / Categories panel / TimelineCompact legend で一貫して英語表示 |
+| HITL / AITL / PITL / ITL | 業界用語の略語。「人間によるレビュー」等への直訳は冗長 |
+| Prompt Shields | Azure 製品名 (Microsoft Content Safety 機能) |
+| PITL (Experimental) → PITL (試験的) | 略語は英語維持、説明部分のみ JP 化 |
+
+### 設計判断
+
+- **内部状態値 vs 表示値の分離**: filter dropdown の `value=""` / `"sdk"` / `"hitl"` 等の **内部値は API consumer 互換のため英語維持**。`<option>` の表示テキストのみ JP 化。同様に status badge も内部キーを維持し、`statusLabel()` で JP 表示へマッピング (PR-2.7 で確立した規約を踏襲)。
+- **状態ラベル統一**: `statusLabel()` ヘルパで表示時に JP 化。`badge`, `chip`, `table cell`, `MetaRow`, `DetailModal` のいずれも同一マッピングを使用するため、状態表記の揺れが発生しない。
+- **PITL の試験的扱い**: 略語 PITL は「Person In The Loop」の意味。日本語化すると冗長 (「対人ループ介入 (試験的)」など) になるため、`PITL (試験的)` と注釈のみ JP 化。
+
