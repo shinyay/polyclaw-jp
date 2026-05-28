@@ -9,13 +9,13 @@ test.describe('MCP Servers page', () => {
 
   test('renders page title', async ({ page }) => {
     await page.goto('/mcp')
-    await expect(page.getByRole('heading', { name: 'MCP Servers' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'MCP サーバー' })).toBeVisible()
   })
 
   test('shows My Servers and Discover tabs', async ({ page }) => {
     await page.goto('/mcp')
-    await expect(page.getByRole('button', { name: 'My Servers' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Discover' })).toBeVisible()
+    await expect(page.getByTestId('mcp-tab-servers')).toBeVisible()
+    await expect(page.getByTestId('mcp-tab-discover')).toBeVisible()
   })
 
   test('lists configured servers', async ({ page }) => {
@@ -33,42 +33,42 @@ test.describe('MCP Servers page', () => {
 
   test('builtin server shows built-in badge', async ({ page }) => {
     await page.goto('/mcp')
-    await expect(page.getByText('built-in')).toBeVisible()
+    await expect(page.locator('.badge', { hasText: 'ビルトイン' })).toBeVisible()
   })
 
   test('disabled server shows disabled badge', async ({ page }) => {
     await page.goto('/mcp')
-    await expect(page.getByText('disabled')).toBeVisible()
+    await expect(page.locator('.badge--err', { hasText: '無効' })).toBeVisible()
   })
 
   test('Add Server button opens modal', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Add Server' }).click()
-    await expect(page.locator('.modal')).toBeVisible()
-    await expect(page.getByText('Add MCP Server')).toBeVisible()
+    await page.getByTestId('mcp-add-btn').click()
+    await expect(page.getByTestId('mcp-modal')).toBeVisible()
+    await expect(page.getByTestId('mcp-modal').getByRole('heading', { name: 'MCP サーバーを追加' })).toBeVisible()
   })
 
   test('add modal has name, type, and description fields', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Add Server' }).click()
-    await expect(page.locator('.modal').getByText('Name')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Type')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Description')).toBeVisible()
+    await page.getByTestId('mcp-add-btn').click()
+    await expect(page.getByTestId('mcp-form-name')).toBeVisible()
+    await expect(page.getByTestId('mcp-form-type')).toBeVisible()
+    await expect(page.getByTestId('mcp-form-description')).toBeVisible()
   })
 
   test('local type shows command and args fields', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Add Server' }).click()
-    await expect(page.locator('.modal').getByText('Command')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Arguments (one per line)')).toBeVisible()
+    await page.getByTestId('mcp-add-btn').click()
+    await expect(page.getByTestId('mcp-form-command')).toBeVisible()
+    await expect(page.getByTestId('mcp-form-args')).toBeVisible()
   })
 
   test('switching to HTTP type shows URL field', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Add Server' }).click()
-    await page.locator('.modal select.input').selectOption('http')
-    await expect(page.locator('.modal').getByText('URL')).toBeVisible()
-    await expect(page.locator('.modal').getByText('Command')).not.toBeVisible()
+    await page.getByTestId('mcp-add-btn').click()
+    await page.getByTestId('mcp-form-type').selectOption('http')
+    await expect(page.getByTestId('mcp-form-url')).toBeVisible()
+    await expect(page.getByTestId('mcp-form-command')).not.toBeVisible()
   })
 
   test('saving new server sends POST', async ({ page }) => {
@@ -81,29 +81,29 @@ test.describe('MCP Servers page', () => {
       return route.continue()
     })
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Add Server' }).click()
-    await page.locator('.modal input.input').first().fill('test-server')
-    await page.locator('.modal').getByRole('button', { name: 'Save' }).click()
+    await page.getByTestId('mcp-add-btn').click()
+    await page.getByTestId('mcp-form-name').fill('test-server')
+    await page.getByTestId('mcp-modal-save').click()
     expect(postCalled).toBe(true)
   })
 
   test('Discover tab shows registry entries', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Discover' }).click()
+    await page.getByTestId('mcp-tab-discover').click()
     await expect(page.getByText('GitHub MCP')).toBeVisible()
   })
 
   test('Discover tab has search input', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Discover' }).click()
-    await expect(page.getByPlaceholder('Search MCP servers...')).toBeVisible()
+    await page.getByTestId('mcp-tab-discover').click()
+    await expect(page.getByTestId('mcp-discover-search')).toBeVisible()
   })
 
   test('Discover tab has pagination', async ({ page }) => {
     await page.goto('/mcp')
-    await page.getByRole('button', { name: 'Discover' }).click()
-    await expect(page.getByText('Page 1')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Next' })).toBeVisible()
+    await page.getByTestId('mcp-tab-discover').click()
+    await expect(page.getByTestId('mcp-pagination-label')).toHaveText('1 ページ目')
+    await expect(page.getByTestId('mcp-pagination-next')).toBeVisible()
   })
 
   test('empty state when no servers', async ({ page }) => {
@@ -111,7 +111,7 @@ test.describe('MCP Servers page', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ servers: [] }) }),
     )
     await page.goto('/mcp')
-    await expect(page.getByText('No MCP servers configured')).toBeVisible()
+    await expect(page.getByTestId('mcp-empty-state')).toBeVisible()
   })
 })
 
