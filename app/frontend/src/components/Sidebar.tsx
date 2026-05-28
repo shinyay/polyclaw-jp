@@ -8,17 +8,17 @@ interface Props {
 }
 
 const NAV_ITEMS = [
-  { to: '/chat', icon: '💬', label: 'Chat' },
-  { to: '/sessions', icon: '📋', label: 'Sessions' },
-  { to: '/skills', icon: '⚡', label: 'Skills' },
-  { to: '/plugins', icon: '🧩', label: 'Plugins' },
-  { to: '/mcp', icon: '🔌', label: 'MCP Servers' },
-  { to: '/schedules', icon: '📅', label: 'Schedules' },
-  { to: '/profile', icon: '👤', label: 'Profile' },
-  { to: '/messaging', icon: '✉️', label: 'AI Model' },
-  { to: '/infrastructure', icon: '🏗️', label: 'Infrastructure' },
-  { to: '/guardrails', icon: '🛡️', label: 'Hardening' },
-  { to: '/tool-activity', icon: '🔍', label: 'Tool Activity' },
+  { to: '/chat', icon: '💬', label: 'チャット' },
+  { to: '/sessions', icon: '📋', label: 'セッション' },
+  { to: '/skills', icon: '⚡', label: 'スキル' },
+  { to: '/plugins', icon: '🧩', label: 'プラグイン' },
+  { to: '/mcp', icon: '🔌', label: 'MCP サーバー' },
+  { to: '/schedules', icon: '📅', label: 'スケジュール' },
+  { to: '/profile', icon: '👤', label: 'プロファイル' },
+  { to: '/messaging', icon: '✉️', label: 'AI モデル' },
+  { to: '/infrastructure', icon: '🏗️', label: 'インフラ' },
+  { to: '/guardrails', icon: '🛡️', label: 'ハードニング' },
+  { to: '/tool-activity', icon: '🔍', label: 'ツールアクティビティ' },
 ]
 
 export default function Sidebar({ status, collapsed, onToggle }: Props) {
@@ -28,7 +28,7 @@ export default function Sidebar({ status, collapsed, onToggle }: Props) {
         <button
           className="sidebar__toggle"
           onClick={onToggle}
-          title={collapsed ? 'Expand' : 'Collapse'}
+          title={collapsed ? '展開' : '折りたたみ'}
           data-testid="sidebar-toggle"
         >
           {collapsed ? '▸' : '◂'}
@@ -60,8 +60,8 @@ export default function Sidebar({ status, collapsed, onToggle }: Props) {
         <div className="sidebar__status">
           <StatusDot ok={status.azure?.logged_in} label="Azure" />
           <StatusDot ok={status.foundry?.deployed} label="Foundry" />
-          <StatusDot ok={status.tunnel?.active} label="Tunnel" />
-          <StatusDot ok={status.bot_configured} label="Bot" />
+          <StatusDot ok={status.tunnel?.active} label="トンネル" />
+          <StatusDot ok={status.bot_configured} label="ボット" />
         </div>
       )}
     </aside>
@@ -70,7 +70,7 @@ export default function Sidebar({ status, collapsed, onToggle }: Props) {
 
 function StatusDot({ ok, label }: { ok?: boolean; label: string }) {
   return (
-    <div className="status-dot" title={`${label}: ${ok ? 'OK' : 'Not configured'}`}>
+    <div className="status-dot" title={`${label}: ${ok ? '正常' : '未設定'}`}>
       <span className={`status-dot__indicator ${ok ? 'status-dot__indicator--ok' : 'status-dot__indicator--err'}`} />
       <span className="status-dot__label">{label}</span>
     </div>

@@ -16,13 +16,13 @@ export default function LoginOverlay({ onLogin }: Props) {
     <div className="login-overlay">
       <div className="login-card">
         <img src="/logo.png" alt="polyclaw" className="login-card__logo" />
-        <p className="login-card__subtitle">Enter your admin secret to continue</p>
+        <p className="login-card__subtitle">続行するには管理者シークレットを入力してください</p>
         <form onSubmit={handleSubmit} className="login-card__form">
           <input
             type="password"
             value={secret}
             onChange={e => setSecret(e.target.value)}
-            placeholder="Admin secret"
+            placeholder="管理者シークレット"
             className="input"
             autoFocus
             data-testid="login-input-secret"
@@ -33,7 +33,7 @@ export default function LoginOverlay({ onLogin }: Props) {
             disabled={!secret.trim()}
             data-testid="login-button-submit"
           >
-            Sign In
+            サインイン
           </button>
         </form>
       </div>

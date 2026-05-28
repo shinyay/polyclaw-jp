@@ -87,13 +87,13 @@ export default function MockReasoningPanel({ feedReasoning, clearReasoning, tick
   return (
     <div className="mock-panel">
       <div className="mock-panel__header">
-        <span className="mock-panel__title">Reasoning Ticker Lab</span>
-        <button className="mock-panel__stop" onClick={stop}>Stop</button>
+        <span className="mock-panel__title">推論ティッカー検証パネル</span>
+        <button className="mock-panel__stop" onClick={stop}>停止</button>
       </div>
 
       {/* Mode selector */}
       <div className="mock-panel__section">
-        <span className="mock-panel__label">Visual Mode</span>
+        <span className="mock-panel__label">表示モード</span>
         <div className="mock-panel__modes">
           {modes.map((m, i) => (
             <button
@@ -111,7 +111,7 @@ export default function MockReasoningPanel({ feedReasoning, clearReasoning, tick
 
       {/* Scenario buttons */}
       <div className="mock-panel__section">
-        <span className="mock-panel__label">Test Scenarios</span>
+        <span className="mock-panel__label">テストシナリオ</span>
         <div className="mock-panel__grid">
           {SCENARIOS.map((s) => (
             <button

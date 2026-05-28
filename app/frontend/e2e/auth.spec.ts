@@ -9,7 +9,7 @@ test.describe('Disclaimer gate', () => {
   test('shows disclaimer on first visit', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('.disclaimer-card')).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Technology Demonstrator' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: '技術デモンストレーター' })).toBeVisible()
   })
 
   test('accept button is disabled until checkbox is checked', async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe('Disclaimer gate', () => {
     await page.locator('.disclaimer-card .btn--primary').click()
 
     await expect(page.locator('.login-card')).toBeVisible()
-    await expect(page.getByPlaceholder('Admin secret')).toBeVisible()
+    await expect(page.getByPlaceholder('管理者シークレット')).toBeVisible()
   })
 
   test('disclaimer is skipped after accepting', async ({ page }) => {

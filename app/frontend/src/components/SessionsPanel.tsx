@@ -27,18 +27,18 @@ export default function SessionsPanel({ open, onClose }: Props) {
   return (
     <aside className={`panel ${open ? '' : 'panel--hidden'}`}>
       <div className="panel__header">
-        <span className="panel__title">Recent Sessions</span>
+        <span className="panel__title">最近のセッション</span>
         <button
           className="btn btn--ghost btn--sm"
           onClick={() => { navigate('/chat'); onClose() }}
-          title="New chat"
+          title="新規チャット"
         >
           <IconPlus width={14} height={14} />
         </button>
       </div>
       <div className="panel__list">
         {sessions.length === 0 && (
-          <p style={{ padding: '16px', fontSize: 12, color: 'var(--text-3)' }}>No sessions yet</p>
+          <p style={{ padding: '16px', fontSize: 12, color: 'var(--text-3)' }}>セッションはまだありません</p>
         )}
         {sessions.map(s => (
           <button
@@ -47,12 +47,12 @@ export default function SessionsPanel({ open, onClose }: Props) {
             onClick={() => goSession(s.id)}
           >
             <span className="panel__item-preview">
-              {s.title || 'Empty session'}
+              {s.title || '空のセッション'}
             </span>
             <span className="panel__item-meta">
               <span>{s.model}</span>
               <span>{formatTime(s.created_at)}</span>
-              <span>{s.message_count} msgs</span>
+              <span>{s.message_count} 件</span>
             </span>
           </button>
         ))}
@@ -64,7 +64,7 @@ export default function SessionsPanel({ open, onClose }: Props) {
           style={{ width: '100%', justifyContent: 'center' }}
         >
           <IconClock width={14} height={14} />
-          <span>All Sessions</span>
+          <span>すべてのセッション</span>
         </button>
       </div>
     </aside>
@@ -79,13 +79,13 @@ function formatTime(ts: number | string): string {
     if (isNaN(d.getTime())) return String(ts)
     const now = Date.now()
     const diffS = Math.floor((now - d.getTime()) / 1000)
-    if (diffS < 60) return 'just now'
+    if (diffS < 60) return 'たった今'
     const diffM = Math.floor(diffS / 60)
-    if (diffM < 60) return `${diffM}m ago`
+    if (diffM < 60) return `${diffM} 分前`
     const diffH = Math.floor(diffM / 60)
-    if (diffH < 24) return `${diffH}h ago`
+    if (diffH < 24) return `${diffH} 時間前`
     const diffD = Math.floor(diffH / 24)
-    if (diffD < 7) return `${diffD}d ago`
+    if (diffD < 7) return `${diffD} 日前`
     return d.toLocaleDateString()
   } catch { return String(ts) }
 }

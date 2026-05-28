@@ -1,33 +1,33 @@
 id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
-1,frontend,app/frontend/src/components/Disclaimer.tsx,29,This software is a technology demonstrator and is not intended for continuous or production use.,,pending,,
-2,frontend,app/frontend/src/components/Disclaimer.tsx,31,High-autonomy agent.,,pending,,
-3,frontend,app/frontend/src/components/Disclaimer.tsx,31,"This system deploys an AI agent with high autonomy and elevated authorization levels. It can execute code, create and delete cloud resources, send messages, access APIs, push code, and make consequential decisions on your behalf &mdash; without further confirmation.",,pending,,
-4,frontend,app/frontend/src/components/Disclaimer.tsx,32,Sandbox environments only.,,pending,,
-5,frontend,app/frontend/src/components/Disclaimer.tsx,32,Only run against sandbox Azure subscriptions and disposable GitHub accounts.,,pending,,
-6,frontend,app/frontend/src/components/Disclaimer.tsx,33,Potential for damage.,,pending,,
-7,frontend,app/frontend/src/components/Disclaimer.tsx,33,"The agent may take destructive or irreversible actions including deleting resources, sending unintended messages, pushing code, incurring cloud costs, exhausting API quotas, or exposing credentials.",,pending,,
-8,frontend,app/frontend/src/components/Disclaimer.tsx,34,No warranty.,,pending,,
-9,frontend,app/frontend/src/components/Disclaimer.tsx,34,"Provided under the MIT License, &quot;as is&quot;, without warranty of any kind.",,pending,,
-10,frontend,app/frontend/src/components/Disclaimer.tsx,40,I acknowledge the risks and accept full responsibility,,pending,,
-11,frontend,app/frontend/src/components/LoginOverlay.tsx,18,polyclaw,,pending,,
-12,frontend,app/frontend/src/components/LoginOverlay.tsx,19,Enter your admin secret to continue,,pending,,
-13,frontend,app/frontend/src/components/LoginOverlay.tsx,25,Admin secret,,pending,,
-14,frontend,app/frontend/src/components/SessionsPanel.tsx,30,Recent Sessions,,pending,,
-15,frontend,app/frontend/src/components/SessionsPanel.tsx,34,New chat,,pending,,
-16,frontend,app/frontend/src/components/SessionsPanel.tsx,41,No sessions yet,,pending,,
-17,frontend,app/frontend/src/components/SessionsPanel.tsx,67,All Sessions,,pending,,
-18,frontend,app/frontend/src/components/TopBar.tsx,49,Toggle sessions,,pending,,
-19,frontend,app/frontend/src/components/TopBar.tsx,53,polyclaw,,pending,,
-20,frontend,app/frontend/src/components/MockReasoningPanel.tsx,90,Reasoning Ticker Lab,,pending,,
-21,frontend,app/frontend/src/components/MockReasoningPanel.tsx,91,Stop,,pending,,
-22,frontend,app/frontend/src/components/MockReasoningPanel.tsx,96,Visual Mode,,pending,,
-23,frontend,app/frontend/src/components/MockReasoningPanel.tsx,114,Test Scenarios,,pending,,
-24,frontend,app/frontend/src/components/Sidebar.tsx,33,Polyclaw,,pending,,
-25,frontend,app/frontend/src/components/Sidebar.tsx,34,Polyclaw,,pending,,
-26,frontend,app/frontend/src/components/Sidebar.tsx,55,Azure,,pending,,
-27,frontend,app/frontend/src/components/Sidebar.tsx,56,Foundry,,pending,,
-28,frontend,app/frontend/src/components/Sidebar.tsx,57,Tunnel,,pending,,
-29,frontend,app/frontend/src/components/Breadcrumb.tsx,14,navigate(parentPath)}>{parentLabel},,pending,,
+1,frontend,app/frontend/src/components/Disclaimer.tsx,29,This software is a technology demonstrator and is not intended for continuous or production use.,本ソフトウェアは技術デモンストレーターであり、継続利用や本番運用を想定していません。,approved,PR-2.1,PR-2.1: common components translated
+2,frontend,app/frontend/src/components/Disclaimer.tsx,31,High-autonomy agent.,高自律エージェント。,approved,PR-2.1,PR-2.1: common components translated
+3,frontend,app/frontend/src/components/Disclaimer.tsx,31,"This system deploys an AI agent with high autonomy and elevated authorization levels. It can execute code, create and delete cloud resources, send messages, access APIs, push code, and make consequential decisions on your behalf &mdash; without further confirmation.",本システムは高い自律性と昇格された権限レベルで AI エージェントを展開します。事前確認なしに、コード実行・クラウドリソースの作成と削除・メッセージ送信・API アクセス・コードプッシュなど、重大な意思決定をユーザーに代わって行えます。,approved,PR-2.1,PR-2.1: common components translated
+4,frontend,app/frontend/src/components/Disclaimer.tsx,32,Sandbox environments only.,サンドボックス環境専用。,approved,PR-2.1,PR-2.1: common components translated
+5,frontend,app/frontend/src/components/Disclaimer.tsx,32,Only run against sandbox Azure subscriptions and disposable GitHub accounts.,サンドボックス用 Azure サブスクリプションと使い捨て GitHub アカウントに対してのみ実行してください。,approved,PR-2.1,PR-2.1: common components translated
+6,frontend,app/frontend/src/components/Disclaimer.tsx,33,Potential for damage.,損害発生の可能性。,approved,PR-2.1,PR-2.1: common components translated
+7,frontend,app/frontend/src/components/Disclaimer.tsx,33,"The agent may take destructive or irreversible actions including deleting resources, sending unintended messages, pushing code, incurring cloud costs, exhausting API quotas, or exposing credentials.",エージェントはリソースの削除、意図しないメッセージ送信、コードプッシュ、クラウド費用の発生、API クォータの枯渇、認証情報の漏洩など、破壊的または取り消し不可能な操作を行う可能性があります。,approved,PR-2.1,PR-2.1: common components translated
+8,frontend,app/frontend/src/components/Disclaimer.tsx,34,No warranty.,無保証。,approved,PR-2.1,PR-2.1: common components translated
+9,frontend,app/frontend/src/components/Disclaimer.tsx,34,"Provided under the MIT License, &quot;as is&quot;, without warranty of any kind.",MIT ライセンスの下で「現状有姿」で提供され、いかなる保証もありません。,approved,PR-2.1,PR-2.1: common components translated
+10,frontend,app/frontend/src/components/Disclaimer.tsx,40,I acknowledge the risks and accept full responsibility,リスクを認識し、本ソフトウェアの使用と影響について全責任を負うことに同意します,approved,PR-2.1,PR-2.1: common components translated
+11,frontend,app/frontend/src/components/LoginOverlay.tsx,18,polyclaw,polyclaw,approved,PR-2.1,PR-2.1: common components translated
+12,frontend,app/frontend/src/components/LoginOverlay.tsx,19,Enter your admin secret to continue,続行するには管理者シークレットを入力してください,approved,PR-2.1,PR-2.1: common components translated
+13,frontend,app/frontend/src/components/LoginOverlay.tsx,25,Admin secret,管理者シークレット,approved,PR-2.1,PR-2.1: common components translated
+14,frontend,app/frontend/src/components/SessionsPanel.tsx,30,Recent Sessions,最近のセッション,approved,PR-2.1,PR-2.1: common components translated
+15,frontend,app/frontend/src/components/SessionsPanel.tsx,34,New chat,新規チャット,approved,PR-2.1,PR-2.1: common components translated
+16,frontend,app/frontend/src/components/SessionsPanel.tsx,41,No sessions yet,セッションはまだありません,approved,PR-2.1,PR-2.1: common components translated
+17,frontend,app/frontend/src/components/SessionsPanel.tsx,67,All Sessions,すべてのセッション,approved,PR-2.1,PR-2.1: common components translated
+18,frontend,app/frontend/src/components/TopBar.tsx,49,Toggle sessions,セッションパネル切替,approved,PR-2.1,PR-2.1: common components translated
+19,frontend,app/frontend/src/components/TopBar.tsx,53,polyclaw,polyclaw,approved,PR-2.1,PR-2.1: common components translated
+20,frontend,app/frontend/src/components/MockReasoningPanel.tsx,90,Reasoning Ticker Lab,推論ティッカー検証パネル,approved,PR-2.1,PR-2.1: common components translated
+21,frontend,app/frontend/src/components/MockReasoningPanel.tsx,91,Stop,停止,approved,PR-2.1,PR-2.1: common components translated
+22,frontend,app/frontend/src/components/MockReasoningPanel.tsx,96,Visual Mode,表示モード,approved,PR-2.1,PR-2.1: common components translated
+23,frontend,app/frontend/src/components/MockReasoningPanel.tsx,114,Test Scenarios,テストシナリオ,approved,PR-2.1,PR-2.1: common components translated
+24,frontend,app/frontend/src/components/Sidebar.tsx,33,Polyclaw,Polyclaw,approved,PR-2.1,PR-2.1: common components translated
+25,frontend,app/frontend/src/components/Sidebar.tsx,34,Polyclaw,Polyclaw,approved,PR-2.1,PR-2.1: common components translated
+26,frontend,app/frontend/src/components/Sidebar.tsx,55,Azure,Azure,approved,PR-2.1,PR-2.1: common components translated
+27,frontend,app/frontend/src/components/Sidebar.tsx,56,Foundry,Foundry,approved,PR-2.1,PR-2.1: common components translated
+28,frontend,app/frontend/src/components/Sidebar.tsx,57,Tunnel,トンネル,approved,PR-2.1,PR-2.1: common components translated
+29,frontend,app/frontend/src/components/Breadcrumb.tsx,14,navigate(parentPath)}>{parentLabel},"デフォルト parentLabel=""設定"" として翻訳。実行時値は呼び出し元依存",approved,PR-2.1,PR-2.1: common components translated
 30,frontend,app/frontend/src/api.ts,62,Unauthorized,,pending,,
 31,frontend,app/frontend/src/pages/ToolActivity.tsx,307,Tool Activity,,pending,,
 32,frontend,app/frontend/src/pages/ToolActivity.tsx,316,Live,,pending,,

@@ -7,7 +7,7 @@ interface BreadcrumbProps {
 }
 
 /** Parent > Current Page breadcrumb for sub-pages accessible from a hub page. */
-export default function Breadcrumb({ current, parentPath = '/settings', parentLabel = 'Settings' }: BreadcrumbProps) {
+export default function Breadcrumb({ current, parentPath = '/settings', parentLabel = '設定' }: BreadcrumbProps) {
   const navigate = useNavigate()
   return (
     <nav className="breadcrumb">

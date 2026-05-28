@@ -9,12 +9,12 @@ interface Props {
 }
 
 const LINKS = [
-  { path: '/customization', label: 'Customization', Icon: IconPalette },
-  { path: '/messaging', label: 'AI Model', Icon: IconSliders },
-  { path: '/infrastructure', label: 'Infrastructure', Icon: IconSliders },
-  { path: '/guardrails', label: 'Hardening', Icon: IconShield },
-  { path: '/tool-activity', label: 'Tool Activity', Icon: IconActivity },
-  { path: '/profile', label: 'Agent Profile', Icon: IconUser },
+  { path: '/customization', label: 'カスタマイズ', Icon: IconPalette },
+  { path: '/messaging', label: 'AI モデル', Icon: IconSliders },
+  { path: '/infrastructure', label: 'インフラ', Icon: IconSliders },
+  { path: '/guardrails', label: 'ハードニング', Icon: IconShield },
+  { path: '/tool-activity', label: 'ツールアクティビティ', Icon: IconActivity },
+  { path: '/profile', label: 'エージェントプロファイル', Icon: IconUser },
 ] as const
 
 export default function TopBar({ onTogglePanel }: Props) {
@@ -49,7 +49,7 @@ export default function TopBar({ onTogglePanel }: Props) {
         <button
           className="topbar__toggle"
           onClick={onTogglePanel}
-          title="Toggle sessions"
+          title="セッションパネル切替"
           data-testid="topbar-toggle-panel"
         >
           <IconPanelLeft />
