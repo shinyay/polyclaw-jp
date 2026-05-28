@@ -304,23 +304,23 @@ export default function ToolActivity() {
       <div className="page__header">
         <div className="ta__page-title-row">
           <div>
-            <h1>Tool Activity</h1>
+            <h1>ツールアクティビティ</h1>
             <p className="page__subtitle">
-              Audit and inspect tool calls, HITL/AITL/PITL interactions, MCP invocations, and model activity across sessions.
+              ツール呼び出し、HITL/AITL/PITL 対話、MCP 呼び出し、各セッションのモデルアクティビティを監査・確認します。
             </p>
           </div>
           <div className="ta__page-actions">
-            <label className="ta__auto-refresh">
+            <label className="ta__auto-refresh" data-testid="ta-auto-refresh">
               <input type="checkbox" checked={autoRefresh} onChange={e => setAutoRefresh(e.target.checked)} />
               <span className={`ta__auto-refresh-dot ${autoRefresh ? 'ta__auto-refresh-dot--active' : ''}`} />
-              <span>Live</span>
+              <span>ライブ</span>
             </label>
-            <button className="btn btn--sm btn--outline ta__btn-export" onClick={handleExport} title="Export filtered data as CSV">
+            <button className="btn btn--sm btn--outline ta__btn-export" onClick={handleExport} title="フィルター適用済みデータを CSV としてエクスポート" data-testid="ta-export-btn">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12zm-5 2h10v1H3v-1z"/></svg>
-              Export CSV
+              CSV エクスポート
             </button>
-            <button className="btn btn--sm btn--outline" onClick={handleImport} disabled={importing}>
-              {importing ? 'Importing...' : 'Import History'}
+            <button className="btn btn--sm btn--outline" onClick={handleImport} disabled={importing} data-testid="ta-import-btn">
+              {importing ? 'インポート中...' : '履歴をインポート'}
             </button>
           </div>
         </div>
@@ -375,15 +375,16 @@ export default function ToolActivity() {
             key={t}
             className={`ta__tab ${tab === t ? 'ta__tab--active' : ''}`}
             onClick={() => setTab(t)}
+            data-testid={`ta-tab-${t}`}
           >
-            {t === 'log' && 'Activity Log'}
-            {t === 'sessions' && 'Sessions'}
+            {t === 'log' && 'アクティビティログ'}
+            {t === 'sessions' && 'セッション'}
             {t === 'log' && total > 0 && <span className="ta__tab-badge">{total}</span>}
             {t === 'sessions' && sessions.length > 0 && <span className="ta__tab-badge">{sessions.length}</span>}
           </button>
         ))}
         {activeFilterCount > 0 && (
-          <span className="ta__active-filters-badge">{activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} active</span>
+          <span className="ta__active-filters-badge" data-testid="ta-active-filters-badge">{activeFilterCount} 件のフィルター適用中</span>
         )}
       </div>
 
@@ -432,14 +433,14 @@ export default function ToolActivity() {
 
           {total > limit && (
             <div className="ta__pagination">
-              <button className="btn btn--sm btn--outline" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - limit))}>
-                Previous
+              <button className="btn btn--sm btn--outline" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - limit))} data-testid="ta-pagination-prev">
+                前へ
               </button>
               <span className="ta__pagination-info">
-                Showing <strong>{offset + 1}</strong>--<strong>{Math.min(offset + limit, total)}</strong> of <strong>{total}</strong>
+                <strong>{offset + 1}</strong>~<strong>{Math.min(offset + limit, total)}</strong> / 全 <strong>{total}</strong> 件
               </span>
-              <button className="btn btn--sm btn--outline" disabled={offset + limit >= total} onClick={() => setOffset(offset + limit)}>
-                Next
+              <button className="btn btn--sm btn--outline" disabled={offset + limit >= total} onClick={() => setOffset(offset + limit)} data-testid="ta-pagination-next">
+                次へ
               </button>
             </div>
           )}
@@ -491,25 +492,25 @@ function RiskDashboard({ summary, onFilterCategory, onFilterFlagged, onFilterDen
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M6 2a2 2 0 00-2 2v8a2 2 0 002 2h4a2 2 0 002-2V4a2 2 0 00-2-2H6zm0 1h4a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/></svg>
           </div>
           <div className="ta__stat-value">{summary.total.toLocaleString()}</div>
-          <div className="ta__stat-label">Total Calls</div>
+          <div className="ta__stat-label">総呼び出し数</div>
         </div>
 
         <button className={`card ta__stat-card ta__stat-card--clickable ${summary.flagged > 0 ? 'ta__stat-card--danger' : ''}`}
-          onClick={onFilterFlagged}>
+          onClick={onFilterFlagged} data-testid="ta-stat-flagged">
           <div className="ta__stat-icon ta__stat-icon--flagged">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 1v14h1V9h8l-2-4 2-4h-9z"/></svg>
           </div>
           <div className="ta__stat-value">{summary.flagged}</div>
-          <div className="ta__stat-label">Flagged</div>
+          <div className="ta__stat-label">フラグ済み</div>
         </button>
 
         <button className={`card ta__stat-card ta__stat-card--clickable ${deniedCount > 0 ? 'ta__stat-card--warn' : ''}`}
-          onClick={onFilterDenied}>
+          onClick={onFilterDenied} data-testid="ta-stat-denied">
           <div className="ta__stat-icon ta__stat-icon--denied">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 1.2a5.8 5.8 0 014.1 9.9L3.9 3.9A5.77 5.77 0 018 2.2zm0 11.6a5.8 5.8 0 01-4.1-9.9l8.2 8.2A5.77 5.77 0 018 13.8z"/></svg>
           </div>
           <div className="ta__stat-value">{deniedCount}</div>
-          <div className="ta__stat-label">Denied</div>
+          <div className="ta__stat-label">拒否</div>
         </button>
 
         <div className="card ta__stat-card">
@@ -517,7 +518,7 @@ function RiskDashboard({ summary, onFilterCategory, onFilterFlagged, onFilterDen
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 1a6 6 0 110 12A6 6 0 018 2zm-.5 2v5h4V8h-3V4h-1z"/></svg>
           </div>
           <div className="ta__stat-value">{summary.sessions_with_activity}</div>
-          <div className="ta__stat-label">Sessions</div>
+          <div className="ta__stat-label">セッション</div>
         </div>
 
         <div className="card ta__stat-card">
@@ -525,7 +526,7 @@ function RiskDashboard({ summary, onFilterCategory, onFilterFlagged, onFilterDen
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a6 6 0 100 12A6 6 0 008 2zM1 8a7 7 0 1114 0A7 7 0 011 8zm7-3v3.5l2.5 1.5-.5.87L7 9V5h1z"/></svg>
           </div>
           <div className="ta__stat-value">{summary.avg_duration_ms > 0 ? formatDuration(summary.avg_duration_ms) : '--'}</div>
-          <div className="ta__stat-label">Avg Duration</div>
+          <div className="ta__stat-label">平均実行時間</div>
         </div>
 
         <div className="card ta__stat-card">
@@ -533,30 +534,30 @@ function RiskDashboard({ summary, onFilterCategory, onFilterFlagged, onFilterDen
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM2 8a6 6 0 1112 0A6 6 0 012 8zm5.5-4v4.7l3.1 1.8-.5.9L6.5 9V4h1z"/></svg>
           </div>
           <div className="ta__stat-value">{summary.p95_duration_ms > 0 ? formatDuration(summary.p95_duration_ms) : '--'}</div>
-          <div className="ta__stat-label">P95 Duration</div>
+          <div className="ta__stat-label">P95 実行時間</div>
         </div>
 
         {/* Risk distribution inline */}
         <div className="card ta__stat-card ta__stat-card--risk">
           <div className="ta__risk-inline-header">
-            <span className="ta__risk-inline-title">Risk</span>
+            <span className="ta__risk-inline-title">リスク</span>
             <span className="ta__risk-inline-total">{riskTotal}</span>
           </div>
           <div className="ta__risk-bar ta__risk-bar--inline">
             {summary.risk_high > 0 && (
               <div className="ta__risk-bar-seg ta__risk-bar-seg--high"
                 style={{ width: `${riskPct(summary.risk_high)}%` }}
-                title={`High: ${summary.risk_high}`} />
+                title={`高: ${summary.risk_high}`} />
             )}
             {summary.risk_medium > 0 && (
               <div className="ta__risk-bar-seg ta__risk-bar-seg--medium"
                 style={{ width: `${riskPct(summary.risk_medium)}%` }}
-                title={`Medium: ${summary.risk_medium}`} />
+                title={`中: ${summary.risk_medium}`} />
             )}
             {summary.risk_low > 0 && (
               <div className="ta__risk-bar-seg ta__risk-bar-seg--low"
                 style={{ width: `${riskPct(summary.risk_low)}%` }}
-                title={`Low: ${summary.risk_low}`} />
+                title={`低: ${summary.risk_low}`} />
             )}
             {riskTotal === 0 && <div className="ta__risk-bar-seg ta__risk-bar-seg--empty" style={{ width: '100%' }} />}
           </div>
@@ -611,74 +612,76 @@ function FilterBar(p: FilterBarProps) {
           <input
             className="input ta__filter-input ta__filter-input--search"
             type="text"
-            placeholder="Search tool name..."
+            placeholder="ツール名で検索..."
             value={p.filterTool}
             onChange={e => p.onFilterTool(e.target.value)}
+            data-testid="ta-filter-tool"
           />
         </div>
-        <select className="input ta__filter-select" value={p.filterCategory} onChange={e => p.onFilterCategory(e.target.value)}>
-          <option value="">All Categories</option>
+        <select className="input ta__filter-select" value={p.filterCategory} onChange={e => p.onFilterCategory(e.target.value)} data-testid="ta-filter-category">
+          <option value="">すべてのカテゴリ</option>
           <option value="sdk">SDK</option>
           <option value="custom">Custom</option>
           <option value="mcp">MCP</option>
           <option value="skill">Skill</option>
         </select>
-        <select className="input ta__filter-select" value={p.filterStatus} onChange={e => p.onFilterStatus(e.target.value)}>
-          <option value="">All Statuses</option>
-          <option value="started">Started</option>
-          <option value="completed">Completed</option>
-          <option value="denied">Denied</option>
-          <option value="error">Error</option>
+        <select className="input ta__filter-select" value={p.filterStatus} onChange={e => p.onFilterStatus(e.target.value)} data-testid="ta-filter-status">
+          <option value="">すべての状態</option>
+          <option value="started">開始</option>
+          <option value="completed">完了</option>
+          <option value="denied">拒否</option>
+          <option value="error">エラー</option>
         </select>
-        <select className="input ta__filter-select" value={p.filterTimeRange} onChange={e => p.onFilterTimeRange(e.target.value)}>
-          <option value="">All Time</option>
-          <option value="1h">Last Hour</option>
-          <option value="6h">Last 6 Hours</option>
-          <option value="24h">Last 24 Hours</option>
-          <option value="7d">Last 7 Days</option>
-          <option value="30d">Last 30 Days</option>
+        <select className="input ta__filter-select" value={p.filterTimeRange} onChange={e => p.onFilterTimeRange(e.target.value)} data-testid="ta-filter-time">
+          <option value="">すべての期間</option>
+          <option value="1h">過去 1 時間</option>
+          <option value="6h">過去 6 時間</option>
+          <option value="24h">過去 24 時間</option>
+          <option value="7d">過去 7 日間</option>
+          <option value="30d">過去 30 日間</option>
         </select>
-        <select className="input ta__filter-select" value={p.filterModel} onChange={e => p.onFilterModel(e.target.value)}>
-          <option value="">All Models</option>
+        <select className="input ta__filter-select" value={p.filterModel} onChange={e => p.onFilterModel(e.target.value)} data-testid="ta-filter-model">
+          <option value="">すべてのモデル</option>
           {p.availableModels.map(m => (
             <option key={m} value={m}>{m}</option>
           ))}
         </select>
-        <select className="input ta__filter-select" value={p.filterInteractionType} onChange={e => p.onFilterInteractionType(e.target.value)}>
-          <option value="">All Interactions</option>
-          <option value="allow">Allow (auto)</option>
+        <select className="input ta__filter-select" value={p.filterInteractionType} onChange={e => p.onFilterInteractionType(e.target.value)} data-testid="ta-filter-interaction">
+          <option value="">すべての対話タイプ</option>
+          <option value="allow">自動許可</option>
           <option value="hitl">HITL</option>
           <option value="aitl">AITL</option>
-          <option value="pitl">PITL (Experimental)</option>
+          <option value="pitl">PITL (試験的)</option>
           <option value="filter">Prompt Shields</option>
-          <option value="deny">Denied</option>
+          <option value="deny">拒否</option>
         </select>
       </div>
       <div className="ta__filter-row">
         <input
           className="input ta__filter-input"
           type="text"
-          placeholder="Filter by session ID..."
+          placeholder="セッション ID で絞り込み..."
           value={p.filterSession}
           onChange={e => p.onFilterSession(e.target.value)}
+          data-testid="ta-filter-session"
         />
-        <select className="input ta__filter-select" value={p.groupBy} onChange={e => p.onGroupBy(e.target.value as GroupBy)}>
-          <option value="none">No Grouping</option>
-          <option value="tool">Group by Tool</option>
-          <option value="category">Group by Category</option>
-          <option value="session">Group by Session</option>
-          <option value="model">Group by Model</option>
-          <option value="status">Group by Status</option>
+        <select className="input ta__filter-select" value={p.groupBy} onChange={e => p.onGroupBy(e.target.value as GroupBy)} data-testid="ta-group-by">
+          <option value="none">グループ化なし</option>
+          <option value="tool">ツールでグループ化</option>
+          <option value="category">カテゴリでグループ化</option>
+          <option value="session">セッションでグループ化</option>
+          <option value="model">モデルでグループ化</option>
+          <option value="status">状態でグループ化</option>
         </select>
         <label className="ta__flag-toggle">
-          <input type="checkbox" checked={p.filterFlagged} onChange={e => p.onFilterFlagged(e.target.checked)} />
+          <input type="checkbox" checked={p.filterFlagged} onChange={e => p.onFilterFlagged(e.target.checked)} data-testid="ta-filter-flagged" />
           <span className="ta__flag-toggle-slider" />
-          <span>Flagged only</span>
+          <span>フラグ済みのみ</span>
         </label>
         {hasFilters && (
-          <button className="btn btn--sm btn--ghost ta__btn-clear" onClick={p.onReset}>
+          <button className="btn btn--sm btn--ghost ta__btn-clear" onClick={p.onReset} data-testid="ta-clear-filters-btn">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm2.646 4.354L8.707 7.293l1.94 1.94-1.061 1.06-1.94-1.94-1.94 1.94-1.06-1.06 1.94-1.94-1.94-1.94 1.06-1.06 1.94 1.94 1.94-1.94 1.06 1.06z"/></svg>
-            Clear Filters
+            フィルターをクリア
           </button>
         )}
       </div>
@@ -714,16 +717,16 @@ function ActivityTable({ entries, onSelect, onFlag, onUnflag, sortField, sortDir
       <table className="ta__table">
         <thead>
           <tr>
-            <SortHeader field="timestamp">Time</SortHeader>
-            <SortHeader field="tool">Tool</SortHeader>
-            <th>Category</th>
-            <SortHeader field="model">Model</SortHeader>
-            <SortHeader field="status">Status</SortHeader>
+            <SortHeader field="timestamp">時刻</SortHeader>
+            <SortHeader field="tool">ツール</SortHeader>
+            <th>カテゴリ</th>
+            <SortHeader field="model">モデル</SortHeader>
+            <SortHeader field="status">状態</SortHeader>
             <th>ITL</th>
-            <SortHeader field="risk_score">Risk</SortHeader>
-            <SortHeader field="duration_ms">Duration</SortHeader>
-            <th>Session</th>
-            <th className="ta__col-actions">Actions</th>
+            <SortHeader field="risk_score">リスク</SortHeader>
+            <SortHeader field="duration_ms">実行時間</SortHeader>
+            <th>セッション</th>
+            <th className="ta__col-actions">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -737,18 +740,18 @@ function ActivityTable({ entries, onSelect, onFlag, onUnflag, sortField, sortDir
               <td className="ta__cell-tool"><code>{e.tool}</code></td>
               <td><span className={`ta__badge ta__badge--${e.category}`}>{categoryLabel(e.category)}</span></td>
               <td className="ta__cell-model">{e.model ? <code>{e.model}</code> : <span className="ta__muted">--</span>}</td>
-              <td><span className={`ta__badge ta__badge--${statusVariant(e.status)}`}>{e.status}</span></td>
+              <td><span className={`ta__badge ta__badge--${statusVariant(e.status)}`}>{statusLabel(e.status)}</span></td>
               <td>{e.interaction_type ? <span className={`ta__badge ta__badge--itl ta__badge--itl-${e.interaction_type}`}>{interactionLabel(e.interaction_type)}</span> : <span className="ta__muted">--</span>}</td>
               <td className="ta__cell-risk"><RiskIndicator score={e.risk_score} /></td>
               <td className="ta__cell-duration">{e.duration_ms != null ? formatDuration(e.duration_ms) : '--'}</td>
               <td className="ta__cell-session" title={e.session_id}>{e.session_id.slice(0, 8)}</td>
               <td className="ta__col-actions" onClick={ev => ev.stopPropagation()}>
                 {e.flagged ? (
-                  <button className="ta__action-btn ta__action-btn--unflag" title="Remove flag" onClick={() => onUnflag(e.id)}>
+                  <button className="ta__action-btn ta__action-btn--unflag" title="フラグを解除" onClick={() => onUnflag(e.id)} data-testid={`ta-unflag-${e.id}`}>
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 1v14h1V9h8l-2-4 2-4h-9z"/></svg>
                   </button>
                 ) : (
-                  <button className="ta__action-btn" title="Flag as suspicious" onClick={() => onFlag(e.id, 'Manually flagged')}>
+                  <button className="ta__action-btn" title="不審としてフラグ" onClick={() => onFlag(e.id, '手動フラグ')} data-testid={`ta-flag-${e.id}`}>
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 1v14h1V9h8l-2-4 2-4h-9zM5 2v6h6.28l-1.5-3 1.5-3H5z"/></svg>
                   </button>
                 )}
@@ -768,7 +771,7 @@ function ActivityTable({ entries, onSelect, onFlag, onUnflag, sortField, sortDir
 function RiskIndicator({ score }: { score: number }) {
   const level = riskLevel(score)
   return (
-    <div className={`ta__risk-indicator ta__risk-indicator--${level}`} title={`Risk score: ${score}`}>
+    <div className={`ta__risk-indicator ta__risk-indicator--${level}`} title={`リスクスコア: ${score}`}>
       <div className="ta__risk-ring">
         <svg viewBox="0 0 36 36" className="ta__risk-ring-svg">
           <circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.15" />
@@ -796,8 +799,8 @@ function TimelineView({ buckets }: { buckets: TimelineBucket[] }) {
         <div className="ta__empty-icon">
           <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor" opacity="0.3"><path d="M1 1v14h14V1H1zm1 1h12v12H2V2zm1 9h1v1H3v-1zm2-2h1v3H5V9zm2-3h1v6H7V6zm2 1h1v5H9V7zm2-4h1v9h-1V3z"/></svg>
         </div>
-        <p>No timeline data available yet.</p>
-        <p className="ta__empty-hint">Activity will appear here as tool calls are recorded.</p>
+        <p>タイムラインデータはまだありません。</p>
+        <p className="ta__empty-hint">ツール呼び出しが記録されるとここに表示されます。</p>
       </div>
     )
   }
@@ -808,13 +811,13 @@ function TimelineView({ buckets }: { buckets: TimelineBucket[] }) {
     <div className="ta__timeline">
       <div className="card ta__timeline-card">
         <div className="ta__timeline-header">
-          <h3>Activity Over Time</h3>
+          <h3>時系列アクティビティ</h3>
           <div className="ta__timeline-legend">
             <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--sdk" /> SDK</span>
             <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--mcp" /> MCP</span>
             <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--custom" /> Custom</span>
             <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--skill" /> Skill</span>
-            <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--flagged" /> Flagged</span>
+            <span className="ta__timeline-legend-item"><span className="ta__tl-dot ta__tl-dot--flagged" /> フラグ済み</span>
           </div>
         </div>
         <div className="ta__timeline-chart">
@@ -825,7 +828,7 @@ function TimelineView({ buckets }: { buckets: TimelineBucket[] }) {
           </div>
           <div className="ta__timeline-bars">
             {buckets.map((b, i) => (
-              <div key={i} className="ta__timeline-col" title={`${new Date(b.timestamp * 1000).toLocaleString()}\nTotal: ${b.total}\nFlagged: ${b.flagged}`}>
+              <div key={i} className="ta__timeline-col" title={`${new Date(b.timestamp * 1000).toLocaleString()}\n合計: ${b.total}\nフラグ済み: ${b.flagged}`}>
                 <div className="ta__timeline-stack" style={{ height: `${(b.total / maxTotal) * 100}%` }}>
                   {b.sdk > 0 && <div className="ta__tl-seg ta__tl-seg--sdk" style={{ flex: b.sdk }} />}
                   {b.mcp > 0 && <div className="ta__tl-seg ta__tl-seg--mcp" style={{ flex: b.mcp }} />}
@@ -854,8 +857,8 @@ function SessionsView({ sessions, onDrillDown }: {
   if (sessions.length === 0) {
     return (
       <div className="ta__empty">
-        <p>No session data available.</p>
-        <p className="ta__empty-hint">Sessions will appear here as tool activity is recorded.</p>
+        <p>セッションデータはまだありません。</p>
+        <p className="ta__empty-hint">ツールアクティビティが記録されるとここに表示されます。</p>
       </div>
     )
   }
@@ -866,15 +869,15 @@ function SessionsView({ sessions, onDrillDown }: {
         <table className="ta__table ta__sessions-table">
           <thead>
             <tr>
-              <th>Session</th>
-              <th>Tools Used</th>
-              <th>Total Calls</th>
-              <th>Flagged</th>
-              <th>Max Risk</th>
-              <th>Categories</th>
-              <th>Models</th>
-              <th>Duration</th>
-              <th>Last Activity</th>
+              <th>セッション</th>
+              <th>使用ツール数</th>
+              <th>総呼び出し数</th>
+              <th>フラグ済み</th>
+              <th>最大リスク</th>
+              <th>カテゴリ</th>
+              <th>モデル</th>
+              <th>実行時間</th>
+              <th>最終アクティビティ</th>
               <th></th>
             </tr>
           </thead>
@@ -905,7 +908,7 @@ function SessionsView({ sessions, onDrillDown }: {
                 <td className="ta__cell-duration">{formatDuration(s.total_duration_ms)}</td>
                 <td className="ta__cell-time">{formatTime(s.last_activity)}</td>
                 <td>
-                  <button className="ta__action-btn" onClick={() => onDrillDown(s.session_id)} title="View session activity">
+                  <button className="ta__action-btn" onClick={() => onDrillDown(s.session_id)} title="セッションアクティビティを表示" data-testid={`ta-session-view-${s.session_id}`}>
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5V3z"/></svg>
                   </button>
                 </td>
@@ -952,14 +955,14 @@ function GroupedView({ groups, onSelect, onFlag, onUnflag, groupBy }: {
               <span className={`ta__group-chevron ${isOpen ? 'ta__group-chevron--open' : ''}`}>
                 <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5V3z"/></svg>
               </span>
-              <span className="ta__group-title">{groupBy === 'category' ? categoryLabel(key) : key || '(empty)'}</span>
-              <span className="ta__group-count">{items.length} call{items.length !== 1 ? 's' : ''}</span>
+              <span className="ta__group-title">{groupBy === 'category' ? categoryLabel(key) : groupBy === 'status' ? statusLabel(key) : key || '(未指定)'}</span>
+              <span className="ta__group-count">{items.length} 件</span>
               {maxRisk > 0 && (
                 <span className={`ta__group-risk ta__group-risk--${riskLevel(maxRisk)}`}>
-                  Risk {maxRisk}
+                  リスク {maxRisk}
                 </span>
               )}
-              {flaggedCount > 0 && <span className="ta__group-flagged">{flaggedCount} flagged</span>}
+              {flaggedCount > 0 && <span className="ta__group-flagged">{flaggedCount} 件フラグ済み</span>}
             </button>
             {isOpen && (
               <div className="ta__group-body">
@@ -992,11 +995,11 @@ function BreakdownView({ summary }: { summary: ActivitySummary }) {
   return (
     <div className="ta__breakdown">
       <div className="card ta__perf-card">
-        <h3>Performance</h3>
+        <h3>パフォーマンス</h3>
         <div className="ta__perf-grid">
           <div className="ta__perf-item">
             <span className="ta__perf-val">{formatDuration(summary.avg_duration_ms)}</span>
-            <span className="ta__perf-label">Average</span>
+            <span className="ta__perf-label">平均</span>
           </div>
           <div className="ta__perf-item">
             <span className="ta__perf-val">{formatDuration(summary.p95_duration_ms)}</span>
@@ -1004,15 +1007,15 @@ function BreakdownView({ summary }: { summary: ActivitySummary }) {
           </div>
           <div className="ta__perf-item">
             <span className="ta__perf-val">{formatDuration(summary.max_duration_ms)}</span>
-            <span className="ta__perf-label">Max</span>
+            <span className="ta__perf-label">最大</span>
           </div>
         </div>
       </div>
 
       <div className="card">
-        <h3>Tool Usage Distribution</h3>
+        <h3>ツール使用分布</h3>
         {toolEntries.length === 0 ? (
-          <p className="ta__empty-hint">No tool usage recorded yet.</p>
+          <p className="ta__empty-hint">ツールの使用記録はまだありません。</p>
         ) : (
           <div className="ta__bar-chart">
             {toolEntries.map(([name, count]) => (
@@ -1030,7 +1033,7 @@ function BreakdownView({ summary }: { summary: ActivitySummary }) {
 
       <div className="ta__breakdown-grid">
         <div className="card">
-          <h3>By Category</h3>
+          <h3>カテゴリ別</h3>
           <dl className="ta__dl">
             {Object.entries(summary.by_category).map(([k, v]) => (
               <div key={k} className="ta__dl-row">
@@ -1041,20 +1044,20 @@ function BreakdownView({ summary }: { summary: ActivitySummary }) {
           </dl>
         </div>
         <div className="card">
-          <h3>By Status</h3>
+          <h3>状態別</h3>
           <dl className="ta__dl">
             {Object.entries(summary.by_status).map(([k, v]) => (
               <div key={k} className="ta__dl-row">
-                <dt><span className={`ta__badge ta__badge--${statusVariant(k)}`}>{k}</span></dt>
+                <dt><span className={`ta__badge ta__badge--${statusVariant(k)}`}>{statusLabel(k)}</span></dt>
                 <dd>{v}</dd>
               </div>
             ))}
           </dl>
         </div>
         <div className="card">
-          <h3>By Model</h3>
+          <h3>モデル別</h3>
           {Object.keys(summary.by_model).length === 0 ? (
-            <p className="ta__empty-hint">No model data recorded yet.</p>
+            <p className="ta__empty-hint">モデルの記録はまだありません。</p>
           ) : (
             <dl className="ta__dl">
               {Object.entries(summary.by_model)
@@ -1089,7 +1092,7 @@ function CategoriesModelsPanel({ summary, onFilterCategory, onFilterModel, onFil
   const hasItl = Object.keys(summary.by_interaction_type || {}).length > 0
   return (
     <div className="card ta__panel-card">
-      <h3 className="ta__panel-title" style={{ marginBottom: '10px' }}>Categories & Models</h3>
+      <h3 className="ta__panel-title" style={{ marginBottom: '10px' }}>カテゴリとモデル</h3>
       <div className="ta__chips-wrap ta__chips-wrap--compact">
         {Object.entries(summary.by_category).map(([cat, count]) => (
           <button
@@ -1116,7 +1119,7 @@ function CategoriesModelsPanel({ summary, onFilterCategory, onFilterModel, onFil
       </div>
       {hasItl && (
         <>
-          <h3 className="ta__panel-title" style={{ marginTop: '12px', marginBottom: '8px' }}>Interaction Types</h3>
+          <h3 className="ta__panel-title" style={{ marginTop: '12px', marginBottom: '8px' }}>対話タイプ</h3>
           <div className="ta__chips-wrap ta__chips-wrap--compact">
             {Object.entries(summary.by_interaction_type)
               .sort((a, b) => b[1] - a[1])
@@ -1156,8 +1159,8 @@ function TimelineCompact({ buckets, onFilterCategory, activeCategory }: {
   if (buckets.length === 0) {
     return (
       <div className="card ta__panel-card">
-        <h3 className="ta__panel-title">Activity Over Time</h3>
-        <p className="text-muted" style={{ fontSize: '12px', marginTop: '8px' }}>No timeline data yet.</p>
+        <h3 className="ta__panel-title">時系列アクティビティ</h3>
+        <p className="text-muted" style={{ fontSize: '12px', marginTop: '8px' }}>タイムラインデータはまだありません。</p>
       </div>
     )
   }
@@ -1167,7 +1170,7 @@ function TimelineCompact({ buckets, onFilterCategory, activeCategory }: {
   return (
     <div className="card ta__panel-card">
       <div className="ta__panel-header">
-        <h3 className="ta__panel-title">Activity Over Time</h3>
+        <h3 className="ta__panel-title">時系列アクティビティ</h3>
         <div className="ta__timeline-legend ta__timeline-legend--compact">
           {cats.map(c => (
             <button
@@ -1189,7 +1192,7 @@ function TimelineCompact({ buckets, onFilterCategory, activeCategory }: {
         </div>
         <div className="ta__timeline-bars">
           {buckets.map((b, i) => (
-            <div key={i} className="ta__timeline-col" title={`${new Date(b.timestamp * 1000).toLocaleString()}\nTotal: ${b.total}`}>
+            <div key={i} className="ta__timeline-col" title={`${new Date(b.timestamp * 1000).toLocaleString()}\n合計: ${b.total}`}>
               {b.flagged > 0 && <div className="ta__tl-flag-dot" />}
               <div className="ta__timeline-stack" style={{ height: `${(b.total / maxTotal) * 100}%` }}>
                 {b.sdk > 0 && <div className={`ta__tl-seg ta__tl-seg--sdk${activeCategory && activeCategory !== 'sdk' ? ' ta__tl-seg--dim' : ''}`} style={{ flex: b.sdk }} />}
@@ -1222,7 +1225,7 @@ function BreakdownCompact({ summary, onFilterStatus, onFilterTool, activeStatus,
 
   return (
     <div className="card ta__panel-card">
-      <h3 className="ta__panel-title" style={{ marginBottom: '12px' }}>Breakdown</h3>
+      <h3 className="ta__panel-title" style={{ marginBottom: '12px' }}>内訳</h3>
 
       <div className="ta__bd-section">
         <div className="ta__bd-items">
@@ -1232,7 +1235,7 @@ function BreakdownCompact({ summary, onFilterStatus, onFilterTool, activeStatus,
               className={`ta__bd-item ta__bd-item--${statusVariant(k)} ${activeStatus === k ? 'ta__bd-item--active' : ''}`}
               onClick={() => onFilterStatus(k)}
             >
-              <span>{k}</span>
+              <span>{statusLabel(k)}</span>
               <span className="ta__bd-count">{v}</span>
             </button>
           ))}
@@ -1241,7 +1244,7 @@ function BreakdownCompact({ summary, onFilterStatus, onFilterTool, activeStatus,
 
       {toolEntries.length > 0 && (
         <div className="ta__bd-section">
-          <span className="ta__bd-label">Top Tools</span>
+          <span className="ta__bd-label">上位ツール</span>
           <div className="ta__bd-tools">
             {toolEntries.map(([name, count]) => (
               <button
@@ -1277,17 +1280,17 @@ function DetailModal({ entry, onClose, onFlag, onUnflag }: {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal ta__detail" onClick={e => e.stopPropagation()}>
+      <div className="modal ta__detail" onClick={e => e.stopPropagation()} data-testid="ta-detail-modal">
         <div className="modal__header">
           <div className="ta__detail-title-row">
-            <h2>Tool Call Detail</h2>
+            <h2>ツール呼び出しの詳細</h2>
             {entry.risk_score > 0 && (
               <span className={`ta__detail-risk-badge ta__detail-risk-badge--${riskLevel(entry.risk_score)}`}>
-                Risk {entry.risk_score}
+                リスク {entry.risk_score}
               </span>
             )}
           </div>
-          <button className="btn btn--ghost" onClick={onClose}>&times;</button>
+          <button className="btn btn--ghost" onClick={onClose} data-testid="ta-detail-close-btn">&times;</button>
         </div>
 
         <div className="ta__detail-body">
@@ -1297,7 +1300,7 @@ function DetailModal({ entry, onClose, onFlag, onUnflag }: {
               <div className="ta__risk-assessment-header">
                 <RiskIndicator score={entry.risk_score} />
                 <div>
-                  <div className="ta__risk-assessment-title">Risk Assessment</div>
+                  <div className="ta__risk-assessment-title">リスク評価</div>
                   <div className="ta__risk-assessment-level">{riskLabel(entry.risk_score)}</div>
                 </div>
               </div>
@@ -1312,47 +1315,49 @@ function DetailModal({ entry, onClose, onFlag, onUnflag }: {
           )}
 
           <div className="ta__detail-meta">
-            <MetaRow label="Tool" value={entry.tool} />
-            <MetaRow label="Model" value={entry.model || '--'} mono />
-            <MetaRow label="Category" value={categoryLabel(entry.category)} badgeClass={`ta__badge--${entry.category}`} />
-            <MetaRow label="Status" value={entry.status} badgeClass={`ta__badge--${statusVariant(entry.status)}`} />
-            {entry.interaction_type && <MetaRow label="Interaction" value={interactionLabel(entry.interaction_type)} badgeClass={`ta__badge--itl ta__badge--itl-${entry.interaction_type}`} />}
-            <MetaRow label="Call ID" value={entry.call_id || '--'} mono />
-            <MetaRow label="Session" value={entry.session_id} mono />
-            <MetaRow label="Timestamp" value={new Date(entry.timestamp * 1000).toLocaleString()} />
-            <MetaRow label="Duration" value={entry.duration_ms != null ? formatDuration(entry.duration_ms) : '--'} />
-            {entry.flagged && <MetaRow label="Flag Reason" value={entry.flag_reason} flagged />}
+            <MetaRow label="ツール" value={entry.tool} />
+            <MetaRow label="モデル" value={entry.model || '--'} mono />
+            <MetaRow label="カテゴリ" value={categoryLabel(entry.category)} badgeClass={`ta__badge--${entry.category}`} />
+            <MetaRow label="状態" value={statusLabel(entry.status)} badgeClass={`ta__badge--${statusVariant(entry.status)}`} />
+            {entry.interaction_type && <MetaRow label="対話タイプ" value={interactionLabel(entry.interaction_type)} badgeClass={`ta__badge--itl ta__badge--itl-${entry.interaction_type}`} />}
+            <MetaRow label="呼び出し ID" value={entry.call_id || '--'} mono />
+            <MetaRow label="セッション" value={entry.session_id} mono />
+            <MetaRow label="タイムスタンプ" value={new Date(entry.timestamp * 1000).toLocaleString()} />
+            <MetaRow label="実行時間" value={entry.duration_ms != null ? formatDuration(entry.duration_ms) : '--'} />
+            {entry.flagged && <MetaRow label="フラグ理由" value={entry.flag_reason} flagged />}
           </div>
 
           <div className="ta__detail-section">
-            <h3>Arguments</h3>
+            <h3>引数</h3>
             <pre className="ta__code-block">{formatJson(entry.arguments)}</pre>
           </div>
 
           <div className="ta__detail-section">
-            <h3>Result</h3>
+            <h3>結果</h3>
             <pre className="ta__code-block">{formatJson(entry.result)}</pre>
           </div>
 
           <div className="ta__detail-actions">
             {entry.flagged ? (
-              <button className="btn btn--sm btn--outline" onClick={() => { onUnflag(entry.id); onClose() }}>
-                Remove Flag
+              <button className="btn btn--sm btn--outline" onClick={() => { onUnflag(entry.id); onClose() }} data-testid="ta-detail-unflag-btn">
+                フラグを解除
               </button>
             ) : (
               <div className="ta__flag-form-row">
                 <input
                   className="input"
                   type="text"
-                  placeholder="Reason for flagging..."
+                  placeholder="フラグ理由..."
                   value={flagReason}
                   onChange={e => setFlagReason(e.target.value)}
+                  data-testid="ta-detail-flag-reason"
                 />
                 <button
                   className="btn btn--danger btn--sm"
-                  onClick={() => { onFlag(entry.id, flagReason || 'Manually flagged'); onClose() }}
+                  onClick={() => { onFlag(entry.id, flagReason || '手動フラグ'); onClose() }}
+                  data-testid="ta-detail-flag-btn"
                 >
-                  Flag Suspicious
+                  不審としてフラグ
                 </button>
               </div>
             )}
@@ -1400,15 +1405,15 @@ function LoadingSkeleton() {
 
 function EmptyState({ onImport }: { onImport: () => void }) {
   return (
-    <div className="ta__empty">
+    <div className="ta__empty" data-testid="ta-empty-state">
       <div className="ta__empty-icon">
         <svg width="64" height="64" viewBox="0 0 16 16" fill="currentColor" opacity="0.15">
           <path d="M6 2a2 2 0 00-2 2v8a2 2 0 002 2h4a2 2 0 002-2V4a2 2 0 00-2-2H6zm0 1h4a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1zm.5 2a.5.5 0 000 1h3a.5.5 0 000-1h-3zm0 2a.5.5 0 000 1h3a.5.5 0 000-1h-3zm0 2a.5.5 0 000 1h2a.5.5 0 000-1h-2z"/>
         </svg>
       </div>
-      <p className="ta__empty-title">No tool activity found</p>
-      <p className="ta__empty-hint">Tool calls will appear here as the agent executes actions.</p>
-      <button className="btn btn--sm btn--outline ta__empty-btn" onClick={onImport}>Import from existing sessions</button>
+      <p className="ta__empty-title">ツールアクティビティが見つかりません</p>
+      <p className="ta__empty-hint">エージェントがアクションを実行するとここに表示されます。</p>
+      <button className="btn btn--sm btn--outline ta__empty-btn" onClick={onImport} data-testid="ta-empty-import-btn">既存のセッションからインポート</button>
     </div>
   )
 }
@@ -1440,7 +1445,7 @@ function formatBucketLabel(ts: number): string {
 }
 
 function formatJson(raw: string): string {
-  if (!raw) return '(none)'
+  if (!raw) return '(なし)'
   try {
     return JSON.stringify(JSON.parse(raw), null, 2)
   } catch {
@@ -1453,10 +1458,20 @@ function categoryLabel(cat: string): string {
   return labels[cat] || cat
 }
 
+function statusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    started: '開始',
+    completed: '完了',
+    denied: '拒否',
+    error: 'エラー',
+  }
+  return labels[status] || status
+}
+
 function interactionLabel(itl: string): string {
   const labels: Record<string, string> = {
-    hitl: 'HITL', aitl: 'AITL', pitl: 'PITL (Experimental)',
-    filter: 'Prompt Shields', deny: 'Denied',
+    hitl: 'HITL', aitl: 'AITL', pitl: 'PITL (試験的)',
+    filter: 'Prompt Shields', deny: '拒否',
   }
   return labels[itl] || itl.toUpperCase()
 }
@@ -1474,10 +1489,10 @@ function riskLevel(score: number): 'high' | 'medium' | 'low' | 'none' {
 }
 
 function riskLabel(score: number): string {
-  if (score >= 70) return 'High Risk'
-  if (score >= 30) return 'Medium Risk'
-  if (score > 0) return 'Low Risk'
-  return 'No Risk Detected'
+  if (score >= 70) return '高リスク'
+  if (score >= 30) return '中リスク'
+  if (score > 0) return '低リスク'
+  return 'リスク検出なし'
 }
 
 function riskRowClass(score: number): string {
