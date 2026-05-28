@@ -41,13 +41,13 @@ interface DeployConfig {
 }
 
 const RESOURCE_DEFS: { key: keyof DeployConfig; label: string; desc: string; tag?: string }[] = [
-  { key: 'deploy_key_vault', label: 'Key Vault', desc: 'Secrets management (recommended)', tag: 'Core' },
-  { key: 'deploy_content_safety', label: 'Content Safety', desc: 'Prompt Shields injection detection', tag: 'Recommended' },
-  { key: 'deploy_acs', label: 'Communication Services', desc: 'Voice calling via ACS + OpenAI Realtime' },
-  { key: 'deploy_search', label: 'AI Search', desc: 'Foundry IQ knowledge retrieval' },
-  { key: 'deploy_embedding_aoai', label: 'Embedding Model', desc: 'Text embeddings for Foundry IQ' },
+  { key: 'deploy_key_vault', label: 'Key Vault', desc: 'シークレット管理 (推奨)', tag: 'コア' },
+  { key: 'deploy_content_safety', label: 'Content Safety', desc: 'Prompt Shields による注入検知', tag: '推奨' },
+  { key: 'deploy_acs', label: 'Communication Services', desc: 'ACS + OpenAI Realtime による音声通話' },
+  { key: 'deploy_search', label: 'AI Search', desc: 'Foundry IQ ナレッジ検索' },
+  { key: 'deploy_embedding_aoai', label: 'Embedding Model', desc: 'Foundry IQ 用テキスト埋め込み' },
   { key: 'deploy_monitoring', label: 'Monitoring', desc: 'Application Insights + Log Analytics' },
-  { key: 'deploy_session_pool', label: 'Session Pool', desc: 'Sandboxed code execution (experimental)' },
+  { key: 'deploy_session_pool', label: 'Session Pool', desc: 'サンドボックスコード実行 (実験的)' },
 ]
 
 const DEFAULT_CONFIG: DeployConfig = {
@@ -61,20 +61,20 @@ const DEFAULT_CONFIG: DeployConfig = {
 }
 
 const _STEP_LABELS: Record<string, string> = {
-  resource_group: 'Create resource group',
-  resolve_principal: 'Resolve identity',
-  ensure_runtime_sp: 'Provision service principal',
-  bicep_deploy: 'Deploy Azure resources (Bicep)',
-  extract_outputs: 'Extract deployment outputs',
-  persist_env: 'Persist environment variables',
-  configure_content_safety: 'Configure Content Safety',
-  configure_foundry_iq: 'Configure Foundry IQ',
-  create_search_index: 'Create search index',
-  configure_monitoring: 'Configure Monitoring',
-  configure_session_pool: 'Configure Session Pool',
-  configure_acs: 'Configure Communication Services',
-  persist_state: 'Save deployment record',
-  restart_runtime: 'Restart agent container',
+  resource_group: 'リソースグループを作成',
+  resolve_principal: 'ID を解決',
+  ensure_runtime_sp: 'サービスプリンシパルをプロビジョニング',
+  bicep_deploy: 'Azure リソースをデプロイ (Bicep)',
+  extract_outputs: 'デプロイ出力を抽出',
+  persist_env: '環境変数を保存',
+  configure_content_safety: 'Content Safety を構成',
+  configure_foundry_iq: 'Foundry IQ を構成',
+  create_search_index: '検索インデックスを作成',
+  configure_monitoring: 'モニタリングを構成',
+  configure_session_pool: 'Session Pool を構成',
+  configure_acs: 'Communication Services を構成',
+  persist_state: 'デプロイ記録を保存',
+  restart_runtime: 'エージェントコンテナを再起動',
 }
 
 function prettyStepName(raw: string): string {
@@ -136,16 +136,16 @@ export default function InfrastructureSettings() {
           try {
             const data = JSON.parse((e as MessageEvent).data)
             if (data.status === 'ok') {
-              showToast('Infrastructure deployed successfully', 'success')
+              showToast('インフラのデプロイに成功しました', 'success')
             } else {
-              showToast(data.error || 'Deployment failed', 'error')
+              showToast(data.error || 'デプロイに失敗しました', 'error')
             }
           } catch { /* ignore */ }
           resolve()
         })
         es.onerror = () => {
           es.close()
-          reject(new Error('Deployment stream disconnected'))
+          reject(new Error('デプロイストリームが切断されました'))
         }
       })
       await loadAll()
@@ -154,22 +154,22 @@ export default function InfrastructureSettings() {
   }
 
   const handleDecommission = async () => {
-    if (!confirm('Decommission all infrastructure? This will delete the resource group and all Azure resources.')) return
+    if (!confirm('すべてのインフラを破棄しますか？ リソースグループと全 Azure リソースが削除されます。')) return
     setLoading(p => ({ ...p, decommission: true }))
     try {
       await api('setup/foundry/decommission', { method: 'POST' })
-      showToast('Decommissioning started', 'success')
+      showToast('破棄処理を開始しました', 'success')
       await loadAll()
     } catch (e: any) { showToast(e.message, 'error') }
     setLoading(p => ({ ...p, decommission: false }))
   }
 
   const restartContainer = async () => {
-    if (!confirm('Restart the agent container?')) return
+    if (!confirm('エージェントコンテナを再起動しますか？')) return
     setLoading(p => ({ ...p, restart: true }))
     try {
       const res = await api<{ message: string }>('setup/container/restart', { method: 'POST' })
-      showToast(res.message || 'Agent container restarted', 'success')
+      showToast(res.message || 'エージェントコンテナを再起動しました', 'success')
     } catch (e: any) { showToast(e.message, 'error') }
     setLoading(p => ({ ...p, restart: false }))
   }
@@ -181,24 +181,24 @@ export default function InfrastructureSettings() {
   return (
     <div className="page">
       <div className="page__header">
-        <h1>Infrastructure</h1>
+        <h1>インフラ</h1>
         <div className="page__actions">
-          <button className="btn btn--outline btn--sm" onClick={restartContainer} disabled={loading.restart}>
-            {loading.restart ? 'Restarting...' : 'Restart Agent'}
+          <button className="btn btn--outline btn--sm" onClick={restartContainer} disabled={loading.restart} data-testid="infra-restart-btn">
+            {loading.restart ? '再起動中...' : 'エージェントを再起動'}
           </button>
         </div>
       </div>
 
       <div className="tabs">
         {([
-          ['overview', 'Overview'],
-          ['environments', 'Environments'],
-          ['voice', 'Voice'],
-          ['memory', 'Memory / Foundry IQ'],
-          ['workspace', 'Workspace'],
-          ['monitoring', 'Monitoring'],
+          ['overview', '概要'],
+          ['environments', '環境'],
+          ['voice', '音声'],
+          ['memory', 'メモリ / Foundry IQ'],
+          ['workspace', 'ワークスペース'],
+          ['monitoring', 'モニタリング'],
         ] as [Tab, string][]).map(([t, label]) => (
-          <button key={t} className={`tab ${tab === t ? 'tab--active' : ''}`} onClick={() => setTab(t)}>
+          <button key={t} className={`tab ${tab === t ? 'tab--active' : ''}`} onClick={() => setTab(t)} data-testid={`infra-tab-${t}`}>
             {label}
           </button>
         ))}
@@ -209,14 +209,14 @@ export default function InfrastructureSettings() {
           {/* Deployed Resources */}
           {fStatus?.deployed && (
             <div className="card">
-              <h3>Deployed Resources</h3>
-              <p className="text-muted">Resource group: <strong>{fStatus.foundry_resource_group}</strong></p>
+              <h3>デプロイ済みリソース</h3>
+              <p className="text-muted">リソースグループ: <strong>{fStatus.foundry_resource_group}</strong></p>
               <div className="infra__resource-grid">
                 <ResourceCard
                   name="Foundry AI Services"
                   resource={fStatus.foundry_name}
                   detail={fStatus.foundry_endpoint}
-                  extra={fStatus.deployed_models.length > 0 ? `Models: ${fStatus.deployed_models.join(', ')}` : undefined}
+                  extra={fStatus.deployed_models.length > 0 ? `モデル: ${fStatus.deployed_models.join(', ')}` : undefined}
                 />
                 {fStatus.key_vault_name && (
                   <ResourceCard name="Key Vault" resource={fStatus.key_vault_name} detail={fStatus.key_vault_url} />
@@ -244,27 +244,27 @@ export default function InfrastructureSettings() {
                 )}
               </div>
               {fStatus.model && (
-                <p className="text-muted mt-1">Active model: <strong>{fStatus.model}</strong></p>
+                <p className="text-muted mt-1">アクティブモデル: <strong>{fStatus.model}</strong></p>
               )}
             </div>
           )}
 
           {/* Runtime Status */}
           <div className="card">
-            <h3>Runtime Status</h3>
+            <h3>ランタイム状態</h3>
             <div className="detail-grid">
-              <div><strong>Azure:</strong> {status?.azure?.logged_in ? (status.azure.subscription || 'Logged in') : 'Not logged in'}</div>
-              <div><strong>Foundry:</strong> {fStatus?.deployed ? 'Deployed' : 'Not deployed'}</div>
-              <div><strong>Tunnel:</strong> {status?.tunnel?.active ? <><span className="badge badge--ok badge--sm">Active</span> <code>{status.tunnel.url}</code></> : <span className="badge badge--muted badge--sm">Inactive</span>}</div>
-              <div><strong>Bot:</strong> {status?.bot_configured ? <span className="badge badge--ok badge--sm">Configured</span> : <span className="badge badge--muted badge--sm">Not configured</span>}</div>
+              <div><strong>Azure:</strong> {status?.azure?.logged_in ? (status.azure.subscription || 'サインイン済み') : '未サインイン'}</div>
+              <div><strong>Foundry:</strong> {fStatus?.deployed ? 'デプロイ済み' : '未デプロイ'}</div>
+              <div><strong>トンネル:</strong> {status?.tunnel?.active ? <><span className="badge badge--ok badge--sm">稼働中</span> <code>{status.tunnel.url}</code></> : <span className="badge badge--muted badge--sm">停止中</span>}</div>
+              <div><strong>Bot:</strong> {status?.bot_configured ? <span className="badge badge--ok badge--sm">構成済み</span> : <span className="badge badge--muted badge--sm">未構成</span>}</div>
             </div>
           </div>
 
           {/* Resource Configuration */}
           {status?.azure?.logged_in && (
             <div className="card">
-              <h3>{fStatus?.deployed ? 'Update Resources' : 'Deploy Resources'}</h3>
-              <p className="text-muted">Select which Azure resources to {fStatus?.deployed ? 'add to your deployment' : 'deploy'}. Foundry AI Services is always included.</p>
+              <h3>{fStatus?.deployed ? 'リソースを更新' : 'リソースをデプロイ'}</h3>
+              <p className="text-muted">{fStatus?.deployed ? 'デプロイに追加する' : 'デプロイする'} Azure リソースを選択してください。Foundry AI Services は常に含まれます。</p>
               <div className="infra__toggle-grid">
                 {RESOURCE_DEFS.map(r => (
                   <label key={r.key} className="infra__toggle-row">
@@ -272,6 +272,7 @@ export default function InfrastructureSettings() {
                       type="checkbox"
                       checked={config[r.key]}
                       onChange={() => toggleConfig(r.key)}
+                      data-testid={`infra-toggle-${r.key}`}
                     />
                     <div className="infra__toggle-info">
                       <span className="infra__toggle-name">
@@ -284,12 +285,12 @@ export default function InfrastructureSettings() {
                 ))}
               </div>
               <div className="form__actions mt-2">
-                <button className="btn btn--primary" onClick={handleDeploy} disabled={loading.deploy}>
-                  {loading.deploy ? 'Deploying...' : fStatus?.deployed ? 'Update Deployment' : 'Deploy Infrastructure'}
+                <button className="btn btn--primary" onClick={handleDeploy} disabled={loading.deploy} data-testid="infra-deploy-btn">
+                  {loading.deploy ? 'デプロイ中...' : fStatus?.deployed ? 'デプロイを更新' : 'インフラをデプロイ'}
                 </button>
                 {fStatus?.deployed && (
-                  <button className="btn btn--danger" onClick={handleDecommission} disabled={loading.decommission}>
-                    {loading.decommission ? 'Decommissioning...' : 'Decommission All'}
+                  <button className="btn btn--danger" onClick={handleDecommission} disabled={loading.decommission} data-testid="infra-decommission-btn">
+                    {loading.decommission ? '破棄中...' : 'すべて破棄'}
                   </button>
                 )}
               </div>
@@ -305,7 +306,7 @@ export default function InfrastructureSettings() {
                   {loading.deploy && (
                     <div className="infra__step infra__step--pending">
                       <span className="infra__step-icon spinner--inline" />
-                      <span className="text-muted">Working...</span>
+                      <span className="text-muted">処理中...</span>
                     </div>
                   )}
                 </div>
@@ -315,9 +316,9 @@ export default function InfrastructureSettings() {
 
           {!status?.azure?.logged_in && (
             <div className="card">
-              <h3>Azure Login Required</h3>
-              <p className="text-muted">Sign in to Azure to deploy or manage infrastructure.</p>
-              <button className="btn btn--primary btn--sm" onClick={() => navigate('/setup')}>Open Setup Wizard</button>
+              <h3>Azure へのサインインが必要です</h3>
+              <p className="text-muted">インフラをデプロイ・管理するには Azure にサインインしてください。</p>
+              <button className="btn btn--primary btn--sm" onClick={() => navigate('/setup')}>セットアップウィザードを開く</button>
             </div>
           )}
 
@@ -363,7 +364,7 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
         method: 'POST',
         body: JSON.stringify({ token, whitelist }),
       })
-      showToast('Telegram configuration saved', 'success')
+      showToast('Telegram の構成を保存しました', 'success')
       setShowTgForm(false)
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
@@ -374,7 +375,7 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
     setLoading(p => ({ ...p, bot: true }))
     try {
       await api('setup/infra/deploy', { method: 'POST' })
-      showToast('Bot deployed successfully', 'success')
+      showToast('Bot のデプロイに成功しました', 'success')
       onReload()
     } catch (e: any) { showToast(e.message, 'error') }
     setLoading(p => ({ ...p, bot: false }))
@@ -383,31 +384,31 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
   const channels = [
     {
       id: 'web',
-      name: 'Web Chat',
+      name: 'Web チャット',
       icon: '\uD83C\uDF10',
-      desc: 'Built-in browser chat interface',
+      desc: 'ブラウザに組み込まれたチャットインターフェース',
       status: 'always' as const,
     },
     {
       id: 'telegram',
       name: 'Telegram',
       icon: '\u2708\uFE0F',
-      desc: 'Chat via Telegram bot',
+      desc: 'Telegram bot 経由のチャット',
       status: status?.telegram_configured ? 'connected' as const : 'available' as const,
     },
     {
       id: 'voice',
-      name: 'Voice Call',
+      name: '音声通話',
       icon: '\uD83D\uDCDE',
-      desc: 'Phone calls via ACS + OpenAI Realtime',
+      desc: 'ACS + OpenAI Realtime による電話通話',
       status: status?.voice_call_configured ? 'connected' as const : 'available' as const,
     },
   ]
 
   return (
     <div className="card">
-      <h3>Channels</h3>
-      <p className="text-muted">Available communication channels. Web chat always works; others require additional setup.</p>
+      <h3>チャネル</h3>
+      <p className="text-muted">利用可能な通信チャネル。Web チャットは常に動作し、その他は追加のセットアップが必要です。</p>
 
       <div className="channels__grid">
         {channels.map(ch => (
@@ -416,13 +417,13 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
             <div className="channels__info">
               <div className="channels__name">
                 {ch.name}
-                {ch.status === 'always' && <span className="badge badge--ok badge--sm ml-1">Active</span>}
-                {ch.status === 'connected' && <span className="badge badge--ok badge--sm ml-1">Connected</span>}
+                {ch.status === 'always' && <span className="badge badge--ok badge--sm ml-1">稼働中</span>}
+                {ch.status === 'connected' && <span className="badge badge--ok badge--sm ml-1">接続済み</span>}
               </div>
               <div className="channels__desc text-muted">{ch.desc}</div>
             </div>
             {ch.id === 'telegram' && ch.status !== 'connected' && (
-              <button className="btn btn--secondary btn--sm" onClick={() => setShowTgForm(!showTgForm)}>Configure</button>
+              <button className="btn btn--secondary btn--sm" onClick={() => setShowTgForm(!showTgForm)} data-testid="channels-telegram-configure-btn">構成</button>
             )}
           </div>
         ))}
@@ -430,23 +431,23 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
 
       {showTgForm && (
         <div className="channels__config-panel mt-2">
-          <h4>Telegram Configuration</h4>
+          <h4>Telegram 構成</h4>
           <form onSubmit={handleSaveTelegram}>
             <div className="form__row">
               <div className="form__group">
-                <label className="form__label">Bot Token</label>
-                <input name="telegram_token" type="password" className="input" placeholder="From @BotFather" />
+                <label className="form__label">Bot トークン</label>
+                <input name="telegram_token" type="password" className="input" placeholder="@BotFather で取得" data-testid="channels-telegram-token" />
               </div>
               <div className="form__group">
-                <label className="form__label">Allowed User IDs</label>
-                <input name="telegram_whitelist" className="input" placeholder="Comma-separated (empty = all)" />
+                <label className="form__label">許可するユーザー ID</label>
+                <input name="telegram_whitelist" className="input" placeholder="カンマ区切り (空欄で全許可)" data-testid="channels-telegram-whitelist" />
               </div>
             </div>
             <div className="form__actions">
-              <button type="submit" className="btn btn--primary btn--sm" disabled={loading.telegram}>
-                {loading.telegram ? 'Saving...' : 'Save'}
+              <button type="submit" className="btn btn--primary btn--sm" disabled={loading.telegram} data-testid="channels-telegram-save-btn">
+                {loading.telegram ? '保存中...' : '保存'}
               </button>
-              <button type="button" className="btn btn--outline btn--sm" onClick={() => setShowTgForm(false)}>Cancel</button>
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setShowTgForm(false)}>キャンセル</button>
             </div>
           </form>
         </div>
@@ -456,19 +457,19 @@ function ChannelsCard({ status, onReload }: { status: SetupStatus | null; onRelo
       <div className="channels__bot-bar mt-2">
         <div className="channels__bot-info">
           <strong>Bot Service</strong>
-          <span className="text-muted ml-1">-- Cloudflare tunnel for Telegram &amp; Teams</span>
+          <span className="text-muted ml-1">-- Telegram と Teams 用の Cloudflare トンネル</span>
         </div>
         <div className="channels__bot-actions">
           {status?.bot_deployed ? (
-            <span className="badge badge--ok">Deployed</span>
+            <span className="badge badge--ok">デプロイ済み</span>
           ) : (
-            <button className="btn btn--primary btn--sm" onClick={handleDeployBot} disabled={loading.bot}>
-              {loading.bot ? 'Deploying...' : 'Deploy Bot Service'}
+            <button className="btn btn--primary btn--sm" onClick={handleDeployBot} disabled={loading.bot} data-testid="channels-bot-deploy-btn">
+              {loading.bot ? 'デプロイ中...' : 'Bot Service をデプロイ'}
             </button>
           )}
           {status?.tunnel?.active && status.tunnel.url && (
             <>
-              <span className="badge badge--ok badge--sm">Tunnel Active</span>
+              <span className="badge badge--ok badge--sm">トンネル稼働中</span>
               <code style={{ fontSize: 12 }}>{status.tunnel.url}</code>
             </>
           )}
@@ -651,7 +652,7 @@ function PipelineFlow({ active }: { active: boolean }) {
     <div className="mon__pipeline">
       <span className={nodeClass}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-        Agent Runtime
+        エージェントランタイム
       </span>
       {arrow}
       <span className={nodeClass}>
@@ -680,8 +681,8 @@ function TelemetryFeatureCards() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         </div>
         <div className="mon__feature-text">
-          <h5>Traces</h5>
-          <p>HTTP requests, outgoing calls, Azure SDK operations</p>
+          <h5>トレース</h5>
+          <p>HTTP リクエスト、外部呼び出し、Azure SDK 操作</p>
         </div>
       </div>
       <div className="mon__feature-card">
@@ -689,8 +690,8 @@ function TelemetryFeatureCards() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
         </div>
         <div className="mon__feature-text">
-          <h5>Metrics</h5>
-          <p>Request duration, count, error rate, performance counters</p>
+          <h5>メトリクス</h5>
+          <p>リクエスト所要時間、件数、エラー率、パフォーマンスカウンター</p>
         </div>
       </div>
       <div className="mon__feature-card">
@@ -698,8 +699,8 @@ function TelemetryFeatureCards() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
         </div>
         <div className="mon__feature-text">
-          <h5>Logs</h5>
-          <p>Python logging (WARNING+), exceptions with stack traces</p>
+          <h5>ログ</h5>
+          <p>Python logging (WARNING 以上)、スタックトレース付き例外</p>
         </div>
       </div>
       <div className="mon__feature-card">
@@ -707,8 +708,8 @@ function TelemetryFeatureCards() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9v12"/></svg>
         </div>
         <div className="mon__feature-text">
-          <h5>Dependencies</h5>
-          <p>Azure services, external APIs, databases tracked automatically</p>
+          <h5>依存関係</h5>
+          <p>Azure サービス、外部 API、データベースを自動でトラッキング</p>
         </div>
       </div>
       <div className="mon__feature-card">
@@ -716,8 +717,8 @@ function TelemetryFeatureCards() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
         <div className="mon__feature-text">
-          <h5>Live Metrics</h5>
-          <p>Real-time request rate, failure rate, and performance data</p>
+          <h5>ライブメトリクス</h5>
+          <p>リアルタイムのリクエスト率、失敗率、パフォーマンスデータ</p>
         </div>
       </div>
     </div>
@@ -734,12 +735,12 @@ function DeployArchPreview() {
     <div className="mon__arch-preview">
       <div className="mon__arch-step">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span>Resource Group</span>
+        <span>リソースグループ</span>
       </div>
       {arrow}
       <div className="mon__arch-step">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Log Analytics Workspace</span>
+        <span>Log Analytics ワークスペース</span>
       </div>
       {arrow}
       <div className="mon__arch-step">
@@ -749,7 +750,7 @@ function DeployArchPreview() {
       {arrow}
       <div className="mon__arch-step">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="M9 9h6v6"/></svg>
-        <span>OTel Auto-Instrument</span>
+        <span>OTel 自動計装</span>
       </div>
     </div>
   )
@@ -758,12 +759,12 @@ function DeployArchPreview() {
 function ProvisionSteps({ steps }: { steps: ProvisionStepResult[] }) {
   if (!steps.length) return null
   const labels: Record<string, string> = {
-    cli_extension: 'Install CLI extension',
-    resource_group: 'Resource group',
-    create_workspace: 'Log Analytics workspace',
+    cli_extension: 'CLI 拡張機能をインストール',
+    resource_group: 'リソースグループ',
+    create_workspace: 'Log Analytics ワークスペース',
     create_app_insights: 'Application Insights',
-    save_config: 'Save configuration',
-    otel_bootstrap: 'Activate OTel export',
+    save_config: '構成を保存',
+    otel_bootstrap: 'OTel エクスポートを有効化',
   }
   return (
     <div className="mon__steps">
