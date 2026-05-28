@@ -20,6 +20,7 @@ export interface SetupStatus {
   bot_deployed?: boolean
   voice_call_configured?: boolean
   model?: string
+  soul_exists?: boolean
 }
 
 // -- Chat ----------------------------------------------------------------
