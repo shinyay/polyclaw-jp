@@ -329,25 +329,28 @@ flowchart TD
 
 ### 2.5 PR 分割案
 
-並び順は **ユーザー可視性順** とします。Chat / SetupWizard / Sessions のような「最初にユーザーが触れる面」を先に翻訳し、デモ可能な日本語状態を早期に作ります。設定系の大規模ページ（Guardrails / InfrastructureSettings）は後半に回します。
+並び順は **優先度順** （ROI / 戦略的依存 / glossary 成熟度の合成）とします。論理順（PR 番号順）との差は次の 2 swap です。
+
+- **③ ↔ ④ swap**: PR-2.4 (Profile cluster) を PR-2.3 (SetupWizard) より先に実施。PR-2.0 で固定した `emotional_state` 8 値の画面表示検証ループを高速で閉じます。Profile.tsx には PR-2.0 で漏れた英語値ハードコード（`!== 'neutral'` 等）の修正も同梱します。
+- **⑤ ↔ ⑥ swap**: PR-2.6 (Schedules+Proactive) を PR-2.5 (Skills+Plugins) より先に実施。Phase 1 で `PROACTIVE_ENABLED` UI 不在によりブロックされた `verify-proactive` smoke を早期解除します。
 
 PR-2.0 は基盤整備で、後続全 PR の前提となります。Phase 1 検証で発見した課題（emotional_state の英語逆戻り、bootstrap 発火条件の脆さ）への対策もここで導入します。`inventory.csv` は CSV 検証時点で frontend 794 件すべてが `pending` で揃っており、クレンジング作業は不要です。
 
-| PR | 対象 | 規模目安 | 依存 | 主な検証 |
-|---|---|---:|---|---|
-| PR-2.0 | 基盤整備（`data-testid` 規約 + `emotional_state` 日本語 8 値固定 + 最小付与 3 コンポーネント） | 規約 + 9 ファイル + 3 コンポーネント | 単独 | `pytest test_profile.py test_prompt.py`、`npm run test:e2e` の既存 spec を破壊しないこと |
-| PR-2.1 | 共通コンポーネント（Sidebar / TopBar / Disclaimer / LoginOverlay / Toast / Breadcrumb / SessionsPanel / MockReasoningPanel） | 29 件 | PR-2.0 | auth / navigation smoke |
-| PR-2.2 | Chat ページ + Sessions ページ | 約 37 件 | PR-2.1 | `chat.spec.ts`、`sessions.spec.ts` |
-| PR-2.3 | SetupWizard 拡張（4 step + 人格選択 + voice 選択 + 完了時 bootstrap 自動発火） | 25 件 + 新規文言 | PR-2.1、Phase 1 voice 検証 | `setup.spec.ts`、実機 fresh data で wizard 完走 |
-| PR-2.4 | Profile + AgentIdentity + MessagingSettings | 約 42 件 | PR-2.1 | `settings-profile.spec.ts`、emotional_state が日本語表示 |
-| PR-2.5 | スキル / プラグイン | 48 件 | PR-2.1、PR-1.5 | `skills-plugins.spec.ts` |
-| PR-2.6 | Schedules / Proactive（`PROACTIVE_ENABLED` 切替 UI 追加） | 48 件 | PR-2.1 | `mcp-schedules-proactive.spec.ts`、Phase 1 verify-proactive 解禁 |
-| PR-2.7 | MCP Servers / Environments / FoundryIQ / Workspace / Customization | 88 件 | PR-2.1 | `environments-workspace-foundry.spec.ts` |
-| PR-2.8 | ToolActivity | 101 件 | PR-2.1 | 状態ラベル表示確認 |
-| PR-2.9 | InfrastructureSettings | 136 件 | PR-2.1 | `environments-workspace-foundry.spec.ts`、Phase 3 backend と用語整合 |
-| PR-2.10 | Guardrails（最大規模） | 235 件 | PR-2.1 | Guardrails smoke、関連 route mock、2 commits 分割推奨 |
-| PR-2.11 | 仕上げ（Auth / Login / 残り小規模 + CSS レイアウト調整） | 約 20 件 | PR-2.0 〜 PR-2.10 | フル `npm run test:e2e`、全 18 ページ目視 |
-| PR-2.12 | Phase 2 スモークテスト記録（`docs/i18n/phase2-smoke.md`） | 文書 | PR-2.11 | verify-ui-render / verify-wizard-flow / verify-chat-i18n / verify-e2e-suite |
+| 順序 | PR | Wave | 対象 | 規模目安 | 依存 | 主な検証 |
+|---:|---|---|---|---:|---|---|
+| - | PR-2.0 | 基盤 | 基盤整備（`data-testid` 規約 + `emotional_state` 日本語 8 値固定 + 最小付与 3 コンポーネント） | 規約 + 9 ファイル + 3 コンポーネント | 単独 | `pytest test_profile.py test_prompt.py`、`npm run test:e2e` の既存 spec を破壊しないこと |
+| ① | PR-2.1 | A 可視骨格 | 共通コンポーネント（Sidebar / TopBar / Disclaimer / LoginOverlay / Toast / Breadcrumb / SessionsPanel / MockReasoningPanel） | 29 件 | PR-2.0 | auth / navigation smoke |
+| ② | PR-2.2 | A 可視骨格 | Chat ページ + Sessions ページ | 約 37 件 | PR-2.1 | `chat.spec.ts`、`sessions.spec.ts` |
+| ③ | PR-2.4 | A 可視骨格 | Profile + AgentIdentity + MessagingSettings（**PR-2.0 漏れ修正含む**: Profile.tsx の `!== 'neutral'` ハードコード 3 箇所と emotional_state 自由入力欄→8 値 dropdown 化） | 約 42 件 | PR-2.2 | `settings-profile.spec.ts`、emotional_state が日本語 dropdown で表示 |
+| ④ | PR-2.3 | B funnel | SetupWizard 拡張（4 step + 人格選択 + voice 選択 + 完了時 bootstrap 自動発火） | 25 件 + 新規文言 約 30 件 | PR-2.4、Phase 1 voice 検証 | `setup.spec.ts`、実機 fresh data で wizard 完走 |
+| ⑤ | PR-2.6 | B funnel | Schedules / Proactive（`PROACTIVE_ENABLED` 切替 UI 追加 — backend `PUT /api/proactive/enabled` は実装済） | 48 件 + UI 1 toggle | PR-2.3 | `mcp-schedules-proactive.spec.ts`、Phase 1 verify-proactive ブロック解除 |
+| ⑥ | PR-2.5 | C 設定 | スキル / プラグイン | 48 件 | PR-2.6、PR-1.5 | `skills-plugins.spec.ts` |
+| ⑦ | PR-2.7 | C 設定 | MCP Servers / Environments / FoundryIQ / Workspace / Customization | 92 件 | PR-2.5 | `environments-workspace-foundry.spec.ts` |
+| ⑧ | PR-2.9 | D 大物 | InfrastructureSettings（2 commit 分割推奨: Azure+Bot / Voice+Tunnel+Common） | 136 件 | PR-2.7 | `environments-workspace-foundry.spec.ts`、Phase 3 backend と用語整合 |
+| ⑨ | PR-2.8 | D 大物 | ToolActivity | 101 件 | PR-2.9 | 状態ラベル表示確認 |
+| ⑩ | PR-2.10 | D 大物 | Guardrails(最大規模、2 commit 分割推奨 + glossary 先行登録 commit） | 235 件 | PR-2.8 | Guardrails smoke、関連 route mock |
+| ⑪ | PR-2.11 | E 仕上げ | 仕上げ(Auth / Login / 残り小規模 + CSS レイアウト調整 + 表示文言依存 locator 完全排除） | 約 20 件 | PR-2.10 | フル `npm run test:e2e`、全 18 ページ目視 |
+| ⑫ | PR-2.12 | E 仕上げ | Phase 2 スモークテスト記録（`docs/i18n/phase2-smoke.md`） | 文書 | PR-2.11 | verify-ui-render / verify-wizard-flow / verify-chat-i18n / verify-e2e-suite |
 
 ### 2.6 セットアップウィザード拡張仕様（PR-2.3）
 
