@@ -74,6 +74,15 @@
 | Managed Identity | マネージド ID | Azure の公式訳に合わせます | 管理 ID |
 | RBAC | RBAC | Role-Based Access Control の略です | ロールベースアクセス制御 |
 | Role assignment | ロール割り当て | Azure 権限付与を指します | 役割割り当て |
+| Role | ロール | Azure RBAC のロール名は英語維持、ラベルのみ翻訳します | 役割 |
+| Scope | スコープ | RBAC 適用範囲を指します | 範囲 |
+| Display Name | 表示名 | Azure リソースの表示用名称です | 表示用名前 |
+| App ID | アプリ ID | Entra ID アプリケーション ID を指します | アプリケーション ID |
+| Principal | プリンシパル | Azure 認証主体を指します | 主体 |
+| Principal Type | プリンシパル種別 | サービスプリンシパル/マネージド ID の区別です | プリンシパル タイプ |
+| Required Roles | 必要なロール | エージェントに必須の RBAC ロール群です | 必須ロール |
+| Assigned | 割り当て済 | ロール状態のラベルです | 割当済み |
+| Missing | 未割り当て | ロール状態のラベルです | 不足 |
 | Resource Group | リソースグループ | Azure の管理単位です | リソース グループ |
 | Subscription | サブスクリプション | Azure 課金・管理単位です | 契約 |
 | Tenant | テナント | Entra ID の単位です | 組織 |
@@ -102,6 +111,11 @@
 | Memory | メモリ | LLM 文脈では「記憶」よりこちらを使います | 記憶 |
 | Workspace | ワークスペース | 作業対象の領域を指します | 作業領域 |
 | Profile | プロファイル | ユーザーや人格設定を指します | プロフィール |
+| Activity | アクティビティ | やり取りの履歴や統計を指します | 活動 |
+| Activity heatmap | アクティビティヒートマップ | 日別のやり取り数の濃淡表示です | ヒートマップ |
+| Streak | 連続 | 連続稼働日数を指します | 連続日数 |
+| Skill usage | スキル使用回数 | スキル別の呼び出し回数です | スキル利用数 |
+| Emotional state | 感情状態 | 8 値固定です (平常/好奇心/集中/達成感/高揚/思索/警戒/困惑) | 気分 |
 | Schedule | スケジュール | UI 名詞として使います | 予定 |
 | Scheduled task | スケジュールタスク | 自動実行される予定タスクです | 予約タスク |
 | Proactive | プロアクティブ | 先回り動作の機能名です | 能動的 |

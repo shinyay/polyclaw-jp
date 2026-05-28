@@ -63,7 +63,7 @@ export default function AgentIdentity() {
     setLoadingId(true)
     api<IdentityInfo>('identity/info')
       .then(setIdentity)
-      .catch(() => setError('Failed to load identity'))
+      .catch(() => setError('ID 情報を読み込めませんでした'))
       .finally(() => setLoadingId(false))
   }, [])
 
@@ -75,7 +75,7 @@ export default function AgentIdentity() {
         setRoles(r)
         setFixResult(null)
       })
-      .catch(() => setError('Failed to load roles'))
+      .catch(() => setError('ロール情報を読み込めませんでした'))
       .finally(() => setLoadingRoles(false))
   }, [])
 
@@ -89,7 +89,7 @@ export default function AgentIdentity() {
         setFixResult(r.steps)
         fetchRoles()
       })
-      .catch(() => setError('Fix request failed'))
+      .catch(() => setError('修復リクエストが失敗しました'))
       .finally(() => setFixing(false))
   }, [fetchRoles])
 
@@ -98,11 +98,11 @@ export default function AgentIdentity() {
   return (
     <div className="page">
       <div className="page__header">
-        <h1>Agent Identity</h1>
+        <h1>エージェント ID</h1>
       </div>
       <p className="text-muted" style={{ marginBottom: 20, fontSize: 13, lineHeight: 1.5 }}>
-        The runtime identity used by the agent for Azure API calls.
-        Review RBAC assignments and ensure required roles are present.
+        エージェントが Azure API 呼び出しに使用するランタイム ID です。
+        RBAC 割り当てを確認し、必要なロールが付与されているかを確認してください。
       </p>
 
       {error && <div className="aid__error">{error}</div>}
@@ -143,8 +143,8 @@ function IdentityCard({
   if (loading) {
     return (
       <div className="card">
-        <h3>Runtime Identity</h3>
-        <p className="text-muted">Loading...</p>
+        <h3>ランタイム ID</h3>
+        <p className="text-muted">読み込み中...</p>
       </div>
     )
   }
@@ -153,37 +153,45 @@ function IdentityCard({
     return (
       <div className="card">
         <div className="card__header">
-          <h3>Runtime Identity</h3>
-          <button className="btn btn--sm btn--outline" onClick={onRefresh}>Refresh</button>
+          <h3>ランタイム ID</h3>
+          <button
+            className="btn btn--sm btn--outline"
+            data-testid="identity-refresh"
+            onClick={onRefresh}
+          >更新</button>
         </div>
         <p className="text-muted">
-          No identity configured. Set <code className="aid__code">RUNTIME_SP_APP_ID</code> or{' '}
-          <code className="aid__code">ACA_MI_CLIENT_ID</code> to enable.
+          ID が未設定です。<code className="aid__code">RUNTIME_SP_APP_ID</code> または{' '}
+          <code className="aid__code">ACA_MI_CLIENT_ID</code> を設定して有効化してください。
         </p>
       </div>
     )
   }
 
   const strategyLabel = identity.strategy === 'managed_identity'
-    ? 'User-assigned Managed Identity'
+    ? 'ユーザー割り当てマネージド ID'
     : identity.strategy === 'service_principal'
-      ? 'Service Principal'
-      : 'Unknown'
+      ? 'サービスプリンシパル'
+      : '不明'
 
   return (
     <div className="card">
       <div className="card__header">
-        <h3>Runtime Identity</h3>
-        <button className="btn btn--sm btn--outline" onClick={onRefresh}>Refresh</button>
+        <h3>ランタイム ID</h3>
+        <button
+          className="btn btn--sm btn--outline"
+          data-testid="identity-refresh"
+          onClick={onRefresh}
+        >更新</button>
       </div>
       <div className="aid__fields">
-        <Field label="Display Name" value={identity.display_name || '(not resolved)'} />
-        <Field label="Strategy" value={strategyLabel} />
-        {identity.app_id && <Field label="App ID" value={identity.app_id} mono />}
-        {identity.mi_client_id && <Field label="MI Client ID" value={identity.mi_client_id} mono />}
-        {identity.principal_id && <Field label="Principal Object ID" value={identity.principal_id} mono />}
-        {identity.tenant && <Field label="Tenant" value={identity.tenant} mono />}
-        {identity.principal_type && <Field label="Principal Type" value={identity.principal_type} />}
+        <Field label="表示名" value={identity.display_name || '(未解決)'} />
+        <Field label="認証方式" value={strategyLabel} />
+        {identity.app_id && <Field label="アプリ ID" value={identity.app_id} mono />}
+        {identity.mi_client_id && <Field label="MI クライアント ID" value={identity.mi_client_id} mono />}
+        {identity.principal_id && <Field label="プリンシパル オブジェクト ID" value={identity.principal_id} mono />}
+        {identity.tenant && <Field label="テナント" value={identity.tenant} mono />}
+        {identity.principal_type && <Field label="プリンシパル種別" value={identity.principal_type} />}
       </div>
     </div>
   )
@@ -220,35 +228,37 @@ function RoleChecksCard({
   return (
     <div className="card">
       <div className="card__header">
-        <h3>Required Roles</h3>
+        <h3>必要なロール</h3>
         <div style={{ display: 'flex', gap: 8 }}>
           {hasMissing && (
             <button
               className="btn btn--sm btn--primary"
+              data-testid="identity-fix-roles"
               onClick={onFix}
               disabled={fixing}
             >
-              {fixing ? 'Fixing...' : 'Fix Missing Roles'}
+              {fixing ? '修復中...' : '不足ロールを修復'}
             </button>
           )}
           <button
             className="btn btn--sm btn--outline"
+            data-testid="identity-check-roles"
             onClick={onLoad}
             disabled={loading}
           >
-            {loading ? 'Checking...' : roles ? 'Re-check' : 'Check Roles'}
+            {loading ? '確認中...' : roles ? '再確認' : 'ロールを確認'}
           </button>
         </div>
       </div>
 
       {!roles && !loading && (
         <p className="text-muted" style={{ fontSize: 13 }}>
-          Click "Check Roles" to audit the agent's RBAC assignments against
-          required permissions.
+          「ロールを確認」をクリックすると、エージェントの RBAC 割り当てが
+          必要権限と一致しているか確認します。
         </p>
       )}
 
-      {loading && <p className="text-muted">Loading role assignments...</p>}
+      {loading && <p className="text-muted">ロール割り当てを読み込み中...</p>}
 
       {roles?.message && !roles.checks?.length && (
         <p className="text-muted">{roles.message}</p>
@@ -267,7 +277,7 @@ function RoleChecksCard({
                 )}
               </div>
               <span className={`badge ${c.present ? 'badge--ok' : 'badge--err'}`}>
-                {c.present ? 'Assigned' : 'Missing'}
+                {c.present ? '割り当て済' : '未割り当て'}
               </span>
             </div>
           ))}
@@ -276,7 +286,7 @@ function RoleChecksCard({
 
       {fixResult && fixResult.length > 0 && (
         <div className="aid__fix-results">
-          <h4 style={{ marginTop: 16, marginBottom: 8, fontSize: 13 }}>Fix Results</h4>
+          <h4 style={{ marginTop: 16, marginBottom: 8, fontSize: 13 }}>修復結果</h4>
           {fixResult.map((s, i) => (
             <div key={i} className="aid__fix-step">
               <span className={`badge badge--sm ${s.status === 'ok' ? 'badge--ok' : s.status === 'failed' ? 'badge--err' : 'badge--warn'}`}>
@@ -294,16 +304,16 @@ function RoleChecksCard({
 function AssignmentsTable({ assignments }: { assignments: RoleAssignment[] }) {
   return (
     <div className="card" style={{ marginTop: 20 }}>
-      <h3>All Role Assignments</h3>
+      <h3>ロール割り当て一覧</h3>
       <p className="text-muted" style={{ fontSize: 12, marginBottom: 12 }}>
-        {assignments.length} assignment{assignments.length !== 1 ? 's' : ''} found
+        {assignments.length} 件の割り当てが見つかりました
       </p>
       <div className="table-wrap">
         <table className="table" style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th>Role</th>
-              <th>Scope</th>
+              <th>ロール</th>
+              <th>スコープ</th>
             </tr>
           </thead>
           <tbody>

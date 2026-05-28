@@ -32,7 +32,7 @@ export default function MessagingSettings() {
         method: 'POST',
         body: JSON.stringify({ COPILOT_MODEL: currentModel }),
       })
-      showToast('Model saved', 'success')
+      showToast('モデルを保存しました', 'success')
     } catch (e: any) { showToast(e.message, 'error') }
     setLoading(p => ({ ...p, model: false }))
   }
@@ -40,13 +40,13 @@ export default function MessagingSettings() {
   return (
     <div className="page">
       <div className="page__header">
-        <h1>AI Model</h1>
+        <h1>AI モデル</h1>
       </div>
 
       <div className="tabs">
         {([
-          ['config', 'AI Model'],
-          ['proactive', 'Proactive'],
+          ['config', 'AI モデル'],
+          ['proactive', 'プロアクティブ'],
         ] as [Tab, string][]).map(([t, label]) => (
           <button key={t} className={`tab ${tab === t ? 'tab--active' : ''}`} onClick={() => setTab(t)}>
             {label}
@@ -56,23 +56,33 @@ export default function MessagingSettings() {
 
       {tab === 'config' && (
         <div className="card">
-          <h3>Default AI Model</h3>
-          <p className="text-muted">Choose the model used for conversations.</p>
+          <h3>既定の AI モデル</h3>
+          <p className="text-muted">会話で使用するモデルを選択してください。</p>
           <div className="form">
             <div className="form__group">
-              <label className="form__label">Model</label>
-              <select className="input" value={currentModel} onChange={e => setCurrentModel(e.target.value)}>
+              <label className="form__label">モデル</label>
+              <select
+                className="input"
+                data-testid="messaging-model-select"
+                value={currentModel}
+                onChange={e => setCurrentModel(e.target.value)}
+              >
                 {models.map(m => (
                   <option key={m.id} value={m.id} disabled={m.policy === 'disabled'}>
                     {m.name || m.id}
                     {m.billing_multiplier && m.billing_multiplier !== 1 ? ` (${m.billing_multiplier}x)` : ''}
-                    {m.policy === 'disabled' ? ' [disabled]' : ''}
+                    {m.policy === 'disabled' ? ' [無効]' : ''}
                   </option>
                 ))}
               </select>
             </div>
-            <button className="btn btn--primary" onClick={saveModel} disabled={loading.model}>
-              {loading.model ? 'Saving...' : 'Save Model'}
+            <button
+              className="btn btn--primary"
+              data-testid="messaging-save-model"
+              onClick={saveModel}
+              disabled={loading.model}
+            >
+              {loading.model ? '保存中...' : 'モデルを保存'}
             </button>
           </div>
         </div>

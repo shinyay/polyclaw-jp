@@ -37,8 +37,8 @@ function getHeatLevel(count: number): number {
   return 4
 }
 
-const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const DAY_LABELS = ['Mon', '', 'Wed', '', 'Fri', '', '']
+const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+const DAY_LABELS = ['月', '', '水', '', '金', '', '']
 
 function ActivityHeatmap({ contributions }: { contributions: ContributionDay[] }) {
   const { weeks, months } = useMemo(() => {
@@ -136,7 +136,7 @@ function ActivityHeatmap({ contributions }: { contributions: ContributionDay[] }
                 rx={2}
                 className={`heatmap-cell heatmap-cell--${getHeatLevel(day.total)}`}
               >
-                <title>{day.date}: {day.total} interactions ({day.user} user, {day.scheduled} scheduled)</title>
+                <title>{day.date}: {day.total} 回のやり取り (ユーザー {day.user} 件、スケジュール {day.scheduled} 件)</title>
               </rect>
             ) : null
           ))
@@ -144,11 +144,11 @@ function ActivityHeatmap({ contributions }: { contributions: ContributionDay[] }
       </svg>
 
       <div className="heatmap-legend">
-        <span className="heatmap-legend__label">Less</span>
+        <span className="heatmap-legend__label">少ない</span>
         {[0, 1, 2, 3, 4].map(lvl => (
           <span key={lvl} className={`heatmap-legend__cell heatmap-cell--${lvl}`} />
         ))}
-        <span className="heatmap-legend__label">More</span>
+        <span className="heatmap-legend__label">多い</span>
       </div>
     </div>
   )
@@ -212,14 +212,14 @@ export default function Profile() {
   const save = async () => {
     try {
       await api('profile', { method: 'POST', body: JSON.stringify(form) })
-      showToast('Profile updated', 'success')
+      showToast('プロファイルを更新しました', 'success')
       setEditing(false)
       load()
     } catch (e: any) { showToast(e.message, 'error') }
   }
 
   if (loading) return <div className="page"><div className="spinner" /></div>
-  if (!profile) return <div className="page"><p className="text-muted">Failed to load profile</p></div>
+  if (!profile) return <div className="page"><p className="text-muted">プロファイルを読み込めませんでした</p></div>
 
   const usageEntries = Object.entries(profile.skill_usage || {}).sort((a, b) => b[1] - a[1])
   const maxUsage = usageEntries.length > 0 ? usageEntries[0][1] : 0
@@ -230,7 +230,7 @@ export default function Profile() {
     ? allContributions.slice(allContributions.length - visibleDays)
     : allContributions
   const totalContributions = contributions.reduce((s, d) => s + d.user + d.scheduled, 0)
-  const rangeLabel = visibleDays <= 90 ? '3 months' : visibleDays <= 180 ? '6 months' : '12 months'
+  const rangeLabel = visibleDays <= 90 ? '3 か月' : visibleDays <= 180 ? '6 か月' : '12 か月'
   const prefEntries = Object.entries(profile.preferences || {})
 
   return (
@@ -241,7 +241,7 @@ export default function Profile() {
         <div className="prof-hero__left">
           {profile.emoji && <div className="prof-hero__avatar">{profile.emoji}</div>}
           <div className="prof-hero__text">
-            <h1 className="prof-hero__name">{profile.name || 'Unnamed Agent'}</h1>
+            <h1 className="prof-hero__name">{profile.name || '名前未設定エージェント'}</h1>
             {profile.location && <p className="prof-hero__location">{profile.location}</p>}
           </div>
         </div>
@@ -262,18 +262,18 @@ export default function Profile() {
       {/* ── Edit form (inline) ── */}
       {editing && (
         <div className="card prof-edit">
-          <h3>Edit Profile</h3>
+          <h3>プロファイルを編集</h3>
           <div className="prof-edit__grid">
             <div className="form__group">
-              <label className="form__label">Name</label>
+              <label className="form__label">名前</label>
               <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
             </div>
             <div className="form__group">
-              <label className="form__label">Emoji</label>
+              <label className="form__label">絵文字</label>
               <input className="input" value={form.emoji} onChange={e => setForm(f => ({ ...f, emoji: e.target.value }))} />
             </div>
             <div className="form__group">
-              <label className="form__label">Location</label>
+              <label className="form__label">場所</label>
               <input className="input" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} />
             </div>
             <div className="form__group">
@@ -301,11 +301,11 @@ export default function Profile() {
       {/* ── Activity stats ── */}
       {stats && (
         <div className="prof-stats-row">
-          <StatCard label="Today" value={stats.today} />
-          <StatCard label="This Week" value={stats.this_week} />
-          <StatCard label="This Month" value={stats.this_month} />
-          <StatCard label="Streak" value={`${stats.streak}d`} sub="consecutive days" />
-          <StatCard label="All Time" value={stats.total} />
+          <StatCard label="今日" value={stats.today} />
+          <StatCard label="今週" value={stats.this_week} />
+          <StatCard label="今月" value={stats.this_month} />
+          <StatCard label="連続" value={`${stats.streak} 日`} sub="連続稼働日数" />
+          <StatCard label="累計" value={stats.total} />
         </div>
       )}
 
@@ -313,8 +313,8 @@ export default function Profile() {
       {contributions.length > 0 && (
         <div className="card prof-activity">
           <div className="prof-activity__header">
-            <h3>Activity</h3>
-            <span className="text-muted">{totalContributions} interactions in the last {rangeLabel}</span>
+            <h3>アクティビティ</h3>
+            <span className="text-muted">直近 {rangeLabel} で {totalContributions} 回のやり取り</span>
           </div>
           <ActivityHeatmap contributions={contributions} />
         </div>
@@ -325,7 +325,7 @@ export default function Profile() {
         {/* Skill usage */}
         {usageEntries.length > 0 && (
           <div className="card">
-            <h3>Skill Usage</h3>
+            <h3>スキル使用回数</h3>
             <div className="prof-skills">
               {usageEntries.map(([skill, count]) => (
                 <SkillBar key={skill} name={skill} count={count} max={maxUsage} />
@@ -336,7 +336,7 @@ export default function Profile() {
 
         {/* Status & preferences */}
         <div className="card">
-          <h3>Status</h3>
+          <h3>ステータス</h3>
           <div className="prof-meta">
             <div className="prof-meta__row">
               <span className="prof-meta__label">感情状態</span>
