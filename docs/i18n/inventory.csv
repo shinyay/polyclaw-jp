@@ -28,7 +28,7 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 27,frontend,app/frontend/src/components/Sidebar.tsx,56,Foundry,Foundry,approved,PR-2.1,PR-2.1: common components translated
 28,frontend,app/frontend/src/components/Sidebar.tsx,57,Tunnel,トンネル,approved,PR-2.1,PR-2.1: common components translated
 29,frontend,app/frontend/src/components/Breadcrumb.tsx,14,navigate(parentPath)}>{parentLabel},"デフォルト parentLabel=""設定"" として翻訳。実行時値は呼び出し元依存",approved,PR-2.1,PR-2.1: common components translated
-30,frontend,app/frontend/src/api.ts,62,Unauthorized,,pending,,
+30,frontend,app/frontend/src/api.ts,62,Unauthorized,認証エラー,approved,PR-2.11,PR-2.11: api.ts error message + final translation sweep
 31,frontend,app/frontend/src/pages/ToolActivity.tsx,307,Tool Activity,,approved,PR-2.8,
 32,frontend,app/frontend/src/pages/ToolActivity.tsx,316,Live,,approved,PR-2.8,
 33,frontend,app/frontend/src/pages/ToolActivity.tsx,318,Export filtered data as CSV,,approved,PR-2.8,

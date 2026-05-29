@@ -58,7 +58,7 @@ test.describe('Login overlay', () => {
     )
     await page.goto('/')
     await expect(page.locator('.login-card')).toBeVisible()
-    await expect(page.getByText('Polyclaw')).toBeVisible()
+    await expect(page.getByAltText('polyclaw')).toBeVisible()
     // testid-based assertion (new convention, see docs/i18n/testid-convention.md)
     await expect(page.locator('[data-testid="login-input-secret"]')).toBeVisible()
     await expect(page.locator('[data-testid="login-button-submit"]')).toBeVisible()

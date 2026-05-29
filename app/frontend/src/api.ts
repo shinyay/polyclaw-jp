@@ -59,7 +59,7 @@ export async function api<T = ApiResponse>(
   })
   if (res.status === 401) {
     clearToken()
-    throw new Error('Unauthorized')
+    throw new Error('認証エラー')
   }
   if (!res.ok) {
     const body = await res.text()

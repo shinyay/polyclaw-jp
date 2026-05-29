@@ -35,15 +35,19 @@ export const MOCK_SESSIONS = [
   {
     id: 'sess-001',
     model: 'gpt-4o',
+    created_at: '2026-02-15T10:00:00Z',
     started_at: '2026-02-15T10:00:00Z',
     message_count: 5,
+    title: 'Hello, World!',
     first_message: 'Hello, World!',
   },
   {
     id: 'sess-002',
     model: 'gpt-4o-mini',
+    created_at: '2026-02-14T08:30:00Z',
     started_at: '2026-02-14T08:30:00Z',
     message_count: 12,
+    title: 'Deploy the app',
     first_message: 'Deploy the app',
   },
 ]
@@ -53,6 +57,8 @@ export const MOCK_SESSION_STATS = {
   today: 1,
   this_week: 2,
   avg_messages: 8.5,
+  total_sessions: 2,
+  total_messages: 17,
 }
 
 export const MOCK_SESSION_DETAIL = {
