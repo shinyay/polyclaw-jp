@@ -57,6 +57,9 @@ UI、Bot、Voice、Toast、LLM 応答など、体験に直結する面は日本�
 | [`inventory.csv`](inventory.csv) | 翻訳対象文字列インベントリです。現在 2,396 件（header 含め 2,397 行）の日本語化対象文字列、場所、対応状況を追跡します。 |
 | [`test-strategy.md`](test-strategy.md) | テスト戦略変更方針です。英語前提のテストを日本語化後の期待値に合わせる基準を示します。 |
 | [`phase-plan.md`](phase-plan.md) | 実装フェーズ計画です。Phase 1-5 の作業順序、成果物、完了条件、合計 33 PR の分割を整理します。 |
+| [`smoke-test-results.md`](smoke-test-results.md) | Phase 1 LLM 実機検証結果です。日本語応答品質、絵文字方針、bootstrap 動作の確認記録です。 |
+| [`phase2-smoke.md`](phase2-smoke.md) | Phase 2 Frontend スモークテスト結果です。794 entries 翻訳完了、E2E 結果、Phase 3 引き継ぎ事項を記録します。 |
+| [`testid-convention.md`](testid-convention.md) | `data-testid` 命名規約です。E2E テストの安定化のため、PR-2.0 で策定しました。 |
 
 ### 読む順序
 
