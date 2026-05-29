@@ -13,7 +13,7 @@ concurrency:
 jobs:
   test-backend:
     name: Test (Python)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, azure, aci]
     steps:
       - uses: actions/checkout@v4
 
@@ -31,7 +31,7 @@ jobs:
 
   test-frontend:
     name: Test (Frontend build)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, azure, aci]
     steps:
       - uses: actions/checkout@v4
 
@@ -52,6 +52,8 @@ jobs:
 
   docker:
     name: Docker build
+    # Kept on GitHub-hosted runner: ACI runners do not support Docker-in-Docker
+    # (see getting-started-with-self-hosted-runners/docs/08-aci-setup.md §1).
     runs-on: ubuntu-latest
     needs: [test-backend, test-frontend]
     steps:
