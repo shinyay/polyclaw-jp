@@ -598,3 +598,126 @@ InfrastructureSettings.tsx は Azure / Bot / Monitoring / Memory / Voice の 5 �
 - **状態ラベル統一**: `statusLabel()` ヘルパで表示時に JP 化。`badge`, `chip`, `table cell`, `MetaRow`, `DetailModal` のいずれも同一マッピングを使用するため、状態表記の揺れが発生しない。
 - **PITL の試験的扱い**: 略語 PITL は「Person In The Loop」の意味。日本語化すると冗長 (「対人ループ介入 (試験的)」など) になるため、`PITL (試験的)` と注釈のみ JP 化。
 
+
+---
+
+## §15 Guardrails (PR-2.10)
+
+Guardrails ページは Polyclaw 最大規模の単一画面 (4147 行 / 235 entries) で、Policy Matrix / Security & Identity / Red Teaming / Network / Sandbox の 5 タブを含む。専門用語密度も最高のため、用語表記の一貫性を最重視する。
+
+### §15.1 戦略 / 介入 (Strategy)
+
+ツール呼び出しに対する 6 種の戦略。internal value は英語維持 (API consumer 互換)、表示のみ JP 化。
+
+| 英語 (internal value) | 表示 | 注釈 |
+|---|---|---|
+| allow / No Shield | シールドなし | 介入なし、即時実行 |
+| deny | 拒否 | 自動拒否 |
+| hitl / HITL + Shields | HITL + シールド | 人間承認 (Human-in-the-loop) + Prompt Shield |
+| pitl / PITL + Shields (Experimental) | PITL + シールド (試験的) | 電話承認 (Phone-in-the-loop) |
+| aitl / AITL + Shields | AITL + シールド | 別 LLM 判定 (AI-in-the-loop) |
+| filter / Shields Only | シールドのみ | Prompt Shield のみ |
+
+略語自体 (HITL/AITL/PITL/ITL) は **英語維持** (glossary §14 と整合)。
+
+### §15.2 ポリシー / 設定
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| Policy | ポリシー | guardrails の決定ルール |
+| Policy Matrix | ポリシー マトリクス | tool × context のグリッド表 |
+| Strategy | 戦略 | 上記 §15.1 の戦略集合 |
+| Rule | ルール | パターンベースの介入定義 |
+| Pattern | パターン | regex / glob 等のマッチ式 |
+| Scope | スコープ | rule の適用範囲 |
+| Context | コンテキスト | web_chat / bot / scheduler 等の実行コンテキスト |
+| Background Agents | バックグラウンドエージェント | 自律実行 (scheduler / proactive / memory_formation 等) |
+| Preset | プリセット | balanced / permissive / restrictive |
+| Default | 既定 | デフォルト動作 |
+| Tier (Model) | ティア (モデル) | tier_a / tier_b / tier_c |
+| Risk | リスク | 戦略のリスク評価 |
+| Effect | 効果 | resolve_action の結果 |
+
+### §15.3 Shields / Content Safety
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| Prompt Shield | Prompt Shield | Azure 製品名、英語維持 |
+| Prompt Injection / Jailbreak | プロンプト注入 / jailbreak | 「jailbreak」は技術用語として英語維持 |
+| Shield Deploy | シールドのデプロイ | Content Safety のプロビジョニング |
+| Up and Running / Not Configured | 稼働中 / 未構成 | shield status badge |
+| Endpoint | エンドポイント | Content Safety API URL |
+| Authentication | 認証 | API key / Managed Identity |
+| Test Connection | 接続をテスト | shield 疎通確認ボタン |
+| Deploy Now | 今すぐデプロイ | provisioning trigger |
+| Provisioned / Not Provisioned | プロビジョニング済み / 未プロビジョニング | リソース存在状態 (Infrastructure §13 と整合) |
+| Attack Detected | 攻撃を検出 | shield API response |
+| Severity | 重大度 | low / medium / high |
+| Category | カテゴリ | content safety カテゴリ |
+| Hate / Sexual / Self-harm / Violence | ヘイト / 性的 / 自傷 / 暴力 | Azure Content Safety カテゴリ (Microsoft 公式日本語ドキュメント準拠) |
+
+### §15.4 Red Teaming / Tests
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| Red Teaming | レッドチーミング | カタカナ、業界用語 |
+| Derived Tests | 派生テスト | 設定から自動生成されるテスト一覧 |
+| Test Case | テストケース | 単一のテスト |
+| Expected Behavior | 期待される動作 | 想定される shield/agent の挙動 |
+| Severity (test) | 重大度 (テスト) | critical / high / medium / low |
+| Baseline | ベースライン | 基準テスト |
+| Jailbreak (test) | jailbreak (テスト) | プロンプト注入耐性テスト |
+| Refusal | 拒否動作 | LLM の拒否レスポンス |
+| PII Detection | 個人情報検出 | PII (個人識別情報) 検知 |
+
+### §15.5 Network / Topology
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| Container Architecture | コンテナアーキテクチャ | admin / runtime 分離図 |
+| Tunnel Access Mode | トンネルアクセスモード | Cloudflare Tunnel 経由のアクセス制御 |
+| Stats | 統計 | エンドポイント統計 |
+| Connected Components | 接続コンポーネント | tunnel / bot service / acs |
+| Endpoint Security Probe | エンドポイントセキュリティプローブ | 公開エンドポイントの自動スキャン |
+| Resource Network Security | リソースネットワークセキュリティ | Azure リソースの NSG 等 |
+| Public Access | パブリックアクセス | インターネット公開設定 |
+| Private Endpoint | プライベートエンドポイント | Azure Private Link 経由 |
+| Unauthenticated | 未認証 | authLabel() |
+| Authenticated | 認証済み | authLabel() |
+| Cloudflare Tunnel | Cloudflare Tunnel | 製品名、英語維持 |
+
+### §15.6 Sandbox
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| Sandbox | サンドボックス | Azure Container Apps Dynamic Sessions |
+| Session Pool | セッションプール | ACA Dynamic Sessions プール |
+| Isolation Boundary | 分離境界 | volume / container 境界 |
+| High Privilege / Shared | 高権限 / 共有 | volume の権限カテゴリ |
+| Mount Path | マウントパス | docker volume の path |
+| Mounted In | マウント先 | 何のコンテナにマウントされているか |
+
+### §15.7 Layered Security (多層防御 SVG)
+
+| 英語 | 日本語 | 注釈 |
+|---|---|---|
+| LAYER 1 -- MODEL | レイヤー 1 -- モデル | RLHF / 安全訓練 |
+| LAYER 2 -- PLATFORM SAFETY | レイヤー 2 -- プラットフォームの安全機能 | Azure Shields / フィルタリング |
+| LAYER 3 -- METAPROMPT | レイヤー 3 -- メタプロンプト | SOUL.md / プロンプトテンプレート |
+| LAYER 4 -- RUNTIME CONTROLS | レイヤー 4 -- ランタイム制御 | HITL / PITL / AITL / Deny |
+| Defense in Depth | 多層防御 | 4 レイヤー全体の概念 |
+| Strong / Standard / Cautious | 強い / 標準 / 慎重 | モデルティアの自律性レベル |
+| More autonomy / Balanced controls / Tighter guardrails | 自律性を高め / バランス制御 / ガードレール厳格 | tier 説明文 |
+
+### §15.8 設計判断
+
+- **internal value 維持**: select option の `value="allow"`, `value="deny"` 等は **英語維持** (API consumer 互換)。表示文字列のみ JP 化。Wave D 全体で踏襲した規約 (§13 / §14 と一貫)。
+- **HITL/AITL/PITL の扱い**: 略語は **英語維持**。意味の説明文 (`Experimental` → `試験的`) のみ JP 化。
+- **Azure / Microsoft 製品名**: Prompt Shield / Azure Shields API / Azure Container Apps / Cloudflare Tunnel など、製品名は **英語維持** (Azure 公式日本語ドキュメントとの整合)。
+- **jailbreak**: カタカナ化せず英語維持。LLM セキュリティの技術用語として広く認知されているため。
+- **Defense in Depth → 多層防御**: 一般的な情報セキュリティ翻訳に従う。
+- **shield status badge の "稼働中" / "未構成"**: Infrastructure §13 の "アクティブ" とは別語彙。
+  - **稼働中** (Shield): endpoint が応答してシールド検査が回っている状態
+  - **アクティブ** (Application Insights): 設定済 + データ flow がある状態
+  - **未構成** (Shield): endpoint そのものが設定されていない初期状態
+  この使い分けは「shield の存在 vs データ flow」と「リソースの存在 vs データ flow」の意味的差異に対応。
