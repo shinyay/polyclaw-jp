@@ -74,8 +74,8 @@ az container show --resource-group "${RESOURCE_GROUP}" --name "${RUNNER_NAME}" \
   --query "{Name:name, State:instanceView.state, RestartCount:instanceView.restartCount}" -o table
 
 echo ""
-echo ">>> Recent container logs (last 30 lines):"
-az container logs --resource-group "${RESOURCE_GROUP}" --name "${RUNNER_NAME}" --tail 30 || true
+echo ">>> Container logs (full):"
+az container logs --resource-group "${RESOURCE_GROUP}" --name "${RUNNER_NAME}" 2>&1 | tail -50 || true
 
 echo ""
 echo ">>> Runner registration in GitHub:"
