@@ -721,3 +721,129 @@ Guardrails ページは Polyclaw 最大規模の単一画面 (4147 行 / 235 ent
   - **アクティブ** (Application Insights): 設定済 + データ flow がある状態
   - **未構成** (Shield): endpoint そのものが設定されていない初期状態
   この使い分けは「shield の存在 vs データ flow」と「リソースの存在 vs データ flow」の意味的差異に対応。
+
+## §16 TUI (Bun + @opentui/core) (PR-4.0〜PR-4.5)
+
+`app/tui/` 配下の用語集。Phase 4 全 6 PR で参照する基準語彙。
+Frontend §6 UI 共通 / §15 Guardrails / Phase 3 翻訳ポリシー (属性名英語維持 / proper noun 英語維持 / placeholder 厳守) を継承する。
+
+### §16.1 画面名 (Screen)
+
+`app/tui/src/screens/*.ts` の各画面 + `app/tui/src/ui/*.ts` の共通 UI。
+
+| English | 日本語 | 備考 |
+|---|---|---|
+| Dashboard | ダッシュボード | TUI 起動後の中央画面、deploy status / quick actions が並ぶ |
+| Setup | セットアップ | TUI 内設定画面。Frontend SetupWizard と用語統一 (§6) |
+| Chat | チャット | エージェントとの対話画面 |
+| Sessions | セッション一覧 | 過去のセッション履歴閲覧 |
+| Profile | プロフィール | エージェントプロファイル管理 |
+| Plugins | プラグイン | プラグイン一覧 (§10 と統一) |
+| Scheduler | スケジューラ | cron 形式タスク (§9 と統一) |
+| Proactive | プロアクティブ | プロアクティブ通知 (§9 と統一) |
+| Workspace | ワークスペース | ファイル / コード管理 (§12 と統一) |
+| Skills | スキル | スキル一覧 (§10 と統一) |
+| MCP | MCP | proper noun (Model Context Protocol)、英語維持 (§11 と統一) |
+| Target Picker | ターゲット選択 | デプロイ先選択 UI (Local / Docker / ACA) |
+| Disclaimer | 免責事項 | TUI 起動時の同意画面 (§6 と統一) |
+
+### §16.2 起動進捗 (STARTUP_PHASES / STATUS_ITEMS)
+
+`app/tui/src/config/constants.ts:80-93` の startup phases / status items 用ラベル。
+
+| English | 日本語 | 備考 |
+|---|---|---|
+| Build | ビルド | コンテナイメージビルド進捗 |
+| Container | コンテナ | コンテナ起動進捗 |
+| Server | サーバー | バックエンドサーバー起動進捗 |
+| Azure | Azure | proper noun、英語維持 |
+| Tunnel | Tunnel | proper noun (Cloudflare Tunnel)、英語維持 |
+| Bot | Bot | proper noun (Bot Framework)、英語維持 |
+
+### §16.3 基本操作 (Action / Key binding)
+
+操作ヒントの定型表現。`ui/tui.ts` 等で頻出。
+
+| English | 日本語 | 備考 |
+|---|---|---|
+| Press `X` to `Y` | `Y` するには `X` を押してください | 統一テンプレート (`X` はキー名英語維持) |
+| Press Enter to continue | Enter で続行 | |
+| Press Esc to cancel | Esc でキャンセル | |
+| Press Ctrl+C to quit | Ctrl+C で終了 | |
+| Press Tab to switch | Tab で切替 | |
+| Press `x` to remove | `x` で削除 | リスト要素削除パターン |
+| Type to filter | 入力でフィルタ | フィルター入力欄 |
+| Select … | … を選択してください | リスト選択プロンプト |
+| Confirm | 確定 | |
+| Cancel | キャンセル | |
+| Submit | 送信 | チャット送信 |
+| Quit | 終了 | |
+| Back | 戻る | 前画面へ |
+| Next | 次へ | |
+
+### §16.4 状態 / モード (State / Mode)
+
+Frontend §6 UI 共通の状態語彙を継承し、TUI で頻出するモードを追加。
+
+| English | 日本語 | 備考 |
+|---|---|---|
+| Pending | 保留中 | §6 と統一 |
+| Running | 実行中 | §6 と統一 |
+| Failed | 失敗 | §6 と統一 |
+| Success | 成功 | §6 と統一 |
+| Healthy | 正常 | §6 と統一 |
+| Unhealthy | 異常 | §6 と統一 |
+| Online | オンライン | §6 と統一 |
+| Offline | オフライン | §6 と統一 |
+| Connected | 接続済み | |
+| Disconnected | 切断 | |
+| Initializing | 初期化中 | |
+| Ready | 準備完了 | |
+| Idle | 待機中 | |
+| Loading | 読み込み中 | |
+| Headless mode | ヘッドレスモード | UI を表示しない自動化モード (Frontend setup wizard の "ヘッドレス" と統一) |
+| Interactive mode | インタラクティブモード | TUI 表示モード |
+| Watch mode | ウォッチモード | tail -f 相当の連続更新表示 |
+
+### §16.5 デプロイ / インフラ (Deploy / Infra)
+
+`app/tui/src/deploy/*.ts` の deploy 系語彙。Infrastructure §13 を継承。
+
+| English | 日本語 | 備考 |
+|---|---|---|
+| Local | Local | proper noun (deploy target 名)、英語維持 |
+| Docker | Docker | proper noun、英語維持 |
+| ACA | ACA | proper noun (Azure Container Apps)、英語維持 |
+| Deploy | デプロイ | |
+| Deploying | デプロイ中 | |
+| Deployed | デプロイ済み | |
+| Image | イメージ | コンテナイメージ |
+| Pull | プル | image pull |
+| Push | プッシュ | image push |
+| Logs | ログ | |
+| Restart | 再起動 | |
+| Stop | 停止 | |
+| Start | 起動 | |
+| Status | 状態 | §6 と統一 |
+| Reachable | 到達可能 | endpoint 接続確認 |
+| Unreachable | 到達不可 | endpoint 接続失敗 |
+
+### §16.6 TUI 固有 / 非翻訳要素
+
+| 要素 | 扱い | 理由 |
+|---|---|---|
+| Spinner frame (`\u280B` 系 Braille) | **翻訳不要** | Unicode 制御文字、UI に直接表示されない |
+| ANSI escape (`\x1b[36m` 系) | **翻訳不要** | 端末色付け用エスケープシーケンス、UI に直接表示されない |
+| LOGO_TEXT / MASCOT_GRID | **翻訳不要** | ASCII art、テキストではない |
+| Slash command 名 (e.g. `/help`, `/quit`) | **英語維持** | コマンド入力体系、ユーザ操作の互換性維持 |
+| キー名 (`Enter`, `Esc`, `Ctrl+C`, `Tab`) | **英語維持** | 物理キーラベルに準拠 |
+| URL / file path / log token | **英語維持** | コピペ可能性 + grep 互換性 |
+| 環境変数名 (`POLYCLAW_*`, `AZURE_*`) | **英語維持** | API contract |
+
+### §16.7 設計判断
+
+- **collect ノイズ 25 件**: PR-4.0 で `inventory.csv` に `approved + notes: noise — no translation needed` でマーク済み (Braille spinner 18 + ANSI escape 7)
+- **proper noun**: Phase 3 ポリシー継承で英語維持: Azure / Tunnel / Bot / Cloudflare / Docker / ACA / OpenAI Realtime / Dynamic Sessions / MCP / Bun / OpenTUI
+- **画面名と Frontend ページ名の対応**: Setup / Plugins / Scheduler / Proactive / Workspace / Skills / MCP は Frontend §6 等と完全一致 (用語差異を作らない)
+- **PR 進行中の新規用語**: 該当 PR でこの §16 を参照、必要に応じて末尾に追記する継続運用 (PR 末で diff レビュー)
+- **CJK 幅対応 (PR-4.0)**: 全角 1 文字 = 表示幅 2 として `stringWidth` / `padToWidth` / `truncateByWidth` を `app/tui/src/utils/width.ts` に新設、テーブル整形と padding に適用

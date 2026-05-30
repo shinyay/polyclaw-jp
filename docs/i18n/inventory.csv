@@ -908,16 +908,16 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 890,backend,app/runtime/server/routes/_helpers.py,51,Invalid JSON body,JSON 形式の本文が不正です,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
 891,backend,app/runtime/server/routes/_helpers.py,53,JSON body must be an object,JSON の本文はオブジェクトである必要があります,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
 892,backend,app/runtime/server/routes/proactive_routes.py,66,"message"": ""No pending follow-up.",保留中のフォローアップはありません。,approved,PR-3.3,"PR-3.3: proactive cancel_pending JSON literal, frontend toast"
-893,tui,app/tui/src/config/constants.ts,71,\u280B,,pending,,
-894,tui,app/tui/src/config/constants.ts,71,\u2819,,pending,,
-895,tui,app/tui/src/config/constants.ts,71,\u2839,,pending,,
-896,tui,app/tui/src/config/constants.ts,71,\u2838,,pending,,
-897,tui,app/tui/src/config/constants.ts,72,\u283C,,pending,,
-898,tui,app/tui/src/config/constants.ts,72,\u2834,,pending,,
-899,tui,app/tui/src/config/constants.ts,72,\u2826,,pending,,
-900,tui,app/tui/src/config/constants.ts,72,\u2827,,pending,,
-901,tui,app/tui/src/config/constants.ts,73,\u2807,,pending,,
-902,tui,app/tui/src/config/constants.ts,73,\u280F,,pending,,
+893,tui,app/tui/src/config/constants.ts,71,\u280B,\u280B,approved,PR-4.0,noise: braille spinner frame — no translation needed
+894,tui,app/tui/src/config/constants.ts,71,\u2819,\u2819,approved,PR-4.0,noise: braille spinner frame — no translation needed
+895,tui,app/tui/src/config/constants.ts,71,\u2839,\u2839,approved,PR-4.0,noise: braille spinner frame — no translation needed
+896,tui,app/tui/src/config/constants.ts,71,\u2838,\u2838,approved,PR-4.0,noise: braille spinner frame — no translation needed
+897,tui,app/tui/src/config/constants.ts,72,\u283C,\u283C,approved,PR-4.0,noise: braille spinner frame — no translation needed
+898,tui,app/tui/src/config/constants.ts,72,\u2834,\u2834,approved,PR-4.0,noise: braille spinner frame — no translation needed
+899,tui,app/tui/src/config/constants.ts,72,\u2826,\u2826,approved,PR-4.0,noise: braille spinner frame — no translation needed
+900,tui,app/tui/src/config/constants.ts,72,\u2827,\u2827,approved,PR-4.0,noise: braille spinner frame — no translation needed
+901,tui,app/tui/src/config/constants.ts,73,\u2807,\u2807,approved,PR-4.0,noise: braille spinner frame — no translation needed
+902,tui,app/tui/src/config/constants.ts,73,\u280F,\u280F,approved,PR-4.0,noise: braille spinner frame — no translation needed
 903,tui,app/tui/src/config/constants.ts,81,Build,,pending,,
 904,tui,app/tui/src/config/constants.ts,82,Container,,pending,,
 905,tui,app/tui/src/config/constants.ts,83,Server,,pending,,
@@ -1157,9 +1157,9 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1139,tui,app/tui/src/screens/sessions.ts,159,+ dur +,,pending,,
 1140,tui,app/tui/src/screens/sessions.ts,169,).localeCompare(b.ts ||,,pending,,
 1141,tui,app/tui/src/screens/sessions.ts,176,"\x1b[90m[${toolGroup.length} tool${toolGroup.length > 1 ? ""s"" : """"}: ${names}]\x1b[0m",,pending,,
-1142,tui,app/tui/src/screens/sessions.ts,189,\x1b[36m,,pending,,
-1143,tui,app/tui/src/screens/sessions.ts,189,\x1b[32m,,pending,,
-1144,tui,app/tui/src/screens/sessions.ts,189,\x1b[90m,,pending,,
+1142,tui,app/tui/src/screens/sessions.ts,189,\x1b[36m,\x1b[36m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
+1143,tui,app/tui/src/screens/sessions.ts,189,\x1b[32m,\x1b[32m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
+1144,tui,app/tui/src/screens/sessions.ts,189,\x1b[90m,\x1b[90m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
 1145,tui,app/tui/src/screens/sessions.ts,190,You,,pending,,
 1146,tui,app/tui/src/screens/sessions.ts,190,System,,pending,,
 1147,tui,app/tui/src/screens/sessions.ts,190,Assistant,,pending,,
@@ -1482,7 +1482,7 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1464,tui,app/tui/src/ui/target-picker.ts,122,Removal failed: ${(err as Error).message},,pending,,
 1465,tui,app/tui/src/ui/target-picker.ts,150,Deployment Target,,pending,,
 1466,tui,app/tui/src/ui/target-picker.ts,153,"Use arrow keys to select, Enter to confirm, Ctrl+C to quit",,pending,,
-1467,tui,app/tui/src/ui/target-picker.ts,174,\u25b6,,pending,,
+1467,tui,app/tui/src/ui/target-picker.ts,174,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1468,tui,app/tui/src/ui/target-picker.ts,175,: ` [${opt.detail ||,,pending,,
 1469,tui,app/tui/src/ui/target-picker.ts,175,"[${opt.detail || ""unavailable""}]",,pending,,
 1470,tui,app/tui/src/ui/target-picker.ts,193,\u25b6 ${label},,pending,,
@@ -1535,9 +1535,9 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1517,tui,app/tui/src/ui/tui.ts,594,Chat,,pending,,
 1518,tui,app/tui/src/ui/tui.ts,615,Waiting for server... (Ctrl+C to quit),,pending,,
 1519,tui,app/tui/src/ui/tui.ts,631,) && !val.includes(,,pending,,
-1520,tui,app/tui/src/ui/tui.ts,671,\u25b6,,pending,,
+1520,tui,app/tui/src/ui/tui.ts,671,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1521,tui,app/tui/src/ui/tui.ts,681,... ${extra} more (keep typing to filter),,pending,,
-1522,tui,app/tui/src/ui/tui.ts,711,\u25b6,,pending,,
+1522,tui,app/tui/src/ui/tui.ts,711,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1523,tui,app/tui/src/ui/tui.ts,750,You,,pending,,
 1524,tui,app/tui/src/ui/tui.ts,750,Bot,,pending,,
 1525,tui,app/tui/src/ui/tui.ts,750,[tool],,pending,,
@@ -1545,8 +1545,8 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1527,tui,app/tui/src/ui/tui.ts,750,[system],,pending,,
 1528,tui,app/tui/src/ui/tui.ts,759,Bot: ${text},,pending,,
 1529,tui,app/tui/src/ui/tui.ts,764,Bot: ${text},,pending,,
-1530,tui,app/tui/src/ui/tui.ts,774,\u25b6,,pending,,
-1531,tui,app/tui/src/ui/tui.ts,775,\u2713,,pending,,
+1530,tui,app/tui/src/ui/tui.ts,774,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
+1531,tui,app/tui/src/ui/tui.ts,775,\u2713,\u2713,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1532,tui,app/tui/src/ui/tui.ts,776,(${m.billing_multiplier}x),,pending,,
 1533,tui,app/tui/src/ui/tui.ts,805,Loading models...,,pending,,
 1534,tui,app/tui/src/ui/tui.ts,808,Authorization,,pending,,
@@ -1555,8 +1555,8 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1537,tui,app/tui/src/ui/tui.ts,813,No models available.,,pending,,
 1538,tui,app/tui/src/ui/tui.ts,815,Failed to fetch models: ${err instanceof Error ? err.message : err},,pending,,
 1539,tui,app/tui/src/ui/tui.ts,833,"Select Model (arrows to move, Enter to select, Esc to cancel)",,pending,,
-1540,tui,app/tui/src/ui/tui.ts,834,\u2500,,pending,,
-1541,tui,app/tui/src/ui/tui.ts,858,\u25b6,,pending,,
+1540,tui,app/tui/src/ui/tui.ts,834,\u2500,\u2500,approved,PR-4.0,noise: braille spinner frame — no translation needed
+1541,tui,app/tui/src/ui/tui.ts,858,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1542,tui,app/tui/src/ui/tui.ts,887,Loading sessions...,,pending,,
 1543,tui,app/tui/src/ui/tui.ts,890,Authorization,,pending,,
 1544,tui,app/tui/src/ui/tui.ts,890,Bearer ${secret},,pending,,
@@ -1566,7 +1566,7 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1548,tui,app/tui/src/ui/tui.ts,904,No sessions yet. Use /new to start one.,,pending,,
 1549,tui,app/tui/src/ui/tui.ts,906,Failed to fetch sessions: ${err instanceof Error ? err.message : err},,pending,,
 1550,tui,app/tui/src/ui/tui.ts,923,"Switch Session (arrows to move, Enter to select, Esc to cancel)",,pending,,
-1551,tui,app/tui/src/ui/tui.ts,924,\u2500,,pending,,
+1551,tui,app/tui/src/ui/tui.ts,924,\u2500,\u2500,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1552,tui,app/tui/src/ui/tui.ts,948,Building polyclaw v3...,,pending,,
 1553,tui,app/tui/src/ui/tui.ts,948,Deploying to ${target.name}...,,pending,,
 1554,tui,app/tui/src/ui/tui.ts,950,Building,,pending,,
@@ -1656,8 +1656,8 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1638,tui,app/tui/src/ui/app.ts,347,polyclaw v3 | Autonomous AI Copilot,,pending,,
 1639,tui,app/tui/src/ui/app.ts,375,Tab/Shift+Tab: switch sections | q: quit,,pending,,
 1640,tui,app/tui/src/ui/app.ts,383,Web UI: ${this.api.webUiUrl},,pending,,
-1641,tui,app/tui/src/ui/app.ts,442,\x1b[32m,,pending,,
-1642,tui,app/tui/src/ui/app.ts,443,\x1b[33m,,pending,,
+1641,tui,app/tui/src/ui/app.ts,442,\x1b[32m,\x1b[32m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
+1642,tui,app/tui/src/ui/app.ts,443,\x1b[33m,\x1b[33m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
 1643,tui,app/tui/src/ui/app.ts,453,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,pending,,
 1644,tui,app/tui/src/ui/app.ts,454,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,pending,,
 1645,tui,app/tui/src/ui/app.ts,457,"\x1b[33m●\x1b[0m polyclaw v3 | ${ctrPieces.join("" "")}",,pending,,
@@ -1667,8 +1667,8 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1649,tui,app/tui/src/ui/app.ts,466,\x1b[32mOK\x1b[0m,,pending,,
 1650,tui,app/tui/src/ui/app.ts,466,\x1b[90m--\x1b[0m,,pending,,
 1651,tui,app/tui/src/ui/app.ts,466,"Tunnel: ${tunnelOk ? ""\x1b[32mOK\x1b[0m"" : ""\x1b[90m--\x1b[0m""}",,pending,,
-1652,tui,app/tui/src/ui/app.ts,473,\x1b[32m,,pending,,
-1653,tui,app/tui/src/ui/app.ts,474,\x1b[33m,,pending,,
+1652,tui,app/tui/src/ui/app.ts,473,\x1b[32m,\x1b[32m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
+1653,tui,app/tui/src/ui/app.ts,474,\x1b[33m,\x1b[33m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
 1654,tui,app/tui/src/ui/app.ts,483,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,pending,,
 1655,tui,app/tui/src/ui/app.ts,484,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,pending,,
 1656,tui,app/tui/src/ui/app.ts,487,\x1b[32m●\x1b[0m,,pending,,
