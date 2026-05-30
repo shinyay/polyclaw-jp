@@ -131,7 +131,7 @@ async def cmd_preflight(dispatcher: CommandDispatcher, ctx: CommandContext) -> N
 async def cmd_phone(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     parts = ctx.text.split(maxsplit=1)
     if len(parts) < 2:
-        await ctx.reply(f"現在の発信先番号: {cfg.voice_target_number or '(未設定)'}\n\n使い方: /phone <番号>")
+        await ctx.reply(f"現在の発信先番号: {cfg.voice_target_number or '(未設定)'}\n\n使い方: /phone <number>")
         return
     number = parts[1].strip()
     if not number.startswith("+"):
@@ -146,7 +146,7 @@ async def cmd_call(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
 
     target = cfg.voice_target_number
     if not target:
-        await ctx.reply("発信先番号が未設定です。まず /phone <番号> で設定してください。")
+        await ctx.reply("発信先番号が未設定です。まず /phone <number> で設定してください。")
         return
     base = f"http://127.0.0.1:{cfg.admin_port}"
     headers = {"Authorization": f"Bearer {cfg.admin_secret}"} if cfg.admin_secret else {}

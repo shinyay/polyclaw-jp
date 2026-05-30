@@ -38,7 +38,7 @@ async def cmd_models(dispatcher: CommandDispatcher, ctx: CommandContext) -> None
         await ctx.reply("利用可能なモデルはありません。")
         return
     current = cfg.copilot_model
-    lines = ["Available Models", ""]
+    lines = ["利用可能なモデル", ""]
     for m in models:
         marker = " *" if m["id"] == current else ""
         cost = f" ({m['billing_multiplier']}x)" if m.get("billing_multiplier", 1.0) != 1.0 else ""
@@ -48,16 +48,16 @@ async def cmd_models(dispatcher: CommandDispatcher, ctx: CommandContext) -> None
             lines.append(f"  {m['id']}{marker}{cost}  ({policy})")
         else:
             lines.append(f"  {m['id']}{marker}{cost}{reasoning}")
-    lines.append(f"\nCurrent: {current}\nUse /model <name> to switch.")
+    lines.append(f"\n現在のモデル: {current}\n切り替えは /model <name> を使用してください。")
     await ctx.reply("\n".join(lines))
 
 
 async def cmd_session(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     lines = [
-        "Session Info",
-        f"  Active: {'yes' if dispatcher._agent.has_session else 'no'}",
-        f"  Model: {cfg.copilot_model}",
-        "  Playwright MCP: enabled",
+        "セッション情報",
+        f"  稼働中: {'はい' if dispatcher._agent.has_session else 'いいえ'}",
+        f"  モデル: {cfg.copilot_model}",
+        "  Playwright MCP: 有効",
     ]
     await ctx.reply("\n".join(lines))
 
@@ -71,12 +71,12 @@ async def cmd_sessions(dispatcher: CommandDispatcher, ctx: CommandContext) -> No
         await ctx.reply("記録されたセッションはありません。")
         return
     stats = dispatcher._session_store.get_session_stats()
-    lines = [f"Sessions ({stats['total_sessions']} total, {stats['total_messages']} messages)", ""]
+    lines = [f"セッション ({stats['total_sessions']} 件 / {stats['total_messages']} メッセージ)", ""]
     for s in sessions[:10]:
         started = s.get("started_at", "?")[:16]
-        lines.append(f"  {s['id']}  {started}  {s.get('model', '?')}  ({s.get('message_count', 0)} msgs)")
+        lines.append(f"  {s['id']}  {started}  {s.get('model', '?')}  ({s.get('message_count', 0)} 件)")
     if len(sessions) > 10:
-        lines.append(f"  ... and {len(sessions) - 10} more")
+        lines.append(f"  ... ほか {len(sessions) - 10} 件")
     await ctx.reply("\n".join(lines))
 
 
@@ -112,10 +112,10 @@ async def cmd_change(dispatcher: CommandDispatcher, ctx: CommandContext) -> None
     if not sessions:
         await ctx.reply("切り替え可能なセッションがありません。/new で新しいセッションを開始してください。")
         return
-    lines = ["Recent Sessions:", ""]
+    lines = ["最近のセッション:", ""]
     for i, s in enumerate(sessions[:5], 1):
         started = s.get("started_at", "?")[:16]
-        lines.append(f"  {i}. {started}  {s.get('model', '?')}  ({s.get('message_count', 0)} msgs)")
+        lines.append(f"  {i}. {started}  {s.get('model', '?')}  ({s.get('message_count', 0)} 件)")
         lines.append(f"     ID: {s['id']}")
     await ctx.reply("\n".join(lines))
 

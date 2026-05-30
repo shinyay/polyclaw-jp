@@ -114,7 +114,7 @@ async def cmd_mcp(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
         lines = [f"MCP サーバー ({len(servers)} 件):"]
         for s in servers:
             icon = "+" if s.get("enabled") else "-"
-            builtin = " [builtin]" if s.get("builtin") else ""
+            builtin = " [組み込み]" if s.get("builtin") else ""
             lines.append(f"  [{icon}] {s['name']} ({s.get('type', '?')}){builtin}")
             if s.get("description"):
                 lines.append(f"        {s['description']}")
