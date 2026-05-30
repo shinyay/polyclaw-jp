@@ -609,6 +609,27 @@ PR-5.1 push 後にユーザに実機検証を依頼し、`./scripts/run-tui.sh` 
 - ANSI escape: tui.ts には元々ない、screens/* は PR-5.1 で対処済 → 新規追加禁止
 - PR-5.2 (部分着色 BoxRenderable 化) の scope: tui.ts に絞る (screens/* は touch 不要)
 
+**追記 (2026-05-30): RC-2 で削除実行**
+
+E 案で温存することを決定したが、その後リファクタリング相談 (`docs/refactor/`) が正規化され、RC-2 (dead code 削除) として **18 ファイル / 3600 行** を削除した。E 案は「保守者誤認の防止」が主目的だったが、削除した方がより直接的に同目的を達成できると判断。削除前の状態 (PR-5.1 refactor) は git 履歴で復元可能なため、将来 screens/* 再構築を行う場合も問題ない。
+
+削除ファイル:
+- `src/ui/app.ts` (534 行 / PolyclawApp 本体)
+- `src/ui/index.ts` (6 行 / 外部 import ゼロ)
+- `src/screens/` 全 13 ファイル (chat/dashboard/mcp/plugins/proactive/profile/scheduler/sessions/setup/skills/workspace + screen.ts + index.ts)
+- `src/utils/text.ts` (52 行 / screens 専用 setText)
+- `src/utils/width.ts` (120 行 / active 使用ゼロ)
+- `tests/width.test.ts` (165 行 / width.ts のテスト)
+
+合わせて `TAB_LABELS` 定数 (`src/config/constants.ts` / `src/config/index.ts` re-export / `tests/constants.test.ts` 3 tests) も dead chain として削除。
+
+検証:
+- `bun run typecheck`: error 0 (pre-existing `useAlternateScreen` も `app.ts` 削除で同時消滅)
+- `bun test`: 70 pass / 0 fail (削除前 73 から TAB_LABELS 3 tests 削減 = 期待値一致)
+- 実機 TUI smoke (chat 日本語応答): RC-2 削除後も R2-pure フローで動作確認済
+
+詳細は `docs/refactor/README.md` (RC-1〜RC-9 計画) を参照。
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)

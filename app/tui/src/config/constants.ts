@@ -140,18 +140,3 @@ export const SLASH_COMMANDS: SlashCommand[] = [
 // ---------------------------------------------------------------------------
 
 export const DISCLAIMER_FLAG = `${process.env.HOME || "/tmp"}/.polyclaw_disclaimer_accepted`;
-
-// Tab labels for the main TUI (component-based mode)
-export const TAB_LABELS = [
-  "ダッシュボード",
-  "セットアップ",
-  "チャット",
-  "セッション",
-  "スキル",
-  "プラグイン",
-  "MCP",
-  "スケジュール",
-  "プロアクティブ",
-  "プロフィール",
-  "ワークスペース",
-] as const;

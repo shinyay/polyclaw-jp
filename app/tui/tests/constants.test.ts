@@ -15,7 +15,6 @@ import {
   MAX_AC_VISIBLE,
   SLASH_COMMANDS,
   DISCLAIMER_FLAG,
-  TAB_LABELS,
 } from "../src/config/constants.js";
 
 // -----------------------------------------------------------------------
@@ -176,28 +175,5 @@ describe("DISCLAIMER_FLAG", () => {
   test("is a non-empty file path", () => {
     expect(DISCLAIMER_FLAG.length).toBeGreaterThan(0);
     expect(DISCLAIMER_FLAG).toContain("polyclaw_disclaimer");
-  });
-});
-
-// -----------------------------------------------------------------------
-// Tab labels
-// -----------------------------------------------------------------------
-
-describe("TAB_LABELS", () => {
-  test("has labels matching the number of screens", () => {
-    // 11 screens: Dashboard, Setup, Chat, Sessions, Skills, Plugins,
-    //             MCP, Schedules, Proactive, Profile, Workspace
-    expect(TAB_LABELS).toHaveLength(11);
-  });
-
-  test("first tab is Dashboard", () => {
-    expect(TAB_LABELS[0]).toBe("ダッシュボード");
-  });
-
-  test("all labels are non-empty strings", () => {
-    for (const label of TAB_LABELS) {
-      expect(typeof label).toBe("string");
-      expect(label.length).toBeGreaterThan(0);
-    }
   });
 });

@@ -13,5 +13,4 @@ export {
   MAX_AC_VISIBLE,
   SLASH_COMMANDS,
   DISCLAIMER_FLAG,
-  TAB_LABELS,
 } from "./constants.js";
