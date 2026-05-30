@@ -40,9 +40,9 @@ export class SkillsScreen extends Screen {
     });
 
     // Skill list
-    const listBox = this.section(" Skills ", 15);
+    const listBox = this.section(" スキル ", 15);
     this.skillSelect = new SelectRenderable(this.renderer, {
-      options: [{ name: "Loading...", description: "" }],
+      options: [{ name: "読み込み中...", description: "" }],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
       width: "100%",
@@ -56,8 +56,8 @@ export class SkillsScreen extends Screen {
     });
 
     // Detail panel
-    const detailBox = this.section(" Skill Detail ");
-    this.detailText = this.text("  Select a skill to view details.");
+    const detailBox = this.section(" スキル詳細 ");
+    this.detailText = this.text("  スキルを選択して詳細を表示します。");
     detailBox.add(this.detailText);
     this.container.add(detailBox);
   }
@@ -105,7 +105,7 @@ export class SkillsScreen extends Screen {
       }
 
       if (this.skills.length === 0) {
-        this.skillSelect.options = [{ name: "(No skills installed)", description: "" }];
+        this.skillSelect.options = [{ name: "(インストール済みスキルなし)", description: "" }];
         return;
       }
 
@@ -116,7 +116,7 @@ export class SkillsScreen extends Screen {
       this.skillSelect.options = opts;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.skillSelect.options = [{ name: `Error: ${msg}`, description: "" }];
+      this.skillSelect.options = [{ name: `エラー: ${msg}`, description: "" }];
     }
   }
 
@@ -127,7 +127,7 @@ export class SkillsScreen extends Screen {
       `  ${s.name}`,
       `  ${s.description || ""}`,
       "",
-      `  Plugin:  ${s.plugin || "(unknown)"}`,
+      `  プラグイン: ${s.plugin || "(不明)"}`,
     ].join("\n");
   }
 }

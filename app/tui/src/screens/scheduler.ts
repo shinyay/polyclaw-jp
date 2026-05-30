@@ -51,7 +51,7 @@ export class SchedulerScreen extends Screen {
     });
 
     // Task list
-    const listBox = this.section(" Scheduled Tasks ", 10);
+    const listBox = this.section(" 予定タスク ", 10);
     this.taskSelect = this.createSelect();
     listBox.add(this.taskSelect);
     this.container.add(listBox);
@@ -63,8 +63,8 @@ export class SchedulerScreen extends Screen {
     // Actions
     this.actionSelect = new SelectRenderable(this.renderer, {
       options: [
-        { name: "Create New Task", description: "" },
-        { name: "Delete Selected Task", description: "" },
+        { name: "新規タスクを作成", description: "" },
+        { name: "選択中のタスクを削除", description: "" },
       ],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
@@ -80,11 +80,11 @@ export class SchedulerScreen extends Screen {
     });
 
     // Create form
-    const formBox = this.section(" New Task ");
-    this.descInput = this.addFormField(formBox, "Description:", "What this task does");
-    this.promptInput = this.addFormField(formBox, "Prompt:", "The prompt to send to the agent");
-    this.cronInput = this.addFormField(formBox, "Cron expression (for recurring):", "0 9 * * * (daily at 9am)");
-    this.runAtInput = this.addFormField(formBox, "Run at (ISO datetime, for one-time):", "2025-01-01T09:00:00");
+    const formBox = this.section(" 新規タスク ");
+    this.descInput = this.addFormField(formBox, "説明:", "このタスクの内容");
+    this.promptInput = this.addFormField(formBox, "プロンプト:", "エージェントに送信するプロンプト");
+    this.cronInput = this.addFormField(formBox, "cron 式 (繰り返し用):", "0 9 * * * (毎日 9 時)");
+    this.runAtInput = this.addFormField(formBox, "実行日時 (ISO 形式、単発用):", "2025-01-01T09:00:00");
     this.container.add(formBox);
 
     // Detail
@@ -114,7 +114,7 @@ export class SchedulerScreen extends Screen {
 
   private createSelect(): SelectRenderable {
     return new SelectRenderable(this.renderer, {
-      options: [{ name: "Loading...", description: "" }],
+      options: [{ name: "読み込み中...", description: "" }],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
       width: "100%",
@@ -151,17 +151,17 @@ export class SchedulerScreen extends Screen {
     try {
       this.tasks = (await this.api.listSchedules()) as unknown as ScheduledTask[];
       if (this.tasks.length === 0) {
-        this.taskSelect.options = [{ name: "(No scheduled tasks)", description: "" }];
+        this.taskSelect.options = [{ name: "(予定タスクなし)", description: "" }];
         return;
       }
       const opts: SelectOption[] = this.tasks.map((t) => {
-        const cron = t.cron ? `cron: ${t.cron}` : t.run_at ? `at: ${t.run_at}` : "no schedule";
-        return { name: `${t.description || "(untitled)"}  ${cron}`, description: "" };
+        const cron = t.cron ? `cron: ${t.cron}` : t.run_at ? `日時: ${t.run_at}` : "予定なし";
+        return { name: `${t.description || "(無題)"}  ${cron}`, description: "" };
       });
       this.taskSelect.options = opts;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.taskSelect.options = [{ name: `Error: ${msg}`, description: "" }];
+      this.taskSelect.options = [{ name: `エラー: ${msg}`, description: "" }];
     }
   }
 
@@ -169,15 +169,15 @@ export class SchedulerScreen extends Screen {
     if (index < 0 || index >= this.tasks.length) return;
     const t = this.tasks[index];
     this.detailText.content = [
-      `  ${t.description || "(untitled)"}`,
+      `  ${t.description || "(無題)"}`,
       "",
-      `  ID:          ${t.id}`,
-      `  Prompt:      ${(t.prompt || "").slice(0, 60)}`,
-      `  Cron:        ${t.cron || "(none)"}`,
-      `  Run at:      ${t.run_at || "(none)"}`,
-      `  Last run:    ${t.last_run || "(never)"}`,
-      `  Next run:    ${t.next_run || "(unknown)"}`,
-      `  Created:     ${t.created_at || ""}`,
+      `  ID:        ${t.id}`,
+      `  プロンプト: ${(t.prompt || "").slice(0, 60)}`,
+      `  cron:      ${t.cron || "(なし)"}`,
+      `  実行日時:  ${t.run_at || "(なし)"}`,
+      `  前回実行:  ${t.last_run || "(未実行)"}`,
+      `  次回実行:  ${t.next_run || "(不明)"}`,
+      `  作成日時:  ${t.created_at || ""}`,
     ].join("\n");
   }
 
@@ -188,7 +188,7 @@ export class SchedulerScreen extends Screen {
   private async createTask(): Promise<void> {
     const prompt = this.promptInput.value?.trim();
     if (!prompt) {
-      this.resultText.content = "  \x1b[31mPrompt is required\x1b[0m";
+      this.resultText.content = "  \x1b[31mプロンプトは必須です\x1b[0m";
       return;
     }
     const body: Record<string, string> = {
@@ -202,7 +202,7 @@ export class SchedulerScreen extends Screen {
 
     try {
       await this.api.createSchedule(body);
-      this.resultText.content = "  \x1b[32mTask created\x1b[0m";
+      this.resultText.content = "  \x1b[32mタスクを作成しました\x1b[0m";
       for (const inp of [this.descInput, this.promptInput, this.cronInput, this.runAtInput]) {
         inp.value = "";
       }
@@ -217,7 +217,7 @@ export class SchedulerScreen extends Screen {
     if (index < 0 || index >= this.tasks.length) return;
     try {
       await this.api.deleteSchedule(this.tasks[index].id);
-      this.resultText.content = "  \x1b[32mTask deleted\x1b[0m";
+      this.resultText.content = "  \x1b[32mタスクを削除しました\x1b[0m";
       this.loadTasks();
     } catch (err: unknown) {
       this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;

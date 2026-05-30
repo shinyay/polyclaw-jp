@@ -48,9 +48,9 @@ export class WorkspaceScreen extends Screen {
     this.container.add(this.pathText);
 
     // File list
-    const listBox = this.section(" Files ", 15);
+    const listBox = this.section(" ファイル ", 15);
     this.fileSelect = new SelectRenderable(this.renderer, {
-      options: [{ name: "Loading...", description: "" }],
+      options: [{ name: "読み込み中...", description: "" }],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
       width: "100%",
@@ -64,7 +64,7 @@ export class WorkspaceScreen extends Screen {
     });
 
     // File preview
-    const previewBox = this.section(" Preview ");
+    const previewBox = this.section(" プレビュー ");
     const previewScroll = new ScrollBoxRenderable(this.renderer, {
       backgroundColor: Colors.surface,
       flexGrow: 1,
@@ -72,7 +72,7 @@ export class WorkspaceScreen extends Screen {
       flexDirection: "column",
     });
     this.previewText = new TextRenderable(this.renderer, {
-      content: "  Select a file to preview.",
+      content: "  ファイルを選択してプレビュー表示します。",
       fg: Colors.muted,
       width: "100%",
     });
@@ -120,21 +120,21 @@ export class WorkspaceScreen extends Screen {
 
       const opts: SelectOption[] = [];
       if (this.currentPath !== "data") {
-        opts.push({ name: ".. (parent directory)", description: "" });
+        opts.push({ name: ".. (親ディレクトリ)", description: "" });
       }
       for (const e of this.entries) {
         if (e.is_dir) {
-          opts.push({ name: `${e.name}/`, description: "directory" });
+          opts.push({ name: `${e.name}/`, description: "ディレクトリ" });
         } else {
           const size = e.size !== undefined ? `  ${formatSize(e.size)}` : "";
           opts.push({ name: `${e.name}${size}`, description: "" });
         }
       }
 
-      this.fileSelect.options = opts.length > 0 ? opts : [{ name: "(Empty directory)", description: "" }];
+      this.fileSelect.options = opts.length > 0 ? opts : [{ name: "(空のディレクトリ)", description: "" }];
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.fileSelect.options = [{ name: `Error: ${msg}`, description: "" }];
+      this.fileSelect.options = [{ name: `エラー: ${msg}`, description: "" }];
     }
   }
 
@@ -176,15 +176,15 @@ export class WorkspaceScreen extends Screen {
         truncated?: boolean;
       };
       if (r.binary) {
-        this.previewText.content = `  (Binary file, ${formatSize(r.size ?? 0)})`;
+        this.previewText.content = `  (バイナリファイル、${formatSize(r.size ?? 0)})`;
       } else {
-        const content = r.content || "(empty)";
-        const truncNote = r.truncated ? "\n... (truncated)" : "";
+        const content = r.content || "(空)";
+        const truncNote = r.truncated ? "\n... (省略)" : "";
         this.previewText.content = content + truncNote;
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.previewText.content = `\x1b[31mError: ${msg}\x1b[0m`;
+      this.previewText.content = `\x1b[31mエラー: ${msg}\x1b[0m`;
     }
   }
 }

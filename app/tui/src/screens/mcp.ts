@@ -61,7 +61,7 @@ export class McpScreen extends Screen {
     });
 
     // Configured servers list
-    const serversBox = this.section(" MCP Servers ", 10);
+    const serversBox = this.section(" MCP サーバー ", 10);
     this.serverSelect = this.createSelect();
     serversBox.add(this.serverSelect);
     this.container.add(serversBox);
@@ -71,13 +71,13 @@ export class McpScreen extends Screen {
     });
 
     // Actions
-    const actionsBox = this.section(" Actions ", 5);
+    const actionsBox = this.section(" 操作 ", 5);
     this.actionSelect = new SelectRenderable(this.renderer, {
       options: [
-        { name: "Enable Selected", description: "" },
-        { name: "Disable Selected", description: "" },
-        { name: "Remove Selected", description: "" },
-        { name: "Add New Server", description: "" },
+        { name: "選択中を有効化", description: "" },
+        { name: "選択中を無効化", description: "" },
+        { name: "選択中を削除", description: "" },
+        { name: "新規サーバーを追加", description: "" },
       ],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
@@ -91,12 +91,12 @@ export class McpScreen extends Screen {
     });
 
     // Add server form
-    const formBox = this.section(" Add MCP Server ");
-    this.nameInput = this.addFormField(formBox, "Name:", "my-mcp-server");
-    this.typeInput = this.addFormField(formBox, "Type (local/http/sse):", "local");
-    this.cmdInput = this.addFormField(formBox, "Command (for local):", "npx -y @some/mcp-server");
-    this.urlInput = this.addFormField(formBox, "URL (for http/sse):", "https://...");
-    this.descInput = this.addFormField(formBox, "Description:", "What this server does");
+    const formBox = this.section(" MCP サーバーを追加 ");
+    this.nameInput = this.addFormField(formBox, "名前:", "my-mcp-server");
+    this.typeInput = this.addFormField(formBox, "種類 (local/http/sse):", "local");
+    this.cmdInput = this.addFormField(formBox, "コマンド (local 用):", "npx -y @some/mcp-server");
+    this.urlInput = this.addFormField(formBox, "URL (http/sse 用):", "https://...");
+    this.descInput = this.addFormField(formBox, "説明:", "このサーバーの機能");
     this.container.add(formBox);
 
     // Detail
@@ -104,11 +104,11 @@ export class McpScreen extends Screen {
     this.container.add(this.detailText);
 
     // GitHub Registry browser
-    const regBox = this.section(" GitHub MCP Registry ", 10);
-    this.searchInput = this.input("Search registry (Ctrl+Enter to search)...");
+    const regBox = this.section(" GitHub MCP レジストリ ", 10);
+    this.searchInput = this.input("レジストリを検索 (Ctrl+Enter で実行)...");
     regBox.add(this.searchInput);
     this.registrySelect = new SelectRenderable(this.renderer, {
-      options: [{ name: "(Press Ctrl+Enter in search to load registry)", description: "" }],
+      options: [{ name: "(検索欄で Ctrl+Enter を押してレジストリを読み込み)", description: "" }],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
       width: "100%",
@@ -146,7 +146,7 @@ export class McpScreen extends Screen {
 
   private createSelect(): SelectRenderable {
     return new SelectRenderable(this.renderer, {
-      options: [{ name: "Loading...", description: "" }],
+      options: [{ name: "読み込み中...", description: "" }],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
       width: "100%",
@@ -190,17 +190,17 @@ export class McpScreen extends Screen {
       const r = (await this.api.listMcpServers()) as { servers?: McpServer[] };
       this.servers = r.servers || [];
       if (this.servers.length === 0) {
-        this.serverSelect.options = [{ name: "(No MCP servers configured)", description: "" }];
+        this.serverSelect.options = [{ name: "(MCP サーバーが未設定)", description: "" }];
         return;
       }
       const opts: SelectOption[] = this.servers.map((s) => {
-        const status = s.enabled ? "[on]" : "[off]";
+        const status = s.enabled ? "[有効]" : "[無効]";
         return { name: `${status} ${s.name}  ${s.type}  ${s.description || ""}`, description: "" };
       });
       this.serverSelect.options = opts;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.serverSelect.options = [{ name: `Error: ${msg}`, description: "" }];
+      this.serverSelect.options = [{ name: `エラー: ${msg}`, description: "" }];
     }
   }
 
@@ -211,12 +211,12 @@ export class McpScreen extends Screen {
       `  ${s.name}`,
       `  ${s.description || ""}`,
       "",
-      `  Type:    ${s.type}`,
-      `  Enabled: ${s.enabled ? "Yes" : "No"}`,
+      `  種類:    ${s.type}`,
+      `  有効:    ${s.enabled ? "はい" : "いいえ"}`,
     ];
-    if (s.command) lines.push(`  Command: ${s.command} ${(s.args || []).join(" ")}`);
+    if (s.command) lines.push(`  コマンド: ${s.command} ${(s.args || []).join(" ")}`);
     if (s.url) lines.push(`  URL:     ${s.url}`);
-    if (s.tools?.length) lines.push(`  Tools:   ${s.tools.map((t) => t.name).join(", ")}`);
+    if (s.tools?.length) lines.push(`  ツール:  ${s.tools.map((t) => t.name).join(", ")}`);
     this.detailText.content = lines.join("\n");
   }
 
@@ -245,7 +245,7 @@ export class McpScreen extends Screen {
     try {
       if (enable) await this.api.enableMcpServer(s.name);
       else await this.api.disableMcpServer(s.name);
-      this.resultText.content = `  \x1b[32m${enable ? "Enabled" : "Disabled"} ${s.name}\x1b[0m`;
+      this.resultText.content = `  \x1b[32m${enable ? "有効化" : "無効化"}: ${s.name}\x1b[0m`;
       this.loadServers();
     } catch (err: unknown) {
       this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
@@ -257,7 +257,7 @@ export class McpScreen extends Screen {
     if (!s) return;
     try {
       await this.api.removeMcpServer(s.name);
-      this.resultText.content = `  \x1b[32mRemoved ${s.name}\x1b[0m`;
+      this.resultText.content = `  \x1b[32m削除: ${s.name}\x1b[0m`;
       this.loadServers();
     } catch (err: unknown) {
       this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
@@ -268,7 +268,7 @@ export class McpScreen extends Screen {
     const name = this.nameInput.value?.trim();
     const type = this.typeInput.value?.trim();
     if (!name || !type) {
-      this.resultText.content = "  \x1b[31mName and type are required\x1b[0m";
+      this.resultText.content = "  \x1b[31m名前と種類は必須です\x1b[0m";
       return;
     }
     try {
@@ -280,7 +280,7 @@ export class McpScreen extends Screen {
         description: this.descInput.value?.trim() || "",
         enabled: true,
       });
-      this.resultText.content = `  \x1b[32mAdded ${name}\x1b[0m`;
+      this.resultText.content = `  \x1b[32m追加: ${name}\x1b[0m`;
       for (const inp of [this.nameInput, this.typeInput, this.cmdInput, this.urlInput, this.descInput]) {
         inp.value = "";
       }
@@ -292,12 +292,12 @@ export class McpScreen extends Screen {
 
   private async searchRegistry(): Promise<void> {
     const query = this.searchInput.value?.trim() || "";
-    this.resultText.content = "  Searching registry...";
+    this.resultText.content = "  レジストリを検索中...";
     try {
       const r = (await this.api.getMcpRegistry(1, query)) as { servers?: RegistryEntry[] };
       this.registryServers = r.servers || [];
       if (this.registryServers.length === 0) {
-        this.registrySelect.options = [{ name: "(No results)", description: "" }];
+        this.registrySelect.options = [{ name: "(該当なし)", description: "" }];
       } else {
         const opts: SelectOption[] = this.registryServers.map((s) => ({
           name: `${s.name}  ★${s.stars}  ${(s.description || "").slice(0, 40)}`,
@@ -305,7 +305,7 @@ export class McpScreen extends Screen {
         }));
         this.registrySelect.options = opts;
       }
-      this.resultText.content = `  Found ${this.registryServers.length} servers`;
+      this.resultText.content = `  ${this.registryServers.length} 件のサーバーを検出`;
     } catch (err: unknown) {
       this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
     }
