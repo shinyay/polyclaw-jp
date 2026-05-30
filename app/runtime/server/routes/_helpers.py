@@ -48,9 +48,9 @@ async def parse_json(req: web.Request) -> dict[str, Any]:
     try:
         body = await req.json()
     except (json.JSONDecodeError, Exception) as exc:
-        raise ValueError("Invalid JSON body") from exc
+        raise ValueError("JSON 形式の本文が不正です") from exc
     if not isinstance(body, dict):
-        raise ValueError("JSON body must be an object")
+        raise ValueError("JSON の本文はオブジェクトである必要があります")
     return body
 
 

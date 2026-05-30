@@ -88,7 +88,7 @@ class GuardrailsConfigStore:
 
     def set_default_action(self, action: str) -> None:
         if action not in _VALID_STRATEGIES:
-            raise ValueError("action must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
+            raise ValueError("action は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
         self._config.default_action = action
         self._save()
 
@@ -102,7 +102,7 @@ class GuardrailsConfigStore:
 
     def set_default_channel(self, channel: str) -> None:
         if channel not in ("chat", "phone"):
-            raise ValueError("channel must be 'chat' or 'phone'")
+            raise ValueError("channel は 'chat' または 'phone' を指定してください")
         self._config.default_channel = channel
         self._save()
 
@@ -127,12 +127,12 @@ class GuardrailsConfigStore:
 
     def set_filter_mode(self, mode: str) -> None:
         if mode != "prompt_shields":
-            raise ValueError("filter_mode must be 'prompt_shields'")
+            raise ValueError("filter_mode は 'prompt_shields' を指定してください")
         self._set_and_save("filter_mode", mode)
 
     def set_context_default(self, context: str, strategy: str) -> None:
         if strategy not in _VALID_STRATEGIES:
-            raise ValueError("strategy must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
+            raise ValueError("strategy は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
         self._config.context_defaults[context] = strategy
         self._save()
 
@@ -148,7 +148,7 @@ class GuardrailsConfigStore:
         self, context: str, tool_id: str, strategy: str,
     ) -> None:
         if strategy not in _VALID_STRATEGIES:
-            raise ValueError("strategy must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
+            raise ValueError("strategy は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
         if context not in self._config.tool_policies:
             self._config.tool_policies[context] = {}
         self._config.tool_policies[context][tool_id] = strategy
@@ -179,7 +179,7 @@ class GuardrailsConfigStore:
         self, model: str, tool_id: str, strategy: str, context: str = "interactive",
     ) -> None:
         if strategy not in _VALID_STRATEGIES:
-            raise ValueError("strategy must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
+            raise ValueError("strategy は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
         if model not in self._config.model_policies:
             self._config.model_policies[model] = {}
         if context not in self._config.model_policies[model]:
@@ -231,11 +231,11 @@ class GuardrailsConfigStore:
         hitl_channel: str = "chat",
     ) -> GuardrailRule:
         if scope not in ("tool", "mcp"):
-            raise ValueError("scope must be 'tool' or 'mcp'")
+            raise ValueError("scope は 'tool' または 'mcp' を指定してください")
         if action not in _VALID_STRATEGIES:
-            raise ValueError("action must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
+            raise ValueError("action は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES)))
         if hitl_channel not in ("chat", "phone"):
-            raise ValueError("hitl_channel must be 'chat' or 'phone'")
+            raise ValueError("hitl_channel は 'chat' または 'phone' を指定してください")
         rule = GuardrailRule(
             name=name,
             pattern=pattern,

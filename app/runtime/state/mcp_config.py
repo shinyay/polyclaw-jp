@@ -110,15 +110,15 @@ class McpConfigStore:
         description: str = "",
     ) -> dict[str, Any]:
         if not name:
-            raise ValueError("Server name is required")
+            raise ValueError("Server name は必須です")
         if server_type not in _VALID_TYPES:
-            raise ValueError(f"type must be one of {_VALID_TYPES}")
+            raise ValueError(f"type は次のいずれかを指定してください: {_VALID_TYPES}")
 
         is_remote = server_type in ("http", "sse")
         if not is_remote and not command:
-            raise ValueError("command is required for local servers")
+            raise ValueError("local サーバーには command が必須です")
         if is_remote and not url:
-            raise ValueError("url is required for remote (http/sse) servers")
+            raise ValueError("remote (http/sse) サーバーには url が必須です")
 
         entry: dict[str, Any] = {
             "type": server_type,
@@ -162,7 +162,7 @@ class McpConfigStore:
         if name not in self._servers:
             return False
         if self._servers[name].get("builtin", False):
-            raise ValueError(f"Cannot remove built-in server '{name}'. Disable it instead.")
+            raise ValueError(f"組み込みサーバー '{name}' は削除できません。無効化してください。")
         del self._servers[name]
         self._save()
         return True

@@ -73,7 +73,7 @@ class TestMcpConfigStore:
 
     def test_remove_builtin_raises(self, tmp_path: Path) -> None:
         store = McpConfigStore(path=tmp_path / "mcp.json")
-        with pytest.raises(ValueError, match="built-in"):
+        with pytest.raises(ValueError, match="組み込みサーバー"):
             store.remove_server("playwright")
 
     def test_get_enabled_servers(self, tmp_path: Path) -> None:

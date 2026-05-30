@@ -34,7 +34,7 @@ def apply_preset_to_config(
     """
     valid = {PRESET_RESTRICTIVE, PRESET_BALANCED, PRESET_PERMISSIVE}
     if preset not in valid:
-        raise ValueError("preset must be one of: %s" % ", ".join(sorted(valid)))
+        raise ValueError("preset は次のいずれかを指定してください: %s" % ", ".join(sorted(valid)))
     policies = _build_preset_policies(preset)
     config.context_defaults = policies["context_defaults"]
     config.tool_policies = policies["tool_policies"]
@@ -61,7 +61,7 @@ def set_all_strategies_on_config(config: GuardrailsConfig, strategy: str) -> Non
     """
     if strategy not in _VALID_STRATEGIES:
         raise ValueError(
-            "strategy must be one of: %s" % ", ".join(sorted(_VALID_STRATEGIES))
+            "strategy は次のいずれかを指定してください: %s" % ", ".join(sorted(_VALID_STRATEGIES))
         )
     policies: dict[str, dict[str, str]] = {"interactive": {}, "background": {}}
     for tool_id in _ALL_PRESET_TOOL_IDS:
