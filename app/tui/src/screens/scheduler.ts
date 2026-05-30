@@ -12,6 +12,7 @@ import {
 } from "@opentui/core";
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
+import { setText } from "../utils/text.js";
 
 interface ScheduledTask {
   id: string;
@@ -188,7 +189,7 @@ export class SchedulerScreen extends Screen {
   private async createTask(): Promise<void> {
     const prompt = this.promptInput.value?.trim();
     if (!prompt) {
-      this.resultText.content = "  \x1b[31mプロンプトは必須です\x1b[0m";
+      setText(this.resultText, "  プロンプトは必須です", Colors.red);
       return;
     }
     const body: Record<string, string> = {
@@ -202,13 +203,13 @@ export class SchedulerScreen extends Screen {
 
     try {
       await this.api.createSchedule(body);
-      this.resultText.content = "  \x1b[32mタスクを作成しました\x1b[0m";
+      setText(this.resultText, "  タスクを作成しました", Colors.green);
       for (const inp of [this.descInput, this.promptInput, this.cronInput, this.runAtInput]) {
         inp.value = "";
       }
       this.loadTasks();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -217,10 +218,10 @@ export class SchedulerScreen extends Screen {
     if (index < 0 || index >= this.tasks.length) return;
     try {
       await this.api.deleteSchedule(this.tasks[index].id);
-      this.resultText.content = "  \x1b[32mタスクを削除しました\x1b[0m";
+      setText(this.resultText, "  タスクを削除しました", Colors.green);
       this.loadTasks();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 }

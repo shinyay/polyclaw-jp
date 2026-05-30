@@ -11,6 +11,7 @@ import {
 } from "@opentui/core";
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
+import { setText } from "../utils/text.js";
 
 export class SetupScreen extends Screen {
   capturesInput = true;
@@ -158,7 +159,7 @@ export class SetupScreen extends Screen {
       ].join("\n");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.authText.content = `\x1b[31m  状態取得エラー: ${msg}\x1b[0m`;
+      setText(this.authText, `  状態取得エラー: ${msg}`, Colors.red);
     }
   }
 
@@ -217,8 +218,8 @@ export class SetupScreen extends Screen {
     if (actions[index]) await actions[index]();
   }
 
-  private setResult(msg: string): void {
-    this.resultText.content = msg;
+  private setResult(msg: string, color: string = Colors.muted): void {
+    setText(this.resultText, msg, color);
   }
 
   private async doAzureLogin(): Promise<void> {
@@ -226,7 +227,7 @@ export class SetupScreen extends Screen {
     try {
       const r = await this.api.azureLogin();
       if (r.status === "already_logged_in") {
-        this.setResult(`  \x1b[32m${r.user} としてすでにログイン済み\x1b[0m`);
+        this.setResult(`  ${r.user} としてすでにログイン済み`, Colors.green);
       } else if (r.code) {
         this.setResult(`  ${r.url} を開いて以下のコードを入力してください: \x1b[1m${r.code}\x1b[0m\n  完了を待機中...`);
         await this.pollAzure();
@@ -236,7 +237,7 @@ export class SetupScreen extends Screen {
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31mエラー: ${msg}\x1b[0m`);
+      this.setResult(`  エラー: ${msg}`, Colors.red);
     }
   }
 
@@ -246,13 +247,13 @@ export class SetupScreen extends Screen {
       try {
         const c = await this.api.azureCheck();
         if (c.status === "logged_in") {
-          this.setResult("  \x1b[32mAzure ログインに成功しました!\x1b[0m");
+          this.setResult("  Azure ログインに成功しました!", Colors.green);
           this.loadAuthStatus();
           return;
         }
       } catch { /* keep trying */ }
     }
-    this.setResult("  \x1b[33mログインがタイムアウトしました。再度お試しください。\x1b[0m");
+    this.setResult("  ログインがタイムアウトしました。再度お試しください。", Colors.yellow);
   }
 
   private async doAzureLogout(): Promise<void> {
@@ -262,7 +263,7 @@ export class SetupScreen extends Screen {
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
@@ -278,12 +279,12 @@ export class SetupScreen extends Screen {
       if (body.status === "ok") {
         this.setResult(`  \x1b[32mFoundry をデプロイしました!\x1b[0m\n  エンドポイント: ${body.foundry_endpoint}\n  モデル: ${(body.deployed_models || []).join(", ")}`);
       } else {
-        this.setResult(`  \x1b[31mデプロイに失敗: ${body.error || "原因不明"}\x1b[0m`);
+        this.setResult(`  デプロイに失敗: ${body.error || "原因不明"}`, Colors.red);
       }
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31mError: ${msg}\x1b[0m`);
+      this.setResult(`  Error: ${msg}`, Colors.red);
     }
   }
 
@@ -294,12 +295,12 @@ export class SetupScreen extends Screen {
       if (r.status === "ok") {
         this.setResult(`  \x1b[32mトンネルを起動: ${r.url}\x1b[0m${r.endpoint_updated ? "\n  ボットのエンドポイントを更新しました" : ""}`);
       } else {
-        this.setResult(`  \x1b[31m${r.message}\x1b[0m`);
+        this.setResult(`  ${r.message}`, Colors.red);
       }
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
@@ -318,7 +319,7 @@ export class SetupScreen extends Screen {
       this.setResult(lines.join("\n"));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
@@ -343,31 +344,31 @@ export class SetupScreen extends Screen {
       this.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
   private async doDeployInfra(): Promise<void> {
-    this.setResult("  \x1b[33mインフラをデプロイ中... 数分かかる場合があります。\x1b[0m");
+    this.setResult("  インフラをデプロイ中... 数分かかる場合があります。", Colors.yellow);
     try {
       const r = await this.api.deployInfra();
       this.setResult(this.formatStepResult(r));
       this.loadInfraStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
   private async doDecommissionInfra(): Promise<void> {
-    this.setResult("  \x1b[33mインフラを撤去中...\x1b[0m");
+    this.setResult("  インフラを撤去中...", Colors.yellow);
     try {
       const r = await this.api.decommissionInfra();
       this.setResult(this.formatStepResult(r));
       this.loadInfraStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 
@@ -394,7 +395,7 @@ export class SetupScreen extends Screen {
       this.setResult(lines.length > 0 ? lines.join("\n") : "  実行可能なチェックがありません。");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31m${msg}\x1b[0m`);
+      this.setResult(`  ${msg}`, Colors.red);
     }
   }
 

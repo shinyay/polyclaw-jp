@@ -12,6 +12,7 @@ import {
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
 import { formatSize } from "../utils/format.js";
+import { setText } from "../utils/text.js";
 
 interface DirEntry {
   name: string;
@@ -184,7 +185,7 @@ export class WorkspaceScreen extends Screen {
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.previewText.content = `\x1b[31mエラー: ${msg}\x1b[0m`;
+      setText(this.previewText, `エラー: ${msg}`, Colors.red);
     }
   }
 }

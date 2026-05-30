@@ -499,6 +499,67 @@ PR-5.0.3 (`exitOnCtrlC: true`) commit 後の実機 smoke test 結果:
 - `bun test`: ✅ 103/103 pass
 - 実機: ユーザ Step H + `docker ps -a | grep polyclaw` で `polyclaw-*` が **存在しない or Exited(0)** 確認待ち
 
+#### 4.4.7 PR-5.1 — ANSI escape refactor (全体着色サイトを `fg` プロパティへ移行)
+
+**背景** (§4.4.1 で確定済 root cause の対処):
+- `TextRenderable.content` に ANSI escape sequence (`\x1b[31m...\x1b[0m`) を埋めると、`@opentui/core` 0.1.107 の内部レイアウト計算 (`Bun.stringWidth()`) が ANSI byte を可視文字としてカウント → CJK 文字の半切れ/残像が発生
+- 対策: ANSI escape を完全に除去し、色装飾は `TextRenderable.fg` プロパティ経由で適用する
+
+**影響範囲調査** (約 90+ サイト、3 type に分類):
+
+| Type | 説明 | 例 | 対応 PR |
+|:---:|---|---|---|
+| (A) | 機能利用 (stdin/stdout 直書き) | `process.stdout.write("\x1b[2J")` (clear screen) | refactor 不要 (~15 サイト) |
+| (B) | 全体着色 (ANSI が文字列の外側を完全に包む) | `setText(text, "エラー: ...", Colors.red)` | **PR-5.1 (本作業)** (~50 サイト) |
+| (C) | 部分着色 (アイコン `●` + テキスト混在 / 複数色) | `\x1b[32m● 有効\x1b[0m  \x1b[90m(無効化)\x1b[0m` | PR-5.2 (後追い) (~40 サイト) |
+
+**分割案の根拠**: (B) は単純な `content + fg` 分離で済み機械的、 (C) は `BoxRenderable` で `TextRenderable` を細分化する必要があり手作業 → 別 PR で焦点を分離。
+
+**新規基盤** (`app/tui/src/utils/text.ts`):
+```typescript
+export function setText(text: TextRenderable, content: string, color: string = Colors.text): void {
+  text.content = content;
+  (text as unknown as { fg: string }).fg = color;
+}
+```
+- `@opentui/core` 0.1.107 の型定義から `fg` が省略されているため、type cast で書き込む
+- JSDoc に PR-5.1 背景 + `Bun.stringWidth` 問題を記載
+
+**PR-5.1 適用ファイル** (10 ファイル / 約 50 サイト):
+
+| ファイル | サイト数 | 内訳 |
+|---|---:|---|
+| `screens/setup.ts` | 17 | `setResult()` helper を 2 引数化 (`setResult(msg, color = Colors.muted)`) して resultText 周りを集約 |
+| `screens/scheduler.ts` | 5 | resultText の error/success 着色 |
+| `screens/profile.ts` | 3 | profileText / resultText の muted/error/success |
+| `screens/mcp.ts` | 8 | resultText の error/success + 情報表示 |
+| `screens/plugins.ts` | 6 | enable/disable/remove の error/success |
+| `screens/workspace.ts` | 1 | previewText の error 着色 |
+| `screens/proactive.ts` | ~6 | statusText/resultText の error/success/muted |
+| `screens/dashboard.ts` | 1 | statusText の error 着色 |
+| `screens/sessions.ts` | 3 | detailText の error + コンストラクタ直書き (`new TextRenderable({content: "\x1b[90m...\x1b[0m"})` → `content` 平文 + `fg: Colors.muted`) |
+
+**PR-5.1 で touch しないサイト** (PR-5.2 へ持ち越し):
+
+| ファイル | 残サイト数 | 理由 |
+|---|---:|---|
+| `ui/app.ts` | ~10 | `setStatus()` 系がほぼ部分着色 (`● + テキスト`) — PR-5.2 で BoxRenderable 化 |
+| `screens/plugins.ts` | 2 | L55, L147 の `\x1b[90m有効化: e / 無効化: d / 削除: x\x1b[0m` (混色プレフィックス) |
+| `screens/proactive.ts` | 5 | L166, L170, L171, L177, L205 の `●` アイコン部分着色 |
+| `screens/dashboard.ts` | 2 | L112, L140-142 の dot helper (色付き `●` を return する関数) |
+| `screens/sessions.ts` | 2 | L189, L194 のロール色 + muted 時刻 + 通常 text の 3 色混在 |
+
+**動作確認** (commit 前):
+- `bun run typecheck`: ✅ exit 0
+- `bun test`: ✅ 103/103 pass
+- ANSI escape 残存サイト (grep `'\\\\x1b\\[[0-9;]+m'` で確認): PR-5.1 touch 対象ファイル内では 0 (PR-5.2 対象ファイルの C 維持サイトを除く)
+
+**実機検証 (ユーザ依頼予定)**:
+- setup 画面で provision 失敗時のエラー表示が **赤色 + CJK 半切れなし** で出る
+- profile 画面で profile 取得失敗のエラー表示色が変わっていない (red 維持)
+- mcp/scheduler/plugins/workspace/dashboard/sessions の各画面で成功/失敗時の着色が PR-5.1 前と等価
+- proactive 画面の toggle / cancel 結果の着色が等価
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)

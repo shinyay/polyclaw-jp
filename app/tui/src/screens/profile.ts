@@ -11,6 +11,7 @@ import {
 } from "@opentui/core";
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
+import { setText } from "../utils/text.js";
 
 interface AgentProfile {
   name?: string;
@@ -145,7 +146,7 @@ export class ProfileScreen extends Screen {
       this.emotionalInput.value = p.emotional_state || "";
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.profileText.content = `\x1b[31mエラー: ${msg}\x1b[0m`;
+      setText(this.profileText, `エラー: ${msg}`, Colors.red);
     }
   }
 
@@ -160,10 +161,10 @@ export class ProfileScreen extends Screen {
 
     try {
       const r = await this.api.updateProfile(data);
-      this.resultText.content = `  \x1b[32m${r.message || "プロフィールを更新しました"}\x1b[0m`;
+      setText(this.resultText, `  ${r.message || "プロフィールを更新しました"}`, Colors.green);
       this.loadProfile();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 }

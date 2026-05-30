@@ -12,6 +12,7 @@ import {
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
 import { formatSessionTime } from "../utils/format.js";
+import { setText } from "../utils/text.js";
 
 interface ProactiveState {
   enabled: boolean;
@@ -208,7 +209,7 @@ export class ProactiveScreen extends Screen {
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.statusText.content = `  \x1b[31mエラー: ${msg}\x1b[0m`;
+      setText(this.statusText, `  エラー: ${msg}`, Colors.red);
     }
   }
 
@@ -237,10 +238,10 @@ export class ProactiveScreen extends Screen {
         method: "PUT",
         body: JSON.stringify({ enabled: newEnabled }),
       });
-      this.resultText.content = `  \x1b[32mプロアクティブ送信を${newEnabled ? "有効化" : "無効化"}しました\x1b[0m`;
+      setText(this.resultText, `  プロアクティブ送信を${newEnabled ? "有効化" : "無効化"}しました`, Colors.green);
       this.loadState();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -248,12 +249,14 @@ export class ProactiveScreen extends Screen {
     try {
       const res = await this.api.fetchRaw("/api/proactive/pending", { method: "DELETE" });
       const data = (await res.json()) as { status?: string };
-      this.resultText.content = data.status === "cancelled"
-        ? "  \x1b[32mフォローアップをキャンセルしました\x1b[0m"
-        : "  \x1b[90mキャンセル対象のフォローアップがありません\x1b[0m";
+      if (data.status === "cancelled") {
+        setText(this.resultText, "  フォローアップをキャンセルしました", Colors.green);
+      } else {
+        setText(this.resultText, "  キャンセル対象のフォローアップがありません", Colors.muted);
+      }
       this.loadState();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 }

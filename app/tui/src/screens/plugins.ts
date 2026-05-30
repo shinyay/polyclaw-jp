@@ -11,6 +11,7 @@ import {
 } from "@opentui/core";
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
+import { setText } from "../utils/text.js";
 
 interface Plugin {
   id: string;
@@ -162,10 +163,10 @@ export class PluginsScreen extends Screen {
     if (!p) return;
     try {
       const r = await this.api.enablePlugin(p.id);
-      this.resultText.content = `  \x1b[32m${r.message || "有効化しました"}\x1b[0m`;
+      setText(this.resultText, `  ${r.message || "有効化しました"}`, Colors.green);
       this.loadPlugins();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -174,10 +175,10 @@ export class PluginsScreen extends Screen {
     if (!p) return;
     try {
       const r = await this.api.disablePlugin(p.id);
-      this.resultText.content = `  \x1b[32m${r.message || "無効化しました"}\x1b[0m`;
+      setText(this.resultText, `  ${r.message || "無効化しました"}`, Colors.green);
       this.loadPlugins();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -186,10 +187,10 @@ export class PluginsScreen extends Screen {
     if (!p) return;
     try {
       const r = await this.api.removePlugin(p.id);
-      this.resultText.content = `  \x1b[32m${r.message || "削除しました"}\x1b[0m`;
+      setText(this.resultText, `  ${r.message || "削除しました"}`, Colors.green);
       this.loadPlugins();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 }

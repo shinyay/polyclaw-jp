@@ -12,6 +12,7 @@ import {
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
 import { formatSessionTime, formatDuration, formatSize } from "../utils/format.js";
+import { setText } from "../utils/text.js";
 
 export class SessionsScreen extends Screen {
   private statsText!: TextRenderable;
@@ -144,7 +145,7 @@ export class SessionsScreen extends Screen {
     try {
       const session = await this.api.getSession(s.id as string) as Record<string, unknown>;
       if (!session || session.status === "error") {
-        this.detailText.content = `\x1b[31m${(session?.message as string) || "セッションが見つかりません"}\x1b[0m`;
+        setText(this.detailText, (session?.message as string) || "セッションが見つかりません", Colors.red);
         return;
       }
 
@@ -173,7 +174,7 @@ export class SessionsScreen extends Screen {
         if (toolGroup.length === 0) return;
         const names = toolGroup.map((t) => this.humanizeTool(t.tool as string)).join(", ");
         this.messagesScroll.add(new TextRenderable(this.renderer, {
-          content: `  \x1b[90m[${toolGroup.length} ツール: ${names}]\x1b[0m`,
+          content: `  [${toolGroup.length} ツール: ${names}]`,
           fg: Colors.muted,
           width: "100%",
         }));
@@ -201,7 +202,7 @@ export class SessionsScreen extends Screen {
       flushTools();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.detailText.content = `\x1b[31mエラー: ${msg}\x1b[0m`;
+      setText(this.detailText, `エラー: ${msg}`, Colors.red);
     }
   }
 

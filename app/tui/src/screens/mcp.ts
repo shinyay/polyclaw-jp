@@ -12,6 +12,7 @@ import {
 } from "@opentui/core";
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
+import { setText } from "../utils/text.js";
 
 interface McpServer {
   name: string;
@@ -245,10 +246,10 @@ export class McpScreen extends Screen {
     try {
       if (enable) await this.api.enableMcpServer(s.name);
       else await this.api.disableMcpServer(s.name);
-      this.resultText.content = `  \x1b[32m${enable ? "有効化" : "無効化"}: ${s.name}\x1b[0m`;
+      setText(this.resultText, `  ${enable ? "有効化" : "無効化"}: ${s.name}`, Colors.green);
       this.loadServers();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -257,10 +258,10 @@ export class McpScreen extends Screen {
     if (!s) return;
     try {
       await this.api.removeMcpServer(s.name);
-      this.resultText.content = `  \x1b[32m削除: ${s.name}\x1b[0m`;
+      setText(this.resultText, `  削除: ${s.name}`, Colors.green);
       this.loadServers();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
@@ -268,7 +269,7 @@ export class McpScreen extends Screen {
     const name = this.nameInput.value?.trim();
     const type = this.typeInput.value?.trim();
     if (!name || !type) {
-      this.resultText.content = "  \x1b[31m名前と種類は必須です\x1b[0m";
+      setText(this.resultText, "  名前と種類は必須です", Colors.red);
       return;
     }
     try {
@@ -280,19 +281,19 @@ export class McpScreen extends Screen {
         description: this.descInput.value?.trim() || "",
         enabled: true,
       });
-      this.resultText.content = `  \x1b[32m追加: ${name}\x1b[0m`;
+      setText(this.resultText, `  追加: ${name}`, Colors.green);
       for (const inp of [this.nameInput, this.typeInput, this.cmdInput, this.urlInput, this.descInput]) {
         inp.value = "";
       }
       this.loadServers();
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 
   private async searchRegistry(): Promise<void> {
     const query = this.searchInput.value?.trim() || "";
-    this.resultText.content = "  レジストリを検索中...";
+    setText(this.resultText, "  レジストリを検索中...", Colors.muted);
     try {
       const r = (await this.api.getMcpRegistry(1, query)) as { servers?: RegistryEntry[] };
       this.registryServers = r.servers || [];
@@ -305,9 +306,9 @@ export class McpScreen extends Screen {
         }));
         this.registrySelect.options = opts;
       }
-      this.resultText.content = `  ${this.registryServers.length} 件のサーバーを検出`;
+      setText(this.resultText, `  ${this.registryServers.length} 件のサーバーを検出`, Colors.muted);
     } catch (err: unknown) {
-      this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;
+      setText(this.resultText, `  ${err instanceof Error ? err.message : err}`, Colors.red);
     }
   }
 }

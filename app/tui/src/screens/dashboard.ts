@@ -10,6 +10,7 @@ import {
 import { Screen } from "./screen.js";
 import { Colors } from "../utils/theme.js";
 import { getContainerStatuses, type ContainerHealth } from "../utils/containers.js";
+import { setText } from "../utils/text.js";
 
 export class DashboardScreen extends Screen {
   private statusText!: TextRenderable;
@@ -128,7 +129,7 @@ export class DashboardScreen extends Screen {
         : "  トンネルが起動していません。「セットアップ > トンネル開始」を実行してください。";
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.statusText.content = `\x1b[31m  エラー: ${msg}\x1b[0m`;
+      setText(this.statusText, `  エラー: ${msg}`, Colors.red);
     }
   }
 
