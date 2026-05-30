@@ -112,11 +112,27 @@ if [[ "$MODE" == "runtime" ]]; then
 
     if [[ -n "${POLYCLAW_USE_MI:-}" ]]; then
         echo "Runtime (ACA): managed identity detected (AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-<not set>})"
-        if timeout 30 az login --identity --output none 2>/dev/null; then
+        # User-assigned managed identities require --client-id; without it
+        # `az login --identity` looks for a system-assigned identity and fails
+        # with "Please run 'az login' to setup account" on ACA.
+        # Note: older Azure CLI versions used --username, but it was deprecated
+        # in favour of --client-id, --object-id, or --resource-id.
+        _MI_LOGIN_ARGS=(--identity)
+        if [[ -n "${AZURE_CLIENT_ID:-}" ]]; then
+            _MI_LOGIN_ARGS+=(--client-id "$AZURE_CLIENT_ID")
+        fi
+        _MI_LOGIN_ERR=$(mktemp)
+        if timeout 30 az login "${_MI_LOGIN_ARGS[@]}" --output none 2>"$_MI_LOGIN_ERR"; then
             echo "Runtime (ACA): az CLI authenticated via managed identity."
             _RUNTIME_AUTH_OK=true
+            rm -f "$_MI_LOGIN_ERR"
         else
             echo "Runtime (ACA): WARNING -- managed identity login failed (or timed out)."
+            if [[ -s "$_MI_LOGIN_ERR" ]]; then
+                echo "Runtime (ACA): az login stderr:"
+                sed 's/^/  | /' "$_MI_LOGIN_ERR"
+            fi
+            rm -f "$_MI_LOGIN_ERR"
             # Fall back to service principal if credentials are available
             if [[ -n "${RUNTIME_SP_APP_ID:-}" && -n "${RUNTIME_SP_PASSWORD:-}" && -n "${RUNTIME_SP_TENANT:-}" ]]; then
                 echo "Runtime (ACA): Falling back to service principal..."
