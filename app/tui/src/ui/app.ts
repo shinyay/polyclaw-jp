@@ -91,7 +91,6 @@ export class App {
   async start(): Promise<void> {
     this.renderer = await createCliRenderer({
       exitOnCtrlC: true,
-      useAlternateScreen: true,
       useMouse: true,
       backgroundColor: Colors.bg,
     });

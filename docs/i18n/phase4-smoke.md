@@ -349,53 +349,63 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 | 2026-05-30 | shinyay | 4.2.0 usage (`help`) | ✅ PASS | pre-existing aca-* 行 6 重複検出 |
 | 2026-05-30 | shinyay | 4.2.1 Disclaimer 画面 | ✅ EXCELLENT | 5 bullet 全 JA、英語 leak 0 |
 | 2026-05-30 | shinyay | 4.2.2 Target Picker 画面 | 🟡 PARTIAL | **CJK 幅崩れ実証** → PR-5.0 critical |
+| 2026-05-30 | shinyay | **Step A**: target-picker.ts:83 から ANSI escape `\x1b[32m...\x1b[0m` を除去して再実行 | ✅ **完全成功** | `(試験的)` 残像消失 + description 完全表示。**真の根本原因 = ANSI escape が `@opentui/core` 内部の `Bun.stringWidth()` で width として数えられる** ことを確定 |
 | (deferred) | — | 4.2.3 タブ巡回 (11 タブ) | — | PR-5.0 後に再実施 |
 | (deferred) | — | 4.2.3 日本語入力 + tool args | — | PR-5.0 後に再実施 |
 | (deferred) | — | 4.2.4 `Thinking` leak verify | — | PR-5.0 後に再実施 |
 | (deferred) | — | 4.3 setup wizard 文言 | — | (任意、Azure 必要) |
 
+#### 4.4.1 根本原因の正確な理解 (Step A 検証後)
+
+最初の仮説 (`@opentui/core` が CJK 非対応) は **誤り**。実際には:
+
+- `@opentui/core` 0.1.107 は内部で `Bun.stringWidth()` を使用 (`index-mw2x3082.js:10300, 10306`)
+- CJK 文字は 2 cell として **正しく** 扱われる
+- **しかし** `Bun.stringWidth` のデフォルトでは `countAnsiEscapeCodes: true` で ANSI escape (例: `\x1b[32m` = 5 cell) も **テキスト幅として数える**
+- 結果、`"\x1b[32m(試験的)\x1b[0m"` は実表示 8 cell だが、内部判定は (5+8+4=) **17 cell** と誤算
+- → `TextRenderable.content` 再代入時、古い content の幅分の column が clear されず **残骸表示**
+
+**Step A の証拠**: ANSI escape を除去するだけで残像完全消失、description も full 表示。`utils/width.ts` 配線は不要。
+
+緑色 `(試験的)` の装飾は失われるが、**テキスト整合性 > 装飾色** のトレードオフは妥当。長期的には PR-5.1 で `TextRenderable.fg` プロパティに移行することで色情報を復活可能。
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
 
-### 5.1 PR-5.0 critical hotfix (実機検証で必須化)
+### 5.1 PR-5.0 critical hotfix (実機検証で必須化、Step A 検証後に scope 改定)
 
-`docs/i18n/inventory.csv` の status は全 translated/approved 済だが、**実機 §4.4 Step 2 で CJK 幅崩れを実証**したため、以下を **必須対応**:
+`docs/i18n/inventory.csv` の status は全 translated/approved 済だが、**実機 §4.4 Step 2 で CJK 幅崩れを実証 → Step A で ANSI escape が真の原因と確定** したため、PR-5.0 は **minimum hotfix** に focus し、残り refactor は PR-5.1 に分離する。
 
-#### 5.1.1 🔴 CRITICAL: CJK 幅 helper 配線 (実機 finding に基づく)
+#### 5.1.1 ✅ PR-5.0 適用済 (3 件)
 
-`app/tui/src/utils/width.ts` の `padToWidth` / `truncateByWidth` / `stringWidth` を **動的に再描画される全 `TextRenderable.content` 更新箇所**に配線する。
-
-| 優先度 | ファイル | 関数 | 修正 |
+| 優先度 | ファイル:行 | 修正 | 効果 |
 |:---:|---|---|---|
-| 🔴 P0 | `ui/target-picker.ts:173-177` | `renderItem()` | `padToWidth(text, COLS, 'left')` で固定幅化 → 残像消去 |
-| 🔴 P0 | `ui/target-picker.ts:83` | ACA option `description` | description が長すぎる場合 `truncateByWidth(text, AVAIL_W, '…')` |
-| 🔴 P0 | `screens/chat.ts:189` | tool args display | `truncateByWidth(args, 120, '...')` |
-| 🔴 P0 | `screens/chat.ts:283` | tool args display (short) | `truncateByWidth(args, 60, '...')` |
-| 🟡 P1 | `headless/setup.ts:226` | 疎通確認 log | `truncateByWidth(text, 100, '')` |
-| 🟡 P1 | `headless/aca_setup.ts:275` | 同上 | 同上 |
-| 🟡 P1 | `screens/mcp.ts`, `scheduler.ts`, `proactive.ts`, `plugins.ts`, `workspace.ts`, `skills.ts` | SelectRenderable options 動的更新 (`Loading...` → 実 content) | 同じ残像問題が発生する可能性 → `padToWidth` で空白埋め |
-| 🟢 P2 | `ui/tui.ts:549` | log level `padEnd(5)` | `padToWidth(level, 5, 'left')` |
+| 🔴 P0 | `ui/target-picker.ts:83` | `(試験的)` から ANSI escape `\x1b[32m...\x1b[0m` を除去 | 残像 + 半切れ消失 (Step A で実証済) |
+| 🟡 P1 | `ui/tui.ts:412` | `activityText = "Thinking"` → `"考え中"` | status bar の英語 leak 解消 |
+| 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 |
 
-**動作確認**: PR-5.0 適用後に再 smoke (§4.4 Step 3 以降を実施) して残像 + 半切れが解消したことを目視確認。
+**動作確認** (PR-5.0 commit 前に実施):
+- `bun run typecheck`: ✅ exit 0 (pre-existing error 解消)
+- `bun test`: ✅ 103/103 pass
 
-#### 5.1.2 🟡 leak 修正 (3-4 site, §2.3)
+#### 5.1.2 ⏭️ PR-5.1 (後追い、ANSI escape refactor、~40 site)
 
-- `ui/tui.ts:412` `"Thinking"` → `"考え中"` (status bar leak、§4.4 Step 5 で deferred、PR-5.0 で同時修正)
-- `ui/tui.ts:356` `"Admin"/"Runtime"` → 議論後翻訳 or 英語維持
-- `config/constants.ts:85,86,91,92` `"Tunnel"/"Bot"` → 議論後翻訳 or 英語維持
+`TextRenderable.content` に ANSI escape を含むサイト (grep 検出 41+ site) を **`fg` プロパティに分離** することで、色装飾を保ちつつ width 問題から脱却する。これは翻訳作業ではなく **refactor 作業** (inventory.csv 変更なし)。
 
-#### 5.1.3 🟢 `@opentui/core` 0.1.107 API 追従
+| Tier | 影響度 | 件数 | 例 | refactor 方針 |
+|:---:|:---:|---:|---|---|
+| 🔴 1 | 高 | ~5 | `setup.ts:193/196` (`設定済み`/`未設定` の切り替え) | content を plain JA、fg を動的設定 |
+| 🟡 2 | 中 | ~30 | `screens/{sessions,scheduler,plugins,mcp,...}.ts` の `resultText.content = "\x1b[31mエラー: ...\x1b[0m"` | content から ANSI 除去、fg を `"red"`/`"green"` に動的設定 |
+| 🟢 3 | 低 | ~6 | `app.ts:150` (1 回だけ表示) | 低優先、影響軽微 |
 
-- `ui/app.ts:94` の `useAlternateScreen` プロパティ削除 (typecheck error 解消)
+詳細な refactor 対象一覧は phase5-plan.md (PR-5.1 着手時に作成) に整理予定。
 
-#### 5.1.4 ⭐ 推奨追加: `TextRenderable` ラッパー作成
+#### 5.1.3 旧仮説の archive (utils/width.ts 配線案)
 
-長期的には、`@opentui/core` の `TextRenderable` を直接使うのではなく、**CJK 幅対応のラッパー** (例: `CjkTextRenderable`) を作って TUI 全体で統一すべき。
-- `setContent(text: string, maxWidth?: number)` メソッドで自動 padToWidth + truncate
-- これにより、新たに追加される画面で同じ問題が再発しない
+Step A 検証以前は「`@opentui/core` が CJK 非対応 → `utils/width.ts` の `padToWidth` / `truncateByWidth` を配線」が解決策と考えていたが、**ANSI escape を除去すれば `@opentui/core` 内部の `Bun.stringWidth()` で正しく CJK 幅が計算される** ことが判明したため、この案は **不要** となった。
 
-Phase 5 PR-5.1 候補。
+`utils/width.ts` の helper 4 関数 (`charWidth`/`stringWidth`/`padToWidth`/`truncateByWidth`) は未配線のまま残るが、PR-5.1 で `TextRenderable.fg` 分離が完了すれば永久に不要 → 削除候補。
 
 ### 5.2 Collector blind spot back-fill (Phase 5 Wave 2)
 

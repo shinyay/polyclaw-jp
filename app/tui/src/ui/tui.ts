@@ -409,7 +409,7 @@ export async function launchTUI(
     if (thinkingTimer) return;
     thinkingFrame = 0;
     gradientIdx = 0;
-    activityText = "Thinking";
+    activityText = "考え中";
     refreshInfoBar();
     thinkingTimer = setInterval(() => {
       thinkingFrame = (thinkingFrame + 1) % SPINNER_FRAMES.length;
