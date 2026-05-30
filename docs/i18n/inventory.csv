@@ -801,79 +801,96 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 800,backend,app/runtime/realtime/routes.py,79,"message"": ""Phone number is required",,pending,,
 801,backend,app/runtime/registries/plugins.py,219,No PLUGIN.json found in zip archive,,pending,,
 802,backend,app/runtime/registries/plugins.py,228,Invalid PLUGIN.json in archive,,pending,,
-803,backend,app/runtime/messaging/message_processor.py,85,An error occurred while processing your message.,,pending,,
-804,backend,app/runtime/messaging/bot.py,80,You are not authorized to use this bot.,,pending,,
-805,backend,app/runtime/messaging/commands/agent.py,51,Installing skill '{name}'...,,pending,,
-806,backend,app/runtime/messaging/commands/agent.py,51,{name},,pending,,
-807,backend,app/runtime/messaging/commands/agent.py,53,Skill '{name}' installed.,,pending,,
-808,backend,app/runtime/messaging/commands/agent.py,53,{name},,pending,,
-809,backend,app/runtime/messaging/commands/agent.py,71,Skill '{name}' removed.,,pending,,
-810,backend,app/runtime/messaging/commands/agent.py,71,{name},,pending,,
-811,backend,app/runtime/messaging/commands/agent.py,78,No plugins found.,,pending,,
-812,backend,app/runtime/messaging/commands/agent.py,92,Usage: /plugin enable <id> or /plugin disable <id>,,pending,,
-813,backend,app/runtime/messaging/commands/agent.py,98,Plugin '{plugin_id}' enabled.,,pending,,
-814,backend,app/runtime/messaging/commands/agent.py,98,{plugin_id},,pending,,
-815,backend,app/runtime/messaging/commands/agent.py,101,Plugin '{plugin_id}' disabled.,,pending,,
-816,backend,app/runtime/messaging/commands/agent.py,101,{plugin_id},,pending,,
-817,backend,app/runtime/messaging/commands/agent.py,103,Unknown action '{action}'.,,pending,,
-818,backend,app/runtime/messaging/commands/agent.py,103,{action},,pending,,
-819,backend,app/runtime/messaging/commands/agent.py,112,No MCP servers configured.,,pending,,
-820,backend,app/runtime/messaging/commands/agent.py,127,Usage: /mcp add <name> <url>,,pending,,
-821,backend,app/runtime/messaging/commands/agent.py,131,MCP server '{parts[2]}' added. Start a /new session to activate.,,pending,,
-822,backend,app/runtime/messaging/commands/agent.py,131,{parts[2]},,pending,,
-823,backend,app/runtime/messaging/commands/agent.py,133,Error: {exc},,pending,,
-824,backend,app/runtime/messaging/commands/agent.py,136,Usage: /mcp remove <name>,,pending,,
-825,backend,app/runtime/messaging/commands/agent.py,140,MCP server '{parts[2]}' removed.,,pending,,
-826,backend,app/runtime/messaging/commands/agent.py,140,{parts[2]},,pending,,
-827,backend,app/runtime/messaging/commands/agent.py,142,Error: {exc},,pending,,
-828,backend,app/runtime/messaging/commands/agent.py,145,Usage: /mcp {action} <name>,,pending,,
-829,backend,app/runtime/messaging/commands/agent.py,148,MCP server '{parts[2]}' {action}d.,,pending,,
-830,backend,app/runtime/messaging/commands/agent.py,148,{parts[2]},,pending,,
-831,backend,app/runtime/messaging/commands/agent.py,150,Unknown MCP action '{action}'.,,pending,,
-832,backend,app/runtime/messaging/commands/agent.py,150,{action},,pending,,
-833,backend,app/runtime/messaging/commands/agent.py,157,No scheduled tasks. Usage: /schedule add <cron> <prompt>,,pending,,
-834,backend,app/runtime/messaging/commands/agent.py,171,Usage: /schedule add <cron> <prompt> or /schedule remove <id>,,pending,,
-835,backend,app/runtime/messaging/commands/agent.py,177,Usage: /schedule add <min> <hour> <dom> <month> <dow> <prompt>,,pending,,
-836,backend,app/runtime/messaging/commands/agent.py,183,Scheduled task created: ID: {task.id} Cron: {cron} Prompt: {prompt},,pending,,
-837,backend,app/runtime/messaging/commands/agent.py,185,Error: {exc},,pending,,
-838,backend,app/runtime/messaging/commands/agent.py,188,Usage: /schedule remove <id>,,pending,,
-839,backend,app/runtime/messaging/commands/agent.py,191,Task '{parts[2]}' removed.,,pending,,
-840,backend,app/runtime/messaging/commands/agent.py,191,{parts[2]},,pending,,
-841,backend,app/runtime/messaging/commands/system.py,96,Usage: /config <KEY> <VALUE>,,pending,,
-842,backend,app/runtime/messaging/commands/system.py,101,"Cannot set '{key}'. Allowed keys: {', '.join(sorted(allowed))}",,pending,,
-843,backend,app/runtime/messaging/commands/system.py,101,{key},,pending,,
-844,backend,app/runtime/messaging/commands/system.py,104,Config updated: {key} = {parts[2]},,pending,,
-845,backend,app/runtime/messaging/commands/system.py,116,Preflight check failed (HTTP {resp.status}).,,pending,,
-846,backend,app/runtime/messaging/commands/system.py,120,Cannot reach preflight endpoint: {exc},,pending,,
-847,backend,app/runtime/messaging/commands/system.py,134,Current target number: {cfg.voice_target_number or '(not set)'} Usage: /phone <number>,,pending,,
-848,backend,app/runtime/messaging/commands/system.py,134,(not set),,pending,,
-849,backend,app/runtime/messaging/commands/system.py,138,Phone number must start with + country code.,,pending,,
-850,backend,app/runtime/messaging/commands/system.py,141,Voice target number set to {number}.,,pending,,
-851,backend,app/runtime/messaging/commands/system.py,149,No target number configured. Use /phone <number> first.,,pending,,
-852,backend,app/runtime/messaging/commands/system.py,158,Calling {target}...,,pending,,
-853,backend,app/runtime/messaging/commands/system.py,160,"Call failed: {data.get('error', f'HTTP {resp.status}')}",,pending,,
-854,backend,app/runtime/messaging/commands/system.py,160,error,,pending,,
-855,backend,app/runtime/messaging/commands/system.py,162,Call failed: {exc},,pending,,
-856,backend,app/runtime/messaging/commands/system.py,169,Lock Down Mode: {state} Usage: /lockdown on | /lockdown off,,pending,,
-857,backend,app/runtime/messaging/commands/system.py,173,Usage: /lockdown on | /lockdown off,,pending,,
-858,backend,app/runtime/messaging/commands/system.py,177,Lock Down Mode is already enabled.,,pending,,
-859,backend,app/runtime/messaging/commands/system.py,184,Lock Down Mode ENABLED - Azure CLI logged out - Admin panel disabled,,pending,,
-860,backend,app/runtime/messaging/commands/system.py,187,Lock Down Mode is already disabled.,,pending,,
-861,backend,app/runtime/messaging/commands/system.py,190,Lock Down Mode DISABLED - Admin panel re-enabled,,pending,,
-862,backend,app/runtime/messaging/commands/session.py,18,New session started.,,pending,,
-863,backend,app/runtime/messaging/commands/session.py,24,Current model: {cfg.copilot_model} Usage: /model <name>,,pending,,
-864,backend,app/runtime/messaging/commands/session.py,32,Model switched: {old_model} -> {new_model} New session started.,,pending,,
-865,backend,app/runtime/messaging/commands/session.py,38,No models available.,,pending,,
-866,backend,app/runtime/messaging/commands/session.py,67,Session store not available.,,pending,,
-867,backend,app/runtime/messaging/commands/session.py,71,No recorded sessions.,,pending,,
-868,backend,app/runtime/messaging/commands/session.py,87,Session store not available.,,pending,,
-869,backend,app/runtime/messaging/commands/session.py,90,All sessions cleared ({count} deleted).,,pending,,
-870,backend,app/runtime/messaging/commands/session.py,99,Session store not available.,,pending,,
-871,backend,app/runtime/messaging/commands/session.py,102,Session '{parts[2]}' deleted.,,pending,,
-872,backend,app/runtime/messaging/commands/session.py,102,{parts[2]},,pending,,
-873,backend,app/runtime/messaging/commands/session.py,109,Session store not available.,,pending,,
-874,backend,app/runtime/messaging/commands/session.py,113,No sessions to switch to. Use /new to start one.,,pending,,
-875,backend,app/runtime/messaging/commands/session.py,130,Memory cleared ({cleared} files removed).,,pending,,
+803,backend,app/runtime/messaging/message_processor.py,85,An error occurred while processing your message.,メッセージ処理中にエラーが発生しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+804,backend,app/runtime/messaging/bot.py,80,You are not authorized to use this bot.,このボットを利用する権限がありません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+805,backend,app/runtime/messaging/commands/agent.py,51,Installing skill '{name}'...,スキル '{name}' をインストールしています...,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+806,backend,app/runtime/messaging/commands/agent.py,51,{name},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+807,backend,app/runtime/messaging/commands/agent.py,53,Skill '{name}' installed.,スキル '{name}' をインストールしました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+808,backend,app/runtime/messaging/commands/agent.py,53,{name},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+809,backend,app/runtime/messaging/commands/agent.py,71,Skill '{name}' removed.,スキル '{name}' を削除しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+810,backend,app/runtime/messaging/commands/agent.py,71,{name},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+811,backend,app/runtime/messaging/commands/agent.py,78,No plugins found.,プラグインはありません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+812,backend,app/runtime/messaging/commands/agent.py,92,Usage: /plugin enable <id> or /plugin disable <id>,使い方: /plugin enable <id> または /plugin disable <id>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+813,backend,app/runtime/messaging/commands/agent.py,98,Plugin '{plugin_id}' enabled.,プラグイン '{plugin_id}' を有効化しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+814,backend,app/runtime/messaging/commands/agent.py,98,{plugin_id},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+815,backend,app/runtime/messaging/commands/agent.py,101,Plugin '{plugin_id}' disabled.,プラグイン '{plugin_id}' を無効化しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+816,backend,app/runtime/messaging/commands/agent.py,101,{plugin_id},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+817,backend,app/runtime/messaging/commands/agent.py,103,Unknown action '{action}'.,不明なアクション '{action}' です。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+818,backend,app/runtime/messaging/commands/agent.py,103,{action},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+819,backend,app/runtime/messaging/commands/agent.py,112,No MCP servers configured.,MCP サーバーは未登録です。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+820,backend,app/runtime/messaging/commands/agent.py,127,Usage: /mcp add <name> <url>,使い方: /mcp add <name> <url>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+821,backend,app/runtime/messaging/commands/agent.py,131,MCP server '{parts[2]}' added. Start a /new session to activate.,MCP サーバー '{parts[2]}' を追加しました。/new で新しいセッションを開始すると有効になります。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+822,backend,app/runtime/messaging/commands/agent.py,131,{parts[2]},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+823,backend,app/runtime/messaging/commands/agent.py,133,Error: {exc},エラー: {exc},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+824,backend,app/runtime/messaging/commands/agent.py,136,Usage: /mcp remove <name>,使い方: /mcp remove <name>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+825,backend,app/runtime/messaging/commands/agent.py,140,MCP server '{parts[2]}' removed.,MCP サーバー '{parts[2]}' を削除しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+826,backend,app/runtime/messaging/commands/agent.py,140,{parts[2]},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+827,backend,app/runtime/messaging/commands/agent.py,142,Error: {exc},エラー: {exc},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+828,backend,app/runtime/messaging/commands/agent.py,145,Usage: /mcp {action} <name>,使い方: /mcp {action} <name>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+829,backend,app/runtime/messaging/commands/agent.py,148,MCP server '{parts[2]}' {action}d.,MCP サーバー '{parts[2]}' を {action} しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+830,backend,app/runtime/messaging/commands/agent.py,148,{parts[2]},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+831,backend,app/runtime/messaging/commands/agent.py,150,Unknown MCP action '{action}'.,不明な MCP アクション '{action}' です。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+832,backend,app/runtime/messaging/commands/agent.py,150,{action},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+833,backend,app/runtime/messaging/commands/agent.py,157,No scheduled tasks. Usage: /schedule add <cron> <prompt>,"スケジュール済みタスクはありません。
+
+使い方: /schedule add <cron> <prompt>",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+834,backend,app/runtime/messaging/commands/agent.py,171,Usage: /schedule add <cron> <prompt> or /schedule remove <id>,使い方: /schedule add <cron> <prompt> または /schedule remove <id>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+835,backend,app/runtime/messaging/commands/agent.py,177,Usage: /schedule add <min> <hour> <dom> <month> <dow> <prompt>,使い方: /schedule add <min> <hour> <dom> <month> <dow> <prompt>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+836,backend,app/runtime/messaging/commands/agent.py,183,Scheduled task created: ID: {task.id} Cron: {cron} Prompt: {prompt},"スケジュールタスクを作成しました:
+  ID: {task.id}
+  Cron: {cron}
+  プロンプト: {prompt}",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+837,backend,app/runtime/messaging/commands/agent.py,185,Error: {exc},エラー: {exc},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+838,backend,app/runtime/messaging/commands/agent.py,188,Usage: /schedule remove <id>,使い方: /schedule remove <id>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+839,backend,app/runtime/messaging/commands/agent.py,191,Task '{parts[2]}' removed.,タスク '{parts[2]}' を削除しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+840,backend,app/runtime/messaging/commands/agent.py,191,{parts[2]},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+841,backend,app/runtime/messaging/commands/system.py,96,Usage: /config <KEY> <VALUE>,使い方: /config <KEY> <VALUE>,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+842,backend,app/runtime/messaging/commands/system.py,101,"Cannot set '{key}'. Allowed keys: {', '.join(sorted(allowed))}","'{key}' は設定できません。設定可能なキー: {', '.join(sorted(allowed))}",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+843,backend,app/runtime/messaging/commands/system.py,101,{key},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+844,backend,app/runtime/messaging/commands/system.py,104,Config updated: {key} = {parts[2]},設定を更新しました: {key} = {parts[2]},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+845,backend,app/runtime/messaging/commands/system.py,116,Preflight check failed (HTTP {resp.status}).,事前チェックに失敗しました (HTTP {resp.status})。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+846,backend,app/runtime/messaging/commands/system.py,120,Cannot reach preflight endpoint: {exc},事前チェックのエンドポイントに接続できません: {exc},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+847,backend,app/runtime/messaging/commands/system.py,134,Current target number: {cfg.voice_target_number or '(not set)'} Usage: /phone <number>,"現在の発信先番号: {cfg.voice_target_number or '(未設定)'}
+
+使い方: /phone <number>",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+848,backend,app/runtime/messaging/commands/system.py,134,(not set),(未設定),approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+849,backend,app/runtime/messaging/commands/system.py,138,Phone number must start with + country code.,電話番号は + と国番号で始める必要があります。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+850,backend,app/runtime/messaging/commands/system.py,141,Voice target number set to {number}.,音声発信先の番号を {number} に設定しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+851,backend,app/runtime/messaging/commands/system.py,149,No target number configured. Use /phone <number> first.,発信先番号が未設定です。先に /phone <number> を実行してください。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+852,backend,app/runtime/messaging/commands/system.py,158,Calling {target}...,{target} に発信しています...,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+853,backend,app/runtime/messaging/commands/system.py,160,"Call failed: {data.get('error', f'HTTP {resp.status}')}","発信に失敗しました: {data.get('error', f'HTTP {resp.status}')}",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+854,backend,app/runtime/messaging/commands/system.py,160,error,,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+855,backend,app/runtime/messaging/commands/system.py,162,Call failed: {exc},発信に失敗しました: {exc},approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+856,backend,app/runtime/messaging/commands/system.py,169,Lock Down Mode: {state} Usage: /lockdown on | /lockdown off,"ロックダウンモード: {state}
+
+使い方: /lockdown on | /lockdown off",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+857,backend,app/runtime/messaging/commands/system.py,173,Usage: /lockdown on | /lockdown off,使い方: /lockdown on | /lockdown off,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+858,backend,app/runtime/messaging/commands/system.py,177,Lock Down Mode is already enabled.,ロックダウンモードはすでに有効です。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+859,backend,app/runtime/messaging/commands/system.py,184,Lock Down Mode ENABLED - Azure CLI logged out - Admin panel disabled,"ロックダウンモードを有効化しました
+
+  - Azure CLI からログアウト
+  - 管理パネルを無効化",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+860,backend,app/runtime/messaging/commands/system.py,187,Lock Down Mode is already disabled.,ロックダウンモードはすでに無効です。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+861,backend,app/runtime/messaging/commands/system.py,190,Lock Down Mode DISABLED - Admin panel re-enabled,"ロックダウンモードを無効化しました
+
+  - 管理パネルを再有効化",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+862,backend,app/runtime/messaging/commands/session.py,18,New session started.,新しいセッションを開始しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+863,backend,app/runtime/messaging/commands/session.py,24,Current model: {cfg.copilot_model} Usage: /model <name>,"現在のモデル: {cfg.copilot_model}
+
+使い方: /model <name>",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+864,backend,app/runtime/messaging/commands/session.py,32,Model switched: {old_model} -> {new_model} New session started.,"モデルを切り替えました: {old_model} -> {new_model}
+新しいセッションを開始しました。",approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+865,backend,app/runtime/messaging/commands/session.py,38,No models available.,利用可能なモデルはありません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+866,backend,app/runtime/messaging/commands/session.py,67,Session store not available.,セッションストアが利用できません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+867,backend,app/runtime/messaging/commands/session.py,71,No recorded sessions.,記録されたセッションはありません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+868,backend,app/runtime/messaging/commands/session.py,87,Session store not available.,セッションストアが利用できません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+869,backend,app/runtime/messaging/commands/session.py,90,All sessions cleared ({count} deleted).,すべてのセッションを削除しました ({count} 件)。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+870,backend,app/runtime/messaging/commands/session.py,99,Session store not available.,セッションストアが利用できません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+871,backend,app/runtime/messaging/commands/session.py,102,Session '{parts[2]}' deleted.,セッション '{parts[2]}' を削除しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+872,backend,app/runtime/messaging/commands/session.py,102,{parts[2]},,approved,PR-3.1,"PR-3.1: placeholder fragment, no translation needed"
+873,backend,app/runtime/messaging/commands/session.py,109,Session store not available.,セッションストアが利用できません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+874,backend,app/runtime/messaging/commands/session.py,113,No sessions to switch to. Use /new to start one.,切り替え可能なセッションがありません。/new で新しいセッションを開始してください。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
+875,backend,app/runtime/messaging/commands/session.py,130,Memory cleared ({cleared} files removed).,メモリーをクリアしました ({cleared} ファイル削除)。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
 876,backend,app/runtime/state/guardrails/config.py,91,action must be one of: %s,,pending,,
 877,backend,app/runtime/state/guardrails/config.py,105,channel must be 'chat' or 'phone',,pending,,
 878,backend,app/runtime/state/guardrails/config.py,130,filter_mode must be 'prompt_shields',,pending,,
