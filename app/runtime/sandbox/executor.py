@@ -252,7 +252,7 @@ class SandboxExecutor:
                 return self._token
             except Exception:
                 continue
-        raise RuntimeError("Failed to acquire Azure credentials for Dynamic Sessions")
+        raise RuntimeError("Dynamic Sessions 用の Azure 資格情報の取得に失敗しました")
 
     async def _upload_bytes(
         self, http: aiohttp.ClientSession, endpoint: str, session_id: str,

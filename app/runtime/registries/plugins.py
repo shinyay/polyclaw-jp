@@ -216,7 +216,7 @@ class PluginRegistry:
         with zipfile.ZipFile(zip_path, "r") as zf:
             manifest_entries = [n for n in zf.namelist() if n.endswith("PLUGIN.json")]
             if not manifest_entries:
-                raise ValueError("No PLUGIN.json found in zip archive")
+                raise ValueError("zip アーカイブに PLUGIN.json が見つかりません")
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 zf.extractall(tmpdir)
@@ -225,7 +225,7 @@ class PluginRegistry:
 
                 manifest = _parse_manifest(manifest_file)
                 if not manifest:
-                    raise ValueError("Invalid PLUGIN.json in archive")
+                    raise ValueError("アーカイブ内の PLUGIN.json が不正です")
 
                 dest = user_plugins_dir / manifest.id
                 if dest.exists():

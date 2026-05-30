@@ -293,7 +293,7 @@ class RealtimeMiddleTier:
             return {"api-key": self._key}
         if self._token_provider:
             return {"Authorization": f"Bearer {self._token_provider()}"}
-        raise ValueError("No authentication configured for OpenAI Realtime")
+        raise ValueError("OpenAI Realtime の認証が設定されていません")
 
 
 # -- tool dispatch table ---------------------------------------------------

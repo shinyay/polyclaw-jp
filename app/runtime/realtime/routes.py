@@ -76,10 +76,10 @@ class RealtimeRoutes:
         logger.info("API /voice/call: number=%s, source=%s", number, self._caller.source_number)
 
         if not number:
-            return web.json_response({"status": "error", "message": "Phone number is required"}, status=400)
+            return web.json_response({"status": "error", "message": "電話番号は必須です"}, status=400)
         if not number.startswith("+"):
             return web.json_response(
-                {"status": "error", "message": "Phone number must be in E.164 format (e.g. +49123456789)"},
+                {"status": "error", "message": "電話番号は E.164 形式 (例: +49123456789) で指定してください"},
                 status=400,
             )
 

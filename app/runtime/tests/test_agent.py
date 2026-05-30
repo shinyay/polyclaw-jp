@@ -112,7 +112,7 @@ class TestAgentSession:
     @pytest.mark.asyncio
     async def test_new_session_without_start_raises(self):
         a = Agent()
-        with pytest.raises(RuntimeError, match="not started"):
+        with pytest.raises(RuntimeError, match="起動していません"):
             await a.new_session()
 
 
@@ -184,7 +184,7 @@ class TestAgentListModels:
     @pytest.mark.asyncio
     async def test_list_models_not_started(self):
         a = Agent()
-        with pytest.raises(RuntimeError, match="not started"):
+        with pytest.raises(RuntimeError, match="起動していません"):
             await a.list_models()
 
 

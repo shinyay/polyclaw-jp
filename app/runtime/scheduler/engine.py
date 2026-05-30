@@ -102,7 +102,7 @@ class Scheduler:
         run_at: str | None = None,
     ) -> ScheduledTask:
         if not cron and not run_at:
-            raise ValueError("Provide either cron or run_at")
+            raise ValueError("cron または run_at のいずれかを指定してください")
         if cron:
             _validate_cron(cron)
         task = ScheduledTask(

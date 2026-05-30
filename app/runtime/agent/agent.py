@@ -215,7 +215,7 @@ class Agent:
 
     async def new_session(self) -> Any:
         if not self._client:
-            raise RuntimeError("Agent not started")
+            raise RuntimeError("エージェントが起動していません")
         async with self._send_lock:
             return await self._new_session_inner()
 
@@ -239,7 +239,7 @@ class Agent:
         if self._session:
             return self._session
         if not self._client:
-            raise RuntimeError("Agent not started")
+            raise RuntimeError("エージェントが起動していません")
         async with self._send_lock:
             if self._session:
                 return self._session
@@ -361,7 +361,7 @@ class Agent:
 
     async def list_models(self) -> list[dict]:
         if not self._client:
-            raise RuntimeError("Agent not started")
+            raise RuntimeError("エージェントが起動していません")
 
         # BYOK mode: return Foundry-deployed models from .env
         if self._byok:

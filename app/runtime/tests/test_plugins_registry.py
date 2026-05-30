@@ -254,6 +254,6 @@ class TestPluginRegistry:
         with zipfile.ZipFile(zip_path, "w") as zf:
             zf.writestr("readme.txt", "no manifest here")
         reg = PluginRegistry()
-        with pytest.raises(ValueError, match="No PLUGIN.json"):
+        with pytest.raises(ValueError, match="PLUGIN\\.json が見つかりません"):
             reg.import_from_zip(zip_path)
         zip_path.unlink()

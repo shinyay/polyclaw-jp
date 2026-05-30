@@ -195,5 +195,5 @@ class TestRealtimeMiddleTier:
         )
         mid._key = None
         mid._token_provider = None
-        with pytest.raises(ValueError, match="No authentication"):
+        with pytest.raises(ValueError, match="認証が設定されていません"):
             mid._auth_headers()

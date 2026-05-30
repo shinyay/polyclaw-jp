@@ -63,7 +63,7 @@ class ProactiveRoutes:
                 "status": "cancelled",
                 "message": cancelled.message[:80],
             })
-        return web.json_response({"status": "none", "message": "No pending follow-up."})
+        return web.json_response({"status": "none", "message": "保留中のフォローアップはありません。"})
 
     async def update_preferences(self, req: web.Request) -> web.Response:
         data = await req.json()
@@ -105,7 +105,7 @@ class ProactiveRoutes:
     async def dry_run(self, _req: web.Request) -> web.Response:
         if self._adapter is None or self._conv_store is None:
             return web.json_response(
-                {"status": "error", "message": "Delivery not configured."},
+                {"status": "error", "message": "配信設定が未構成です。"},
                 status=500,
             )
 
@@ -113,13 +113,13 @@ class ProactiveRoutes:
         if not refs:
             return web.json_response({
                 "status": "error",
-                "message": "No conversation references stored.",
+                "message": "保存されている会話リファレンスがありません。",
                 "conversation_refs": 0,
             })
 
         test_message = (
-            "[dry-run] This is a proactive delivery test. "
-            "If you see this, delivery is working!"
+            "[dry-run] プロアクティブ配信のテストです。"
+            "これが表示されていれば配信は正常に動作しています!"
         )
 
         results: list[dict[str, Any]] = []
@@ -179,11 +179,11 @@ class ProactiveRoutes:
         return web.json_response({
             "status": "ok" if all_ok else "partial",
             "message": (
-                f"Test message sent to {len(results)} channel(s)."
+                f"{len(results)} 個のチャンネルにテストメッセージを送信しました。"
                 if all_ok
                 else (
                     f"{sum(1 for r in results if r['ok'])}"
-                    f"/{len(results)} channel(s) succeeded."
+                    f"/{len(results)} 個のチャンネルで送信に成功しました。"
                 )
             ),
             "conversation_refs": len(refs),
