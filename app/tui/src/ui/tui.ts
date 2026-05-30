@@ -127,7 +127,14 @@ export async function launchTUI(
   // -- Renderer -------------------------------------------------------------
 
   const renderer: CliRenderer = await createCliRenderer({
-    exitOnCtrlC: false,
+    // exitOnCtrlC: true lets @opentui/core install its built-in Ctrl+C handler
+    // which fires process.exit(0). The custom \x03 handler in prependInputHandlers
+    // below is kept as defense-in-depth (it does not fire reliably under
+    // @opentui/core 0.1.107 - the focused InputRenderable consumes \x03 before
+    // the prepend handler can see it, which is why the upstream design with
+    // exitOnCtrlC: false silently broke Ctrl+C exit since the ee923da initial
+    // commit). See docs/i18n/phase4-smoke.md §4.4.5.
+    exitOnCtrlC: true,
     targetFps: 30,
     prependInputHandlers: [
       (sequence: string) => {

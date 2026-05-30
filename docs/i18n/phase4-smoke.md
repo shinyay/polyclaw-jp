@@ -381,38 +381,47 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 
 PR-5.0.1 適用後の `bun run typecheck` exit 0、`bun test` 103/103 pass。
 
-#### 4.4.3 Step H 重大 regression — PR-5.0 useAlternateScreen 削除 → Ctrl+C 不動 → PR-5.0.2 revert
+#### 4.4.3 PR-5.0 → PR-5.0.2 仮説誤りと PR-5.0.3 真の修正 — Ctrl+C 不動の長年 upstream bug
 
 **経緯** (2026-05-30):
 1. PR-5.0 で `app/tui/src/ui/app.ts:94` から `useAlternateScreen: true` を削除 (`@opentui/core` 0.1.107 で型から消えていた → typecheck error 解消目的)
 2. PR-5.0.1 適用後の実機検証で **Ctrl+C が効かなくなる** ことが判明 — TUI からターミナル window を閉じる以外に脱出不能、Docker container も残留
-3. PR-5.0.2 で **immediate revert** (`useAlternateScreen: true` を `@ts-expect-error` 付きで復帰)
+3. PR-5.0.2 で `useAlternateScreen: true` を `@ts-expect-error` 付きで復帰 (Ctrl+C 修正目的)
+4. **再検証で Ctrl+C 依然不動** → 仮説誤りと判明
+5. git blame 調査で真相判明: **Ctrl+C bug は upstream aymenfurter/polyclaw の初期コミット `ee923da` (Aymen 2026-02-15) から存在する長年の bug**
+6. PR-5.0.3 で `app/tui/src/ui/tui.ts:130` の `exitOnCtrlC: false` を `true` に変更 → 真の修正
 
-**根本原因の推定**:
-- `@opentui/core` 0.1.107 では型定義から `useAlternateScreen` が削除されたが、**runtime には依然として残っており、SIGINT (Ctrl+C) ハンドリングの初期化シーケンスに影響する** 副作用がある
-- alternate screen buffer への切替時に raw mode + signal handler が正しく設定されるが、削除すると signal handler 設定が skip される (推定)
-- 型定義削除は **breaking change なし** という upstream の判断だが、実際は SIGINT 経路に regression がある
+**真の root cause**:
+- `app/tui/src/ui/tui.ts:129-150` の admin TUI の `createCliRenderer` 設定が **upstream 設計時から `exitOnCtrlC: false` + 自前 `\x03` handler** という構成
+- `\x03` handler は `prependInputHandlers` 内に登録されているが、`@opentui/core` 0.1.107 では **focused InputRenderable (chat input field) が `\x03` を消費** してしまい、prepend handler に届かない
+- → 結果として TUI 起動後の Ctrl+C は誰も処理せず、無反応に
+- これは upstream の design が成立していたのが、`@opentui/core` の input handling system の変更で壊れた可能性 (もしくは元から動いていなかった)
 
-**対策** (PR-5.0.2):
+**過去の "Ctrl+C で終了" 体験との差異**:
+- target picker 画面 (`target-picker.ts:87` `exitOnCtrlC: true`) で Ctrl+C を使った経験は OpenTui のデフォルト処理によるもの
+- admin TUI 起動後の Ctrl+C は **元から効いていなかった** (ユーザは admin TUI 起動後の Ctrl+C を試したことがなく気付いていなかった)
+
+**PR-5.0.2 の useAlternateScreen 復元の扱い**:
+- Ctrl+C 修正には **不要だった** (=削除しても admin mode 動作に影響しなかった)
+- ただし `app/tui/src/ui/app.ts` は admin 以外の mode で使われる可能性があり、`useAlternateScreen` が runtime に必要かは不明 → **safety net として復元状態を維持**
+- `@ts-expect-error` で型エラーは抑制済
+
+**PR-5.0.3 修正**:
 ```typescript
-this.renderer = await createCliRenderer({
-  exitOnCtrlC: true,
-  // @ts-expect-error: useAlternateScreen was removed from @opentui/core 0.1.107
-  //   type definitions but is still required at runtime - removing it breaks
-  //   Ctrl+C signal handling (verified via PR-5.0 regression).
-  useAlternateScreen: true,
-  useMouse: true,
-  backgroundColor: Colors.bg,
-});
+// app/tui/src/ui/tui.ts:130
+exitOnCtrlC: true,  // (was: false)
 ```
+これだけで OpenTui のデフォルト Ctrl+C 処理 (`process.exit(0)`) が動く。既存の `\x03` handler (line 135) と `process.on("SIGINT", shutdown)` (line 125) は defense-in-depth として残す。
 
-**教訓** (将来のために):
-- `@opentui/core` のような外部ライブラリの API 削除は、**型定義の変更だけで判断せず必ず実機検証** する
-- typecheck の error 解消 = 安全、とは限らない
-- TUI の critical UX 機能 (Ctrl+C 等の脱出経路) は **smoke test の必須項目** に追加すべき (§5.3 に追加)
+**教訓**:
+- 「typecheck pass = runtime safe」は **誤り** (PR-5.0)
+- 「直前の commit が原因」と決めつけずに git blame で歴史調査 (PR-5.0.2 仮説誤り)
+- TUI critical UX (Ctrl+C 等) は smoke test 必須項目化 (§4.4.4 にて追加済)
+- 長年の upstream bug は実機検証されない限り見落とされる — fork で実機検証する価値あり
 
 **upstream PR 候補**:
-- `@opentui/core` リポジトリに「`useAlternateScreen` 型定義復帰 OR `exitOnCtrlC` の独立化」issue を投げる
+- aymenfurter/polyclaw に `exitOnCtrlC: true` 変更 PR を投げる候補
+- `@opentui/core` には input handler 優先度の見直し issue を投げる候補
 
 #### 4.4.4 Step H smoke test (Ctrl+C 検証) を §4.2 必須項目に追加
 
@@ -437,7 +446,8 @@ this.renderer = await createCliRenderer({
 |:---:|---|---|---|
 | 🔴 P0 | `ui/target-picker.ts:83` | `(試験的)` から ANSI escape `\x1b[32m...\x1b[0m` を除去 | 残像 + 半切れ消失 (Step A で実証済) |
 | 🟡 P1 | `ui/tui.ts:412` | `activityText = "Thinking"` → `"考え中"` | status bar の英語 leak 解消 |
-| 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 → **⚠️ PR-5.0.2 で revert** (Ctrl+C regression 発生) |
+| 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 → **⚠️ PR-5.0.2 で revert** (当初 Ctrl+C bug の犯人と推定したが §4.4.3 で仮説誤りと判明、safety net として復元維持) |
+| 🔴 P0 (PR-5.0.3) | `ui/tui.ts:130` | `exitOnCtrlC: false` → `true` | **upstream `ee923da` 由来の長年 Ctrl+C bug の真の修正** — `\x03` を自前 handler で捕捉する設計は @opentui/core 0.1.107 で動作せず (focused InputRenderable が消費)、OpenTui のデフォルト処理に任せる方針に変更 |
 | 🔴 P0 (PR-5.0.1) | `runtime/agent/agent.py:258-259` | 認証エラーメッセージ JA 化 | backend i18n 漏れ修正、chat 最初のインタラクションで露見する critical path |
 | 🟡 P1 (PR-5.0.1) | `tui/{screens/chat.ts:138,143,256, ui/tui.ts:750,759,764}` | chat role label `Bot:` → `ポリ:` (6 箇所) | `あなた:` ↔ `Bot:` 不整合解消、mascot 名 `ポリ` (Polyclaw のフクロウ Poly) 採用 |
 
