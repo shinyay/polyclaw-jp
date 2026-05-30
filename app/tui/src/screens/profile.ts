@@ -42,23 +42,23 @@ export class ProfileScreen extends Screen {
     });
 
     // Current profile display
-    const profileBox = this.section(" Agent Profile ");
-    this.profileText = this.text("Loading...");
+    const profileBox = this.section(" エージェントプロフィール ");
+    this.profileText = this.text("読み込み中...");
     profileBox.add(this.profileText);
     this.container.add(profileBox);
 
     // Edit form
-    const formBox = this.section(" Edit Profile ");
-    this.nameInput = this.addFormField(formBox, "Name:", "Agent name");
-    this.locationInput = this.addFormField(formBox, "Location:", "Agent location");
-    this.emotionalInput = this.addFormField(formBox, "Emotional State:", "e.g. curious, focused");
+    const formBox = this.section(" プロフィール編集 ");
+    this.nameInput = this.addFormField(formBox, "名前:", "エージェント名");
+    this.locationInput = this.addFormField(formBox, "ロケーション:", "エージェントの所在地");
+    this.emotionalInput = this.addFormField(formBox, "感情状態:", "例: curious, focused");
     this.container.add(formBox);
 
     // Actions
     this.actionSelect = new SelectRenderable(this.renderer, {
       options: [
-        { name: "Save Profile", description: "" },
-        { name: "Refresh", description: "" },
+        { name: "プロフィールを保存", description: "" },
+        { name: "更新", description: "" },
       ],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
@@ -123,19 +123,19 @@ export class ProfileScreen extends Screen {
     try {
       const p = (await this.api.getProfile()) as AgentProfile;
       const lines = [
-        `  Name:            ${p.name || "(not set)"}`,
-        `  Location:        ${p.location || "(not set)"}`,
-        `  Emotional State: ${p.emotional_state || "(not set)"}`,
-        `  Identity:        ${p.identity || ""}`,
+        `  名前:            ${p.name || "(未設定)"}`,
+        `  ロケーション:    ${p.location || "(未設定)"}`,
+        `  感情状態:        ${p.emotional_state || "(未設定)"}`,
+        `  アイデンティティ: ${p.identity || ""}`,
       ];
       if (p.preferences) {
-        lines.push("", "  Preferences:");
+        lines.push("", "  設定:");
         for (const [k, v] of Object.entries(p.preferences)) {
           lines.push(`    ${k}: ${v}`);
         }
       }
       if (p.memory_summary) {
-        lines.push("", "  Memory:", `    ${p.memory_summary}`);
+        lines.push("", "  記憶:", `    ${p.memory_summary}`);
       }
       this.profileText.content = lines.join("\n");
 
@@ -145,7 +145,7 @@ export class ProfileScreen extends Screen {
       this.emotionalInput.value = p.emotional_state || "";
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.profileText.content = `\x1b[31mError: ${msg}\x1b[0m`;
+      this.profileText.content = `\x1b[31mエラー: ${msg}\x1b[0m`;
     }
   }
 
@@ -160,7 +160,7 @@ export class ProfileScreen extends Screen {
 
     try {
       const r = await this.api.updateProfile(data);
-      this.resultText.content = `  \x1b[32m${r.message || "Profile updated"}\x1b[0m`;
+      this.resultText.content = `  \x1b[32m${r.message || "プロフィールを更新しました"}\x1b[0m`;
       this.loadProfile();
     } catch (err: unknown) {
       this.resultText.content = `  \x1b[31m${err instanceof Error ? err.message : err}\x1b[0m`;

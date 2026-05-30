@@ -30,7 +30,7 @@ export class DashboardScreen extends Screen {
     const statusBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " System Status ",
+      title: " システム状態 ",
       backgroundColor: Colors.surface,
       width: "100%",
       padding: 1,
@@ -38,7 +38,7 @@ export class DashboardScreen extends Screen {
     });
 
     this.statusText = new TextRenderable(this.renderer, {
-      content: "Loading...",
+      content: "読み込み中...",
       fg: Colors.muted,
       width: "100%",
     });
@@ -48,7 +48,7 @@ export class DashboardScreen extends Screen {
     const containerBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " Containers ",
+      title: " コンテナ ",
       backgroundColor: Colors.surface,
       width: "100%",
       padding: 1,
@@ -56,7 +56,7 @@ export class DashboardScreen extends Screen {
     });
 
     this.containerText = new TextRenderable(this.renderer, {
-      content: "Loading...",
+      content: "読み込み中...",
       fg: Colors.muted,
       width: "100%",
     });
@@ -66,7 +66,7 @@ export class DashboardScreen extends Screen {
     const modelBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " Model ",
+      title: " モデル ",
       backgroundColor: Colors.surface,
       width: "100%",
       padding: 1,
@@ -74,7 +74,7 @@ export class DashboardScreen extends Screen {
     });
 
     this.modelText = new TextRenderable(this.renderer, {
-      content: "Loading...",
+      content: "読み込み中...",
       fg: Colors.muted,
       width: "100%",
     });
@@ -84,7 +84,7 @@ export class DashboardScreen extends Screen {
     const tunnelBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " Tunnel ",
+      title: " トンネル ",
       backgroundColor: Colors.surface,
       width: "100%",
       padding: 1,
@@ -92,7 +92,7 @@ export class DashboardScreen extends Screen {
     });
 
     this.tunnelText = new TextRenderable(this.renderer, {
-      content: "Loading...",
+      content: "読み込み中...",
       fg: Colors.muted,
       width: "100%",
     });
@@ -116,19 +116,19 @@ export class DashboardScreen extends Screen {
       const voiceOk = s.voice_call_configured ?? false;
 
       this.statusText.content = [
-        `  ${dot(azOk)} Azure     ${azOk ? (s.azure?.user ?? "Logged in") : "Not logged in"}`,
-        `  ${dot(tunnelOk)} Tunnel    ${tunnelOk ? (s.tunnel?.url ?? "Active") : "Inactive"}`,
-        `  ${dot(botOk)} Bot       ${botOk ? "Configured" : "Not configured"}`,
-        `  ${dot(voiceOk)} Voice     ${voiceOk ? "Configured" : "Not configured"}`,
+        `  ${dot(azOk)} Azure     ${azOk ? (s.azure?.user ?? "ログイン済み") : "未ログイン"}`,
+        `  ${dot(tunnelOk)} Tunnel    ${tunnelOk ? (s.tunnel?.url ?? "稼働中") : "停止中"}`,
+        `  ${dot(botOk)} Bot       ${botOk ? "設定済み" : "未設定"}`,
+        `  ${dot(voiceOk)} Voice     ${voiceOk ? "設定済み" : "未設定"}`,
       ].join("\n");
 
-      this.modelText.content = `  Active model: ${s.model || "unknown"}`;
+      this.modelText.content = `  使用中のモデル: ${s.model || "不明"}`;
       this.tunnelText.content = tunnelOk
         ? `  ${s.tunnel?.url}`
-        : "  No tunnel active. Use Setup > Start Tunnel.";
+        : "  トンネルが起動していません。「セットアップ > トンネル開始」を実行してください。";
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.statusText.content = `\x1b[31m  Error: ${msg}\x1b[0m`;
+      this.statusText.content = `\x1b[31m  エラー: ${msg}\x1b[0m`;
     }
   }
 
@@ -143,11 +143,11 @@ export class DashboardScreen extends Screen {
       };
 
       const label = (h: ContainerHealth, uptime: string) => {
-        if (h === "running") return `Running${uptime ? ` (${uptime})` : ""}`;
-        if (h === "starting") return "Starting...";
-        if (h === "stopped") return "Stopped";
-        if (h === "not_found") return "Not deployed";
-        return "Error";
+        if (h === "running") return `稼働中${uptime ? ` (${uptime})` : ""}`;
+        if (h === "starting") return "起動中...";
+        if (h === "stopped") return "停止";
+        if (h === "not_found") return "未デプロイ";
+        return "エラー";
       };
 
       const portInfo = (ports: string) => ports ? `  ${ports}` : "";
@@ -157,7 +157,7 @@ export class DashboardScreen extends Screen {
         `  ${icon(cs.runtime.health)} Runtime   ${label(cs.runtime.health, cs.runtime.uptime)}${portInfo(cs.runtime.ports)}`,
       ].join("\n");
     } catch {
-      this.containerText.content = "  Could not query container status (Docker unavailable?)";
+      this.containerText.content = "  コンテナ状態を取得できませんでした (Docker が利用不可?)";
     }
   }
 }

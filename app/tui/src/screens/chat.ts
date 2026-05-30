@@ -55,7 +55,7 @@ export class ChatScreen extends Screen {
       stickyStart: "bottom",
       border: true,
       borderColor: Colors.border,
-      title: " Chat ",
+      title: " チャット ",
       contentOptions: { paddingLeft: 1, paddingRight: 1 },
     });
     this.container.add(this.chatScroll);
@@ -70,7 +70,7 @@ export class ChatScreen extends Screen {
 
     this.chatInput = new InputRenderable(this.renderer, {
       width: "100%",
-      placeholder: "Type a message...",
+      placeholder: "メッセージを入力...",
       focusedBackgroundColor: Colors.surface,
       textColor: Colors.text,
       cursorColor: Colors.accent,
@@ -162,7 +162,7 @@ export class ChatScreen extends Screen {
     const approved = lower === "y" || lower === "yes";
 
     if (lower !== "y" && lower !== "yes" && lower !== "n" && lower !== "no") {
-      this.addLine("  Type y to allow or n to deny.", Colors.muted);
+      this.addLine("  許可は y / 拒否は n を入力してください。", Colors.muted);
       return;
     }
 
@@ -175,7 +175,7 @@ export class ChatScreen extends Screen {
       }));
     }
 
-    const label = approved ? "Allowed" : "Denied";
+    const label = approved ? "許可" : "拒否";
     const color = approved ? Colors.green : Colors.red;
     this.addLine(`  ${label}: ${pending.tool}`, color);
 
@@ -188,12 +188,12 @@ export class ChatScreen extends Screen {
 
     const truncated = args.length > 120 ? args.slice(0, 117) + "..." : args;
     this.addLine("", Colors.muted); // spacer
-    this.addLine(`  APPROVAL REQUIRED`, Colors.yellow);
-    this.addLine(`  Tool: ${tool}`, Colors.text);
+    this.addLine(`  承認が必要です`, Colors.yellow);
+    this.addLine(`  ツール: ${tool}`, Colors.text);
     if (truncated) {
-      this.addLine(`  Args: ${truncated}`, Colors.muted);
+      this.addLine(`  引数: ${truncated}`, Colors.muted);
     }
-    this.addLine(`  Press y to allow, n to deny.`, Colors.yellow);
+    this.addLine(`  許可は y、拒否は n を押してください。`, Colors.yellow);
 
     this.updateInputPlaceholder();
   }
@@ -203,12 +203,12 @@ export class ChatScreen extends Screen {
       const next = this.approvalQueue[0];
       try {
         (this.chatInput as unknown as { placeholder: string }).placeholder =
-          `Allow ${next.tool}? (y/n)`;
+          `${next.tool} を許可しますか? (y/n)`;
       } catch { /* ignore */ }
     } else {
       try {
         (this.chatInput as unknown as { placeholder: string }).placeholder =
-          "Type a message...";
+          "メッセージを入力...";
       } catch { /* ignore */ }
     }
   }
@@ -219,11 +219,11 @@ export class ChatScreen extends Screen {
 
   private sendMessage(text: string): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      this.addLine("[system]: Not connected", Colors.yellow);
+      this.addLine("[システム]: 未接続", Colors.yellow);
       return;
     }
     this.ws.send(JSON.stringify({ action: "send", message: text }));
-    this.addLine(`You: ${text}`, Colors.green);
+    this.addLine(`あなた: ${text}`, Colors.green);
   }
 
   private ensureWebSocket(): void {
@@ -235,10 +235,10 @@ export class ChatScreen extends Screen {
       const wsUrl = secret ? `${wsBase}/api/chat/ws?token=${secret}` : `${wsBase}/api/chat/ws`;
 
       this.ws = new WebSocket(wsUrl);
-      this.ws.onopen = () => this.addLine("[system]: Connected", Colors.muted);
+      this.ws.onopen = () => this.addLine("[システム]: 接続済み", Colors.muted);
       this.ws.onmessage = (ev) => this.handleWsMessage(ev);
       this.ws.onclose = () => {
-        this.addLine("[system]: Disconnected", Colors.muted);
+        this.addLine("[システム]: 切断", Colors.muted);
         setTimeout(() => this.ensureWebSocket(), 3000);
       };
     } catch { /* ignore */ }
@@ -253,7 +253,7 @@ export class ChatScreen extends Screen {
           break;
 
         case "message":
-          this.addLine(`Bot: ${data.content || "(no response)"}`, Colors.accent);
+          this.addLine(`Bot: ${data.content || "(応答なし)"}`, Colors.accent);
           break;
 
         case "done":
@@ -261,7 +261,7 @@ export class ChatScreen extends Screen {
           break;
 
         case "error":
-          this.addLine(`[error]: ${data.content}`, Colors.red);
+          this.addLine(`[エラー]: ${data.content}`, Colors.red);
           break;
 
         case "event":
@@ -281,12 +281,12 @@ export class ChatScreen extends Screen {
         const tool = (data.tool as string) || "unknown";
         const args = (data.arguments as string) || "";
         const short = args.length > 60 ? args.slice(0, 57) + "..." : args;
-        this.addLine(`  [tool] ${tool}(${short})`, Colors.muted);
+        this.addLine(`  [ツール] ${tool}(${short})`, Colors.muted);
         break;
       }
       case "tool_done": {
         const tool = (data.tool as string) || "unknown";
-        this.addLine(`  [done] ${tool}`, Colors.dim);
+        this.addLine(`  [完了] ${tool}`, Colors.dim);
         break;
       }
       case "approval_request": {
@@ -305,7 +305,7 @@ export class ChatScreen extends Screen {
       }
       case "tool_denied": {
         const tool = (data.tool as string) || "unknown";
-        this.addLine(`  [denied] ${tool}`, Colors.red);
+        this.addLine(`  [拒否] ${tool}`, Colors.red);
         break;
       }
       default:
