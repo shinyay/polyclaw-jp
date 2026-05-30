@@ -891,22 +891,22 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 873,backend,app/runtime/messaging/commands/session.py,109,Session store not available.,セッションストアが利用できません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
 874,backend,app/runtime/messaging/commands/session.py,113,No sessions to switch to. Use /new to start one.,切り替え可能なセッションがありません。/new で新しいセッションを開始してください。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
 875,backend,app/runtime/messaging/commands/session.py,130,Memory cleared ({cleared} files removed).,メモリーをクリアしました ({cleared} ファイル削除)。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
-876,backend,app/runtime/state/guardrails/config.py,91,action must be one of: %s,,pending,,
-877,backend,app/runtime/state/guardrails/config.py,105,channel must be 'chat' or 'phone',,pending,,
-878,backend,app/runtime/state/guardrails/config.py,130,filter_mode must be 'prompt_shields',,pending,,
-879,backend,app/runtime/state/guardrails/config.py,135,strategy must be one of: %s,,pending,,
-880,backend,app/runtime/state/guardrails/config.py,151,strategy must be one of: %s,,pending,,
-881,backend,app/runtime/state/guardrails/config.py,182,strategy must be one of: %s,,pending,,
-882,backend,app/runtime/state/guardrails/config.py,234,scope must be 'tool' or 'mcp',,pending,,
-883,backend,app/runtime/state/guardrails/config.py,236,action must be one of: %s,,pending,,
-884,backend,app/runtime/state/guardrails/config.py,238,hitl_channel must be 'chat' or 'phone',,pending,,
-885,backend,app/runtime/state/guardrails/bulk.py,37,preset must be one of: %s,,pending,,
-886,backend,app/runtime/state/mcp_config.py,113,Server name is required,,pending,,
-887,backend,app/runtime/state/mcp_config.py,119,command is required for local servers,,pending,,
-888,backend,app/runtime/state/mcp_config.py,121,url is required for remote (http/sse) servers,,pending,,
+876,backend,app/runtime/state/guardrails/config.py,91,action must be one of: %s,action は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+877,backend,app/runtime/state/guardrails/config.py,105,channel must be 'chat' or 'phone',channel は 'chat' または 'phone' を指定してください,approved,PR-3.2,"PR-3.2: validation error, enum values kept English (API contract)"
+878,backend,app/runtime/state/guardrails/config.py,130,filter_mode must be 'prompt_shields',filter_mode は 'prompt_shields' を指定してください,approved,PR-3.2,"PR-3.2: validation error, enum values kept English (API contract)"
+879,backend,app/runtime/state/guardrails/config.py,135,strategy must be one of: %s,strategy は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+880,backend,app/runtime/state/guardrails/config.py,151,strategy must be one of: %s,strategy は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+881,backend,app/runtime/state/guardrails/config.py,182,strategy must be one of: %s,strategy は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+882,backend,app/runtime/state/guardrails/config.py,234,scope must be 'tool' or 'mcp',scope は 'tool' または 'mcp' を指定してください,approved,PR-3.2,"PR-3.2: validation error, enum values kept English (API contract)"
+883,backend,app/runtime/state/guardrails/config.py,236,action must be one of: %s,action は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+884,backend,app/runtime/state/guardrails/config.py,238,hitl_channel must be 'chat' or 'phone',hitl_channel は 'chat' または 'phone' を指定してください,approved,PR-3.2,"PR-3.2: validation error, enum values kept English (API contract)"
+885,backend,app/runtime/state/guardrails/bulk.py,37,preset must be one of: %s,preset は次のいずれかを指定してください: %s,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+886,backend,app/runtime/state/mcp_config.py,113,Server name is required,Server name は必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+887,backend,app/runtime/state/mcp_config.py,119,command is required for local servers,local サーバーには command が必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
+888,backend,app/runtime/state/mcp_config.py,121,url is required for remote (http/sse) servers,remote (http/sse) サーバーには url が必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
 889,backend,app/runtime/sandbox/executor.py,255,Failed to acquire Azure credentials for Dynamic Sessions,,pending,,
-890,backend,app/runtime/server/routes/_helpers.py,51,Invalid JSON body,,pending,,
-891,backend,app/runtime/server/routes/_helpers.py,53,JSON body must be an object,,pending,,
+890,backend,app/runtime/server/routes/_helpers.py,51,Invalid JSON body,JSON 形式の本文が不正です,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
+891,backend,app/runtime/server/routes/_helpers.py,53,JSON body must be an object,JSON の本文はオブジェクトである必要があります,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
 892,backend,app/runtime/server/routes/proactive_routes.py,66,"message"": ""No pending follow-up.",,pending,,
 893,tui,app/tui/src/config/constants.ts,71,\u280B,,pending,,
 894,tui,app/tui/src/config/constants.ts,71,\u2819,,pending,,
