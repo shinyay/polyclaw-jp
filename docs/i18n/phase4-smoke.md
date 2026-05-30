@@ -350,9 +350,10 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 | 2026-05-30 | shinyay | 4.2.1 Disclaimer 画面 | ✅ EXCELLENT | 5 bullet 全 JA、英語 leak 0 |
 | 2026-05-30 | shinyay | 4.2.2 Target Picker 画面 | 🟡 PARTIAL | **CJK 幅崩れ実証** → PR-5.0 critical |
 | 2026-05-30 | shinyay | **Step A**: target-picker.ts:83 から ANSI escape `\x1b[32m...\x1b[0m` を除去して再実行 | ✅ **完全成功** | `(試験的)` 残像消失 + description 完全表示。**真の根本原因 = ANSI escape が `@opentui/core` 内部の `Bun.stringWidth()` で width として数えられる** ことを確定 |
-| (deferred) | — | 4.2.3 タブ巡回 (11 タブ) | — | PR-5.0 後に再実施 |
-| (deferred) | — | 4.2.3 日本語入力 + tool args | — | PR-5.0 後に再実施 |
-| (deferred) | — | 4.2.4 `Thinking` leak verify | — | PR-5.0 後に再実施 |
+| 2026-05-30 | shinyay | **Step D**: PR-5.0 適用後の Admin TUI 起動画面 | ✅ **95% PASS** | logo + status bar (`Azure/Tunnel/Bot/Admin/Runtime` 英語維持) + chat (`[システム]: 接続済み` JA) + 入力欄 placeholder `メッセージを入力し Enter で送信` 全て正常。入力欄左端 `〆` 疑惑は cursor blink タイミングによる **false positive** と確定。**洞察: Tunnel 等の英語ラベル + ANSI escape は右側に CJK 文字がないため残像が見えない** → 英語維持判断が PR-5.1 refactor 範囲を実質的に縮小していた |
+| 2026-05-30 | shinyay | **Step F**: chat に `こんにちは` 入力 → assistant 応答取得 | 🟡 **80% PASS** + 2 新 finding | `あなた: こんにちは` (緑) JA 完璧。ただし応答が `Bot: Not authenticated. Please authenticate first. / Open the setup wizard...` で **2 件の英語 leak** 検出 → PR-5.0.1 で即修正 (下記 §4.4.2) |
+| (deferred) | — | 4.2.3 タブ巡回 (11 タブ) | — | PR-5.0.1 後に再実施 |
+| (deferred) | — | 4.2.4 `Thinking` (`考え中`) leak verify | — | authentication 完了状態で LLM 呼び出し必要、現状確認不可 |
 | (deferred) | — | 4.3 setup wizard 文言 | — | (任意、Azure 必要) |
 
 #### 4.4.1 根本原因の正確な理解 (Step A 検証後)
@@ -369,6 +370,17 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 
 緑色 `(試験的)` の装飾は失われるが、**テキスト整合性 > 装飾色** のトレードオフは妥当。長期的には PR-5.1 で `TextRenderable.fg` プロパティに移行することで色情報を復活可能。
 
+#### 4.4.2 Step F 新 finding (PR-5.0.1 patch で即修正)
+
+| # | finding | 修正前 | 修正後 |
+|---|---|---|---|
+| **A** | backend i18n 漏れ (`agent.py:258-259`) — Phase 3 (backend i18n) で漏れていた critical bug、chat の最初のインタラクションで必ず露見する path | `Not authenticated. Please authenticate first.\n\nOpen the setup wizard and deploy Foundry infrastructure.` | `認証されていません。先に認証を行ってください。\n\nセットアップウィザードを開いて Foundry インフラをデプロイしてください。` |
+| **B** | chat assistant role label `Bot:` (TUI 側、6 箇所) — `あなた:` (JA) ↔ `Bot:` (英語) の不整合。glossary §16 で mascot 名 (`ポリ` = Polyclaw のフクロウ Poly) を採用 | `Bot: ...` (chat.ts:138/143/256, tui.ts:750/759/764) | `ポリ: ...` (全 6 箇所) |
+
+**注**: constants.ts の **status bar の `Bot` (Bot Framework)** は proper noun として **英語維持** (今回修正対象外、別物)。chat role label の `Bot:` (= assistant response) のみ `ポリ:` に変更。
+
+PR-5.0.1 適用後の `bun run typecheck` exit 0、`bun test` 103/103 pass。
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
@@ -377,13 +389,15 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 
 `docs/i18n/inventory.csv` の status は全 translated/approved 済だが、**実機 §4.4 Step 2 で CJK 幅崩れを実証 → Step A で ANSI escape が真の原因と確定** したため、PR-5.0 は **minimum hotfix** に focus し、残り refactor は PR-5.1 に分離する。
 
-#### 5.1.1 ✅ PR-5.0 適用済 (3 件)
+#### 5.1.1 ✅ PR-5.0 適用済 (3 件) + PR-5.0.1 patch (2 件)
 
 | 優先度 | ファイル:行 | 修正 | 効果 |
 |:---:|---|---|---|
 | 🔴 P0 | `ui/target-picker.ts:83` | `(試験的)` から ANSI escape `\x1b[32m...\x1b[0m` を除去 | 残像 + 半切れ消失 (Step A で実証済) |
 | 🟡 P1 | `ui/tui.ts:412` | `activityText = "Thinking"` → `"考え中"` | status bar の英語 leak 解消 |
 | 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 |
+| 🔴 P0 (PR-5.0.1) | `runtime/agent/agent.py:258-259` | 認証エラーメッセージ JA 化 | backend i18n 漏れ修正、chat 最初のインタラクションで露見する critical path |
+| 🟡 P1 (PR-5.0.1) | `tui/{screens/chat.ts:138,143,256, ui/tui.ts:750,759,764}` | chat role label `Bot:` → `ポリ:` (6 箇所) | `あなた:` ↔ `Bot:` 不整合解消、mascot 名 `ポリ` (Polyclaw のフクロウ Poly) 採用 |
 
 **動作確認** (PR-5.0 commit 前に実施):
 - `bun run typecheck`: ✅ exit 0 (pre-existing error 解消)

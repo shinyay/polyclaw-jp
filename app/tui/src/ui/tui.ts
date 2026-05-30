@@ -747,7 +747,7 @@ export async function launchTUI(
   }
 
   function addMessage(role: string, text: string, color: string): string {
-    const prefixMap: Record<string, string> = { user: "あなた", assistant: "Bot", tool: "  [ツール]", error: "  [エラー]", system: "  [システム]" };
+    const prefixMap: Record<string, string> = { user: "あなた", assistant: "ポリ", tool: "  [ツール]", error: "  [エラー]", system: "  [システム]" };
     return addLine(`${prefixMap[role] ?? role}: ${text}`, color);
   }
 
@@ -756,12 +756,12 @@ export async function launchTUI(
     const existing = chatArea.findDescendantById(currentReplyId);
     if (!existing) return;
     try {
-      setContent(existing, `Bot: ${text}`);
+      setContent(existing, `ポリ: ${text}`);
       renderer.requestRender();
     } catch {
       chatArea.remove(currentReplyId);
       existing.destroyRecursively();
-      chatArea.add(new TextRenderable(renderer, { id: currentReplyId, content: `Bot: ${text}`, fg: Colors.accent }));
+      chatArea.add(new TextRenderable(renderer, { id: currentReplyId, content: `ポリ: ${text}`, fg: Colors.accent }));
       renderer.requestRender();
     }
   }

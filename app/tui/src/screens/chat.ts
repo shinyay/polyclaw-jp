@@ -135,12 +135,12 @@ export class ChatScreen extends Screen {
       const id = `chat-msg-${++this.msgCounter}`;
       this.deltaRenderable = new TextRenderable(this.renderer, {
         id,
-        content: `Bot: ${this.deltaBuffer}`,
+        content: `ポリ: ${this.deltaBuffer}`,
         fg: Colors.accent,
       });
       this.chatScroll.add(this.deltaRenderable);
     } else {
-      this.deltaRenderable.content = `Bot: ${this.deltaBuffer}`;
+      this.deltaRenderable.content = `ポリ: ${this.deltaBuffer}`;
     }
   }
 
@@ -253,7 +253,7 @@ export class ChatScreen extends Screen {
           break;
 
         case "message":
-          this.addLine(`Bot: ${data.content || "(応答なし)"}`, Colors.accent);
+          this.addLine(`ポリ: ${data.content || "(応答なし)"}`, Colors.accent);
           break;
 
         case "done":

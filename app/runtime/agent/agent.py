@@ -255,8 +255,8 @@ class Agent:
 
         if not self._authenticated:
             msg = (
-                "Not authenticated. Please authenticate first.\n\n"
-                "Open the setup wizard and deploy Foundry infrastructure."
+                "認証されていません。先に認証を行ってください。\n\n"
+                "セットアップウィザードを開いて Foundry インフラをデプロイしてください。"
             )
             logger.error("[agent.send] aborting -- Copilot CLI not authenticated")
             if on_delta:
