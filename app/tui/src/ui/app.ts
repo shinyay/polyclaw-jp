@@ -117,7 +117,7 @@ export class App {
   private async shutdown(): Promise<void> {
     if (this.statusInterval) clearInterval(this.statusInterval);
     if (this.containerId) {
-      this.setStatus("Stopping container...");
+      this.setStatus("コンテナを停止しています...");
       await stopContainer(this.containerId);
     }
     this.renderer.destroy();
@@ -130,7 +130,7 @@ export class App {
 
   private buildStartupUI(): void {
     this.startupTitle = new TextRenderable(this.renderer, {
-      content: " polyclaw v3  |  Starting up...",
+      content: " polyclaw v3  |  起動中...",
       fg: Colors.accent,
       width: "100%",
       height: 1,
@@ -147,7 +147,7 @@ export class App {
     this.rootBox.add(this.startupBox);
 
     this.startupStatus = new TextRenderable(this.renderer, {
-      content: " \x1b[33m●\x1b[0m Building Docker image...",
+      content: " \x1b[33m●\x1b[0m Docker イメージをビルド中...",
       fg: Colors.text,
       width: "100%",
       height: 1,
@@ -158,7 +158,7 @@ export class App {
     const logBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " Build Output ",
+      title: " ビルド出力 ",
       backgroundColor: Colors.surface,
       width: "100%",
       flexGrow: 1,
@@ -189,7 +189,7 @@ export class App {
     const configBox = new BoxRenderable(this.renderer, {
       border: true,
       borderColor: Colors.border,
-      title: " Configuration ",
+      title: " 構成 ",
       backgroundColor: Colors.surface,
       width: "100%",
       height: 7,
@@ -205,7 +205,7 @@ export class App {
         `  Admin:       http://localhost:${displayPort}`,
         `  Runtime:     http://localhost:8080`,
         `  Server URL:  ${serverUrl}`,
-        `  Secret:      ${this.cfg.secret ? "(provided)" : "(auto-detect)"}`,
+        `  Secret:      ${this.cfg.secret ? "(指定あり)" : "(自動検出)"}`,
         `  Project:     ${this.cfg.projectRoot}`,
       ].join("\n"),
       fg: Colors.text,
@@ -216,7 +216,7 @@ export class App {
 
     // Bottom hint
     this.rootBox.add(new TextRenderable(this.renderer, {
-      content: " q: quit",
+      content: " q: 終了",
       fg: Colors.muted,
       width: "100%",
       height: 1,
@@ -245,30 +245,30 @@ export class App {
     let serverUrl = this.cfg.url || `http://localhost:${composeAdminPort}`;
 
     // 1) Build
-    this.setStatus("\x1b[33m●\x1b[0m Building Docker images...");
+    this.setStatus("\x1b[33m●\x1b[0m Docker イメージをビルド中...");
     this.appendLog("$ docker compose build");
 
     const buildOk = await buildImage((line) => this.appendLog(line));
     if (!buildOk) {
-      this.setStatus("\x1b[31m●\x1b[0m Docker build FAILED. Check output above. Press q to quit.");
+      this.setStatus("\x1b[31m●\x1b[0m Docker ビルドに失敗しました。上記の出力を確認してください。q で終了します。");
       return;
     }
-    this.appendLog("\nBuild complete.");
+    this.appendLog("\nビルド完了。");
 
     // 2) Read admin secret
-    this.setStatus("\x1b[33m●\x1b[0m Reading admin secret...");
+    this.setStatus("\x1b[33m●\x1b[0m 管理シークレットを読み込み中...");
     let secret = this.cfg.secret;
     if (!secret) secret = await getAdminSecret();
 
     // 3) Start compose stack (admin + runtime)
-    this.setStatus("\x1b[33m●\x1b[0m Starting compose stack...");
-    this.appendLog("Starting admin + runtime containers...");
+    this.setStatus("\x1b[33m●\x1b[0m compose スタックを起動中...");
+    this.appendLog("admin + runtime コンテナを起動中...");
     try {
       this.containerId = await startContainer(this.cfg.port, 3978, "admin");
-      this.appendLog(`Compose stack started (${this.containerId})`);
+      this.appendLog(`compose スタックを起動しました (${this.containerId})`);
     } catch (err: unknown) {
-      this.setStatus("\x1b[31m●\x1b[0m Failed to start containers. Press q to quit.");
-      this.appendLog(`Error: ${err instanceof Error ? err.message : err}`);
+      this.setStatus("\x1b[31m●\x1b[0m コンテナの起動に失敗しました。q で終了します。");
+      this.appendLog(`エラー: ${err instanceof Error ? err.message : err}`);
       return;
     }
 
@@ -279,28 +279,28 @@ export class App {
     ].join("\n");
 
     // 4) Wait for health
-    this.setStatus("\x1b[33m●\x1b[0m Waiting for server to become ready...");
-    this.appendLog("Waiting for health endpoint...");
+    this.setStatus("\x1b[33m●\x1b[0m サーバーの起動を待機中...");
+    this.appendLog("ヘルスエンドポイントを待機中...");
 
     const healthy = await waitForReady(serverUrl, 90_000);
     if (!healthy) {
-      this.setStatus("\x1b[33m●\x1b[0m Server did not respond in time. Launching TUI anyway...");
-      this.appendLog("Warning: /health did not respond within 90s");
+      this.setStatus("\x1b[33m●\x1b[0m サーバーが時間内に応答しませんでした。そのまま TUI を起動します...");
+      this.appendLog("警告: /health が 90 秒以内に応答しませんでした");
     } else {
-      this.appendLog("Server is healthy.");
+      this.appendLog("サーバーは正常です。");
     }
 
     // Re-read secret if auto-generated
     if (!secret) {
-      this.appendLog("Reading admin secret from volume...");
+      this.appendLog("ボリュームから管理シークレットを読み込み中...");
       for (let attempt = 0; attempt < 5 && !secret; attempt++) {
         secret = await getAdminSecret();
         if (!secret) await Bun.sleep(2000);
       }
       if (secret) {
-        this.appendLog(`Admin secret: ${secret.slice(0, 4)}****`);
+        this.appendLog(`管理シークレット: ${secret.slice(0, 4)}****`);
       } else {
-        this.appendLog("Warning: Could not read admin secret. API calls may fail (401).");
+        this.appendLog("警告: 管理シークレットを読み込めませんでした。API 呼び出しが失敗する可能性があります (401)。");
       }
     }
 
@@ -316,7 +316,7 @@ export class App {
       `  Container:   ${this.containerId.slice(0, 12)}`,
     ].join("\n");
 
-    this.setStatus("\x1b[32m●\x1b[0m Ready. Launching TUI...");
+    this.setStatus("\x1b[32m●\x1b[0m 準備完了。TUI を起動します...");
     await Bun.sleep(600);
 
     // 5) Create API client & transition
@@ -344,7 +344,7 @@ export class App {
 
     // Title bar
     this.titleBar = new TextRenderable(this.renderer, {
-      content: " polyclaw v3  |  Autonomous AI Copilot",
+      content: " polyclaw v3  |  自律型 AI コパイロット",
       fg: Colors.accent,
       width: "100%",
       height: 1,
@@ -372,7 +372,7 @@ export class App {
 
     // Status bar
     this.rootBox.add(new TextRenderable(this.renderer, {
-      content: " Tab/Shift+Tab: switch sections | q: quit",
+      content: " Tab/Shift+Tab: セクション切替 | q: 終了",
       fg: Colors.muted,
       width: "100%",
       height: 1,

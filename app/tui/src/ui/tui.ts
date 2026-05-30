@@ -151,7 +151,7 @@ export async function launchTUI(
               if (selected && selected.id !== currentModelName) {
                 if (chatWs && chatWs.readyState === WebSocket.OPEN) {
                   chatWs.send(JSON.stringify({ action: "send", message: `/model ${selected.id}` }));
-                  addMessage("system", `Switching to ${selected.name || selected.id}...`, "#FFD700");
+                  addMessage("system", `${selected.name || selected.id} に切替中...`, "#FFD700");
                 }
               }
               closeModelPicker();
@@ -171,12 +171,12 @@ export async function launchTUI(
                 if (entry.id === "__new__") {
                   if (chatWs && chatWs.readyState === WebSocket.OPEN) {
                     chatWs.send(JSON.stringify({ action: "new_session" }));
-                    addMessage("system", "New session started.", Colors.muted);
+                    addMessage("system", "新しいセッションを開始しました。", Colors.muted);
                   }
                 } else {
                   if (chatWs && chatWs.readyState === WebSocket.OPEN) {
                     chatWs.send(JSON.stringify({ action: "resume_session", session_id: entry.id }));
-                    addMessage("system", `Resuming session ${entry.id}...`, "#FFD700");
+                    addMessage("system", `セッション ${entry.id} を再開しています...`, "#FFD700");
                   }
                 }
               }
@@ -196,7 +196,7 @@ export async function launchTUI(
               if (chatWs && chatWs.readyState === WebSocket.OPEN) {
                 chatWs.send(JSON.stringify({ action: "approve_tool", call_id: pending.call_id, response: approved ? "y" : "n" }));
               }
-              addMessage("user", approved ? "Approved" : "Denied", approved ? Colors.green : Colors.red);
+              addMessage("user", approved ? "承認済み" : "拒否", approved ? Colors.green : Colors.red);
               clearInput(chatInput);
               return true;
             }
@@ -322,7 +322,7 @@ export async function launchTUI(
     let suffix = ` ${pct}%`;
     if (activityText) suffix += `  ${activityText}...`;
     else if (pending.length > 0) suffix += `  ${pending.slice(0, 3).join(", ")}${pending.length > 3 ? "..." : ""}`;
-    else suffix += "  All systems go";
+    else suffix += "  すべて正常稼働中";
     barSuffixNode.children = [suffix];
 
     renderer.requestRender();
@@ -442,7 +442,7 @@ export async function launchTUI(
     if (!browserOpened && !azureOk) {
       browserOpened = true;
       const adminUrl = secret ? `${baseUrl}/?secret=${secret}` : baseUrl;
-      addMessage("system", `Opening admin UI for setup: ${adminUrl}`, Colors.muted);
+      addMessage("system", `管理 UI を起動中 (セットアップ用): ${adminUrl}`, Colors.muted);
       Bun.spawn(["open", adminUrl], { stdout: "ignore", stderr: "ignore" });
     }
     renderer.requestRender();
@@ -489,10 +489,10 @@ export async function launchTUI(
     height: 1,
   });
   const logTitleLabel = new TextNodeRenderable({ id: "log-title-label", fg: Colors.muted });
-  logTitleLabel.children = [" Log  "];
+  logTitleLabel.children = [" ログ  "];
   logPanelTitle.add(logTitleLabel);
   const logTitleHint = new TextNodeRenderable({ id: "log-title-hint", fg: Colors.dim });
-  logTitleHint.children = ["(Tab to minimize)"];
+  logTitleHint.children = ["(Tab で最小化)"];
   logPanelTitle.add(logTitleHint);
   logPanel.add(logPanelTitle);
 
@@ -570,14 +570,14 @@ export async function launchTUI(
     if (logExpanded) {
       try { (logPanel as unknown as { height: number }).height = LOG_EXPANDED_HEIGHT; } catch { /* ignore */ }
       try { logPanel.add(logScroll); } catch { /* ignore — already added */ }
-      logTitleLabel.children = [" Log  "];
-      logTitleHint.children = ["(Tab to minimize)"];
+      logTitleLabel.children = [" ログ  "];
+      logTitleHint.children = ["(Tab で最小化)"];
     } else {
       try { (logPanel as unknown as { height: number }).height = 3; } catch { /* ignore */ }
       try { logPanel.remove("log-scroll"); } catch { /* ignore */ }
       const lineCount = logLines.length;
-      logTitleLabel.children = [` Log (${lineCount} lines)  `];
-      logTitleHint.children = ["(Tab to expand)"];
+      logTitleLabel.children = [` ログ (${lineCount} 行)  `];
+      logTitleHint.children = ["(Tab で展開)"];
     }
     renderer.requestRender();
   }
@@ -591,7 +591,7 @@ export async function launchTUI(
     stickyStart: "bottom",
     border: true,
     borderColor: Colors.border,
-    title: " Chat ",
+    title: " チャット ",
     titleAlignment: "left",
     contentOptions: { paddingLeft: 1, paddingRight: 1 },
   });
@@ -612,7 +612,7 @@ export async function launchTUI(
   const chatInput = new InputRenderable(renderer, {
     id: "chat-input",
     width: "100%",
-    placeholder: "Waiting for server...  (Ctrl+C to quit)",
+    placeholder: "サーバーを待機中...  (Ctrl+C で終了)",
     focusedBackgroundColor: "#161B22",
     textColor: Colors.text,
     cursorColor: Colors.accent,
@@ -678,7 +678,7 @@ export async function launchTUI(
     if (extra > 0) {
       acOverlay.add(new TextRenderable(renderer, {
         id: "ac-more",
-        content: `  ... ${extra} more (keep typing to filter)`,
+        content: `  ...他 ${extra} 件 (入力を続けて絞り込み)`,
         fg: Colors.dim,
       }));
     }
@@ -747,7 +747,7 @@ export async function launchTUI(
   }
 
   function addMessage(role: string, text: string, color: string): string {
-    const prefixMap: Record<string, string> = { user: "You", assistant: "Bot", tool: "  [tool]", error: "  [error]", system: "  [system]" };
+    const prefixMap: Record<string, string> = { user: "あなた", assistant: "Bot", tool: "  [ツール]", error: "  [エラー]", system: "  [システム]" };
     return addLine(`${prefixMap[role] ?? role}: ${text}`, color);
   }
 
@@ -802,17 +802,17 @@ export async function launchTUI(
 
   async function openModelPicker(): Promise<void> {
     if (pickerActive) return;
-    addMessage("system", "Loading models...", Colors.muted);
+    addMessage("system", "モデルを読み込み中...", Colors.muted);
     try {
       const headers: Record<string, string> = {};
       if (secret) headers["Authorization"] = `Bearer ${secret}`;
       const res = await fetch(`${baseUrl}/api/models`, { headers, signal: AbortSignal.timeout(10000) });
-      if (!res.ok) { addMessage("error", `Failed to fetch models (${res.status})`, Colors.red); return; }
+      if (!res.ok) { addMessage("error", `モデル取得に失敗 (${res.status})`, Colors.red); return; }
       const data = await res.json() as { models?: ModelEntry[] };
       pickerModels = (data.models || []).filter((m) => !m.policy || m.policy === "enabled");
-      if (pickerModels.length === 0) { addMessage("system", "No models available.", Colors.yellow); return; }
+      if (pickerModels.length === 0) { addMessage("system", "利用可能なモデルがありません。", Colors.yellow); return; }
     } catch (err: unknown) {
-      addMessage("error", `Failed to fetch models: ${err instanceof Error ? err.message : err}`, Colors.red);
+      addMessage("error", `モデル取得に失敗: ${err instanceof Error ? err.message : err}`, Colors.red);
       return;
     }
 
@@ -830,7 +830,7 @@ export async function launchTUI(
       flexDirection: "column",
     });
 
-    pickerOverlay.add(new TextRenderable(renderer, { id: "picker-title", content: "Select Model  (arrows to move, Enter to select, Esc to cancel)", fg: "#DAA520" }));
+    pickerOverlay.add(new TextRenderable(renderer, { id: "picker-title", content: "モデルを選択  (矢印で移動、Enter で選択、Esc でキャンセル)", fg: "#DAA520" }));
     pickerOverlay.add(new TextRenderable(renderer, { id: "picker-sep", content: "\u2500".repeat(60), fg: "#5C4400" }));
 
     pickerItems = [];
@@ -884,15 +884,15 @@ export async function launchTUI(
 
   async function openSessionPicker(): Promise<void> {
     if (sessionPickerActive || pickerActive) return;
-    addMessage("system", "Loading sessions...", Colors.muted);
+    addMessage("system", "セッションを読み込み中...", Colors.muted);
     try {
       const headers: Record<string, string> = {};
       if (secret) headers["Authorization"] = `Bearer ${secret}`;
       const res = await fetch(`${baseUrl}/api/sessions`, { headers, signal: AbortSignal.timeout(10000) });
-      if (!res.ok) { addMessage("error", `Failed to fetch sessions (${res.status})`, Colors.red); return; }
+      if (!res.ok) { addMessage("error", `セッション取得に失敗 (${res.status})`, Colors.red); return; }
       const sessions = (await res.json()) as Record<string, unknown>[];
 
-      sessionPickerEntries = [{ id: "__new__", label: "+ New session", detail: "" }];
+      sessionPickerEntries = [{ id: "__new__", label: "+ 新しいセッション", detail: "" }];
       for (const s of sessions.slice(0, 5)) {
         const started = s.started_at ? String(s.started_at).slice(0, 16).replace("T", " ") : "?";
         const model = String(s.model || "?");
@@ -901,9 +901,9 @@ export async function launchTUI(
         const preview = fmsg ? `"${fmsg.slice(0, 35)}${fmsg.length > 35 ? "..." : ""}"` : "(empty)";
         sessionPickerEntries.push({ id: String(s.id), label: `${started}  ${model}  (${count} msgs)`, detail: preview });
       }
-      if (sessionPickerEntries.length === 1) { addMessage("system", "No sessions yet. Use /new to start one.", Colors.yellow); return; }
+      if (sessionPickerEntries.length === 1) { addMessage("system", "セッションはまだありません。/new で開始してください。", Colors.yellow); return; }
     } catch (err: unknown) {
-      addMessage("error", `Failed to fetch sessions: ${err instanceof Error ? err.message : err}`, Colors.red);
+      addMessage("error", `セッション取得に失敗: ${err instanceof Error ? err.message : err}`, Colors.red);
       return;
     }
 
@@ -920,7 +920,7 @@ export async function launchTUI(
       flexDirection: "column",
     });
 
-    sessionPickerOverlay.add(new TextRenderable(renderer, { id: "session-picker-title", content: "Switch Session  (arrows to move, Enter to select, Esc to cancel)", fg: "#DAA520" }));
+    sessionPickerOverlay.add(new TextRenderable(renderer, { id: "session-picker-title", content: "セッション切替  (矢印で移動、Enter で選択、Esc でキャンセル)", fg: "#DAA520" }));
     sessionPickerOverlay.add(new TextRenderable(renderer, { id: "session-picker-sep", content: "\u2500".repeat(60), fg: "#5C4400" }));
 
     sessionPickerItems = [];
@@ -945,9 +945,9 @@ export async function launchTUI(
   //  Phase 1+2: Deploy
   // =====================================================================
 
-  const deployLabel = target.lifecycleTied ? "Building polyclaw v3..." : `Deploying to ${target.name}...`;
+  const deployLabel = target.lifecycleTied ? "polyclaw v3 をビルド中..." : `${target.name} にデプロイ中...`;
   addLogLine(deployLabel);
-  activityText = target.lifecycleTied ? "Building" : "Deploying";
+  activityText = target.lifecycleTied ? "ビルド中" : "デプロイ中";
   refreshProgressBar();
 
   let deployResult: DeployResult;
@@ -959,14 +959,14 @@ export async function launchTUI(
     markPhase("start", true);
     addLogLine(
       deployResult.reconnected
-        ? `Reconnected to ${containerId}`
+        ? `${containerId} に再接続しました`
         : target.lifecycleTied
-          ? `Compose stack started (admin + runtime)`
-          : `Deployed to ${baseUrl}`,
+          ? `compose スタックを起動しました (admin + runtime)`
+          : `${baseUrl} にデプロイしました`,
     );
   } catch (err: unknown) {
-    addLogLine(`Deploy failed: ${err instanceof Error ? err.message : err}`);
-    addLogLine("Press Ctrl+C to exit.");
+    addLogLine(`デプロイに失敗: ${err instanceof Error ? err.message : err}`);
+    addLogLine("Ctrl+C で終了してください。");
     await new Promise(() => {});
     return;
   }
@@ -981,8 +981,8 @@ export async function launchTUI(
   //  Phase 3: Stream logs & wait for server
   // =====================================================================
 
-  addLogLine("Waiting for server...");
-  activityText = "Waiting for server";
+  addLogLine("サーバーを待機中...");
+  activityText = "サーバーを待機中";
   refreshProgressBar();
   addLogLine("");
 
@@ -1012,14 +1012,14 @@ export async function launchTUI(
   // Keep logStream running — continues feeding container output to the log panel
 
   if (!ready) {
-    addLogLine("Server did not become ready.");
-    addLogLine("Press Ctrl+C to exit.");
+    addLogLine("サーバーが準備完了になりませんでした。");
+    addLogLine("Ctrl+C で終了してください。");
     if (target.lifecycleTied && containerId) await target.disconnect(containerId);
     await new Promise(() => {});
     return;
   }
 
-  addLogLine("Server is ready!");
+  addLogLine("サーバーの準備が整いました！");
   markPhase("server", true);
   activityText = "";
   switchToStatusDots();
@@ -1042,7 +1042,7 @@ export async function launchTUI(
       await Bun.sleep(1000);
     }
     if (!secret) {
-      addLine("Warning: Admin secret not found in logs. Status polling may fail (401).", Colors.yellow);
+      addLine("警告: ログから管理シークレットが見つかりませんでした。状態取得が失敗する可能性があります (401)。", Colors.yellow);
     }
   }
 
@@ -1053,9 +1053,9 @@ export async function launchTUI(
   }
 
   // Update input placeholder
-  const exitHint = target.lifecycleTied ? "Ctrl+C to quit" : "Ctrl+C to disconnect (container keeps running)";
+  const exitHint = target.lifecycleTied ? "Ctrl+C で終了" : "Ctrl+C で切断 (コンテナは継続稼働)";
   try {
-    (chatInput as unknown as { placeholder: string }).placeholder = `Type a message and press Enter  (${exitHint})`;
+    (chatInput as unknown as { placeholder: string }).placeholder = `メッセージを入力し Enter で送信  (${exitHint})`;
   } catch { /* ignore */ }
   renderer.requestRender();
 
@@ -1069,7 +1069,7 @@ export async function launchTUI(
     const wsUrl = secret ? `${wsBase}/api/chat/ws?token=${secret}` : `${wsBase}/api/chat/ws`;
     chatWs = new WebSocket(wsUrl);
 
-    chatWs.onopen = () => { addMessage("system", "Connected", Colors.muted); };
+    chatWs.onopen = () => { addMessage("system", "接続済み", Colors.muted); };
 
     chatWs.onmessage = (ev) => {
       let data: Record<string, unknown>;
@@ -1085,7 +1085,7 @@ export async function launchTUI(
           break;
         case "message":
           stopThinking();
-          addMessage("assistant", String(data.content || "(no response)"), Colors.accent);
+          addMessage("assistant", String(data.content || "(応答なし)"), Colors.accent);
           currentReplyId = null; currentReplyText = "";
           break;
         case "done":
@@ -1111,26 +1111,26 @@ export async function launchTUI(
             const args = String(data.arguments || "");
             approvalQueue.push({ call_id: callId, tool, arguments: args });
             addMessage("system", "\n--- APPROVAL REQUIRED ---", Colors.yellow);
-            addMessage("system", `Tool: ${tool}`, Colors.yellow);
-            if (args) addMessage("system", `Args: ${args}`, Colors.muted);
-            addMessage("system", "Press y to approve or n to deny", Colors.yellow);
+            addMessage("system", `ツール: ${tool}`, Colors.yellow);
+            if (args) addMessage("system", `引数: ${args}`, Colors.muted);
+            addMessage("system", "y で承認、n で拒否してください", Colors.yellow);
             try {
-              (chatInput as unknown as { placeholder: string }).placeholder = "[APPROVAL] press y = approve, n = deny";
+              (chatInput as unknown as { placeholder: string }).placeholder = "[承認待ち] y = 承認、n = 拒否";
             } catch { /* ignore */ }
           } else if (evt === "approval_resolved") {
             const callId = String(data.call_id || "");
             const approved = Boolean(data.approved);
             const idx = approvalQueue.findIndex((a) => a.call_id === callId);
             if (idx !== -1) approvalQueue.splice(idx, 1);
-            addMessage("system", approved ? "Approved." : "Denied.", approved ? Colors.green : Colors.red);
+            addMessage("system", approved ? "承認しました。" : "拒否しました。", approved ? Colors.green : Colors.red);
             if (approvalQueue.length === 0) {
               try {
-                const exitHint = target.lifecycleTied ? "Ctrl+C to quit" : "Ctrl+C to disconnect";
-                (chatInput as unknown as { placeholder: string }).placeholder = `Type a message and press Enter  (${exitHint})`;
+                const exitHint = target.lifecycleTied ? "Ctrl+C で終了" : "Ctrl+C で切断";
+                (chatInput as unknown as { placeholder: string }).placeholder = `メッセージを入力し Enter で送信  (${exitHint})`;
               } catch { /* ignore */ }
             }
           } else if (evt === "tool_denied") {
-            addMessage("system", `Tool denied: ${String(data.tool || "")} -- ${String(data.reason || "")}`, Colors.red);
+            addMessage("system", `ツールが拒否されました: ${String(data.tool || "")} -- ${String(data.reason || "")}`, Colors.red);
           }
           break;
         }
@@ -1149,7 +1149,7 @@ export async function launchTUI(
           break;
         case "error":
           stopThinking();
-          addMessage("error", String(data.content || "Unknown error"), Colors.red);
+          addMessage("error", String(data.content || "不明なエラー"), Colors.red);
           currentReplyId = null; currentReplyText = "";
           break;
       }
@@ -1158,7 +1158,7 @@ export async function launchTUI(
     chatWs.onclose = () => {
       if (exiting) return;
       stopThinking();
-      addMessage("system", "Disconnected. Reconnecting...", Colors.muted);
+      addMessage("system", "切断されました。再接続中...", Colors.muted);
       setTimeout(connectChat, 3000);
     };
     chatWs.onerror = () => {};
@@ -1172,7 +1172,7 @@ export async function launchTUI(
     if (!text) return;
 
     if (!chatWs || chatWs.readyState !== WebSocket.OPEN) {
-      addMessage("system", "Not connected", Colors.yellow);
+      addMessage("system", "未接続", Colors.yellow);
       return;
     }
 
@@ -1183,14 +1183,14 @@ export async function launchTUI(
         const pending = approvalQueue[0];
         const approved = lower === "y" || lower === "yes";
         chatWs.send(JSON.stringify({ action: "approve_tool", call_id: pending.call_id, response: approved ? "y" : "n" }));
-        addMessage("user", approved ? "Approved" : "Denied", approved ? Colors.green : Colors.red);
+        addMessage("user", approved ? "承認済み" : "拒否", approved ? Colors.green : Colors.red);
         clearInput(chatInput);
         return;
       }
     }
 
     if (text.toLowerCase() === "/quit" || text.toLowerCase() === "/exit") {
-      addMessage("system", "Shutting down...", Colors.yellow);
+      addMessage("system", "シャットダウン中...", Colors.yellow);
       clearInput(chatInput);
       shutdown();
       return;

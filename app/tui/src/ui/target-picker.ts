@@ -76,11 +76,11 @@ async function showPicker(
     let selectedIndex = 0;
     let acaExisting: Awaited<ReturnType<typeof getExistingDeployment>> = null;
     let acaSubIndex = 1; // 0=Reconnect, 1=Deploy fresh, 2=Remove
-    const acaSubLabels = ["Reconnect", "Deploy fresh", "Remove"];
+    const acaSubLabels = ["再接続", "新規デプロイ", "削除"];
 
     const options: TargetOption[] = [
-      { id: "docker", label: "Local Docker", description: "Build and run locally (default)", available: true },
-      { id: "aca", label: "Azure Container Apps \x1b[32m(experimental)\x1b[0m", description: "Deploy to Azure (persistent, cloud-hosted)", available: false, detail: "Checking..." },
+      { id: "docker", label: "ローカル Docker", description: "ローカルでビルドして実行 (デフォルト)", available: true },
+      { id: "aca", label: "Azure Container Apps \x1b[32m(試験的)\x1b[0m", description: "Azure にデプロイ (永続化、クラウドホスト)", available: false, detail: "確認中..." },
     ];
 
     const renderer = await createCliRenderer({
@@ -118,8 +118,8 @@ async function showPicker(
             } else if (acaExisting && acaSubIndex === 2) {
               process.stdout.write("\n");
               removeDeployment((line) => process.stdout.write(line + "\n"))
-                .then(() => { process.stdout.write("\nDone. Exiting.\n"); process.exit(0); })
-                .catch((err) => { process.stdout.write(`\nRemoval failed: ${(err as Error).message}\n`); process.exit(1); });
+                .then(() => { process.stdout.write("\n完了。終了します。\n"); process.exit(0); })
+                .catch((err) => { process.stdout.write(`\n削除に失敗しました: ${(err as Error).message}\n`); process.exit(1); });
               return true;
             } else {
               resolve(new AcaDeployTarget(acaExisting ? acaSubIndex === 0 : false));
@@ -147,10 +147,10 @@ async function showPicker(
     // Mascot + block-text logo
     const mascotLines = createMascotLogoLines(renderer, LOGO_TEXT, LogoColors);
     for (const line of mascotLines) root.add(line);
-    root.add(new TextRenderable(renderer, { id: "picker-subtitle", content: "  Deployment Target", fg: Colors.muted }));
+    root.add(new TextRenderable(renderer, { id: "picker-subtitle", content: "  デプロイターゲット", fg: Colors.muted }));
 
     root.add(new TextRenderable(renderer, { id: "picker-spacer0", content: "", fg: Colors.bg }));
-    root.add(new TextRenderable(renderer, { id: "picker-hint", content: "Use arrow keys to select, Enter to confirm, Ctrl+C to quit", fg: Colors.muted }));
+    root.add(new TextRenderable(renderer, { id: "picker-hint", content: "矢印キーで選択、Enter で確定、Ctrl+C で終了", fg: Colors.muted }));
     root.add(new TextRenderable(renderer, { id: "picker-spacer", content: "", fg: Colors.bg }));
 
     const itemRenderables: TextRenderable[] = [];
@@ -172,7 +172,7 @@ async function showPicker(
 
     function renderItem(opt: TargetOption, index: number, sel: number): string {
       const pointer = index === sel ? "\u25b6 " : "  ";
-      const status = opt.available ? "" : ` [${opt.detail || "unavailable"}]`;
+      const status = opt.available ? "" : ` [${opt.detail || "利用不可"}]`;
       return `${pointer}${opt.label}  --  ${opt.description}${status}`;
     }
 
@@ -206,10 +206,10 @@ async function showPicker(
     (async () => {
       const azInstalled = await checkAzCliInstalled();
       if (!azInstalled) {
-        options[1].detail = "az CLI not installed";
+        options[1].detail = "az CLI がインストールされていません";
         refreshItems();
         try {
-          (statusLine as unknown as { content: string }).content = "Azure CLI is required for ACA. Install from https://aka.ms/installazurecli";
+          (statusLine as unknown as { content: string }).content = "ACA を利用するには Azure CLI が必要です。https://aka.ms/installazurecli からインストールしてください。";
           (statusLine as unknown as { fg: string }).fg = Colors.red;
         } catch { /* ignore */ }
         renderer.requestRender();
@@ -218,10 +218,10 @@ async function showPicker(
 
       const loginResult = await checkAzLoggedIn();
       if (!loginResult.loggedIn) {
-        options[1].detail = "not logged in (run: az login)";
+        options[1].detail = "未ログイン (実行: az login)";
         refreshItems();
         try {
-          (statusLine as unknown as { content: string }).content = "Run 'az login' first, then restart the CLI.";
+          (statusLine as unknown as { content: string }).content = "先に 'az login' を実行し、CLI を再起動してください。";
           (statusLine as unknown as { fg: string }).fg = Colors.red;
         } catch { /* ignore */ }
         renderer.requestRender();
@@ -230,20 +230,20 @@ async function showPicker(
 
       options[1].available = true;
       options[1].detail = undefined;
-      options[1].description = `Deploy to Azure (${loginResult.account})`;
+      options[1].description = `Azure にデプロイ (${loginResult.account})`;
       refreshItems();
 
       acaExisting = await getExistingDeployment();
       if (acaExisting) {
         try {
-          (statusLine as unknown as { content: string }).content = `Existing deployment found: ${acaExisting.appName} (${acaExisting.fqdn})`;
+          (statusLine as unknown as { content: string }).content = `既存のデプロイを検出: ${acaExisting.appName} (${acaExisting.fqdn})`;
           (statusLine as unknown as { fg: string }).fg = Colors.green;
         } catch { /* ignore */ }
         acaSubIndex = 0;
         refreshItems();
       } else {
         try {
-          (statusLine as unknown as { content: string }).content = `Logged in as ${loginResult.account}`;
+          (statusLine as unknown as { content: string }).content = `${loginResult.account} としてログイン中`;
           (statusLine as unknown as { fg: string }).fg = Colors.muted;
         } catch { /* ignore */ }
       }

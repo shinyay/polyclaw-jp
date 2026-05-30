@@ -15,40 +15,37 @@ const WHITE = "\x1b[97m";
 const DISCLAIMER_LINES = [
   "",
   `${RED}${BOLD}  ============================================================${RESET}`,
-  `${RED}${BOLD}   TECHNOLOGY DEMONSTRATOR -- RISK DISCLAIMER${RESET}`,
+  `${RED}${BOLD}   技術デモンストレーター — リスクに関する免責事項${RESET}`,
   `${RED}${BOLD}  ============================================================${RESET}`,
   "",
-  `${WHITE}  This software is a technology demonstrator and is${RESET}`,
-  `${WHITE}  ${BOLD}not intended for continuous or production use.${RESET}`,
+  `${WHITE}  本ソフトウェアは技術デモンストレーターであり、${RESET}`,
+  `${WHITE}  ${BOLD}継続利用や本番運用を想定していません。${RESET}`,
   "",
-  `${YELLOW}  By proceeding, you acknowledge the following:${RESET}`,
+  `${YELLOW}  続行することで、以下を認識いただいたものとみなします:${RESET}`,
   "",
-  `${RED}  *${RESET} ${BOLD}High-autonomy agent.${RESET}${DIM} This system deploys an AI agent with${RESET}`,
-  `${DIM}    high autonomy and elevated authorization levels. The agent${RESET}`,
-  `${DIM}    can execute code, create and delete cloud resources, send${RESET}`,
-  `${DIM}    messages, access APIs, push code to repositories, and make${RESET}`,
-  `${DIM}    consequential decisions on your behalf -- without further${RESET}`,
-  `${DIM}    confirmation.${RESET}`,
+  `${RED}  *${RESET} ${BOLD}高自律エージェント。${RESET}${DIM} 本システムは高い自律性と昇格された${RESET}`,
+  `${DIM}    権限レベルで AI エージェントを展開します。エージェントは事前確認なしに、${RESET}`,
+  `${DIM}    コード実行、クラウドリソースの作成と削除、メッセージ送信、API アクセス、${RESET}`,
+  `${DIM}    コードのリポジトリへのプッシュ、重大な意思決定をユーザーに代わって${RESET}`,
+  `${DIM}    行う可能性があります。${RESET}`,
   "",
-  `${RED}  *${RESET} ${BOLD}Sandbox environments only.${RESET}${DIM} This system should only be run${RESET}`,
-  `${DIM}    against sandbox Azure subscriptions and disposable GitHub${RESET}`,
-  `${DIM}    accounts. Never connect production accounts, billing-sensitive${RESET}`,
-  `${DIM}    subscriptions, or repositories you care about.${RESET}`,
+  `${RED}  *${RESET} ${BOLD}サンドボックス環境専用。${RESET}${DIM} 本システムはサンドボックス用 Azure${RESET}`,
+  `${DIM}    サブスクリプションと使い捨て GitHub アカウントに対してのみ実行してください。${RESET}`,
+  `${DIM}    本番アカウント、課金影響のあるサブスクリプション、重要なリポジトリには${RESET}`,
+  `${DIM}    接続しないでください。${RESET}`,
   "",
-  `${RED}  *${RESET} ${BOLD}Potential for damage.${RESET}${DIM} The agent may take destructive or${RESET}`,
-  `${DIM}    irreversible actions including: deleting resources, sending${RESET}`,
-  `${DIM}    unintended messages, pushing code, incurring cloud costs,${RESET}`,
-  `${DIM}    exhausting API quotas, or exposing credentials. You accept${RESET}`,
-  `${DIM}    full responsibility for any and all consequences.${RESET}`,
+  `${RED}  *${RESET} ${BOLD}損害発生の可能性。${RESET}${DIM} エージェントはリソースの削除、意図しない${RESET}`,
+  `${DIM}    メッセージ送信、コードプッシュ、クラウド費用の発生、API クォータの枯渇、${RESET}`,
+  `${DIM}    認証情報の漏洩など、破壊的または取り消し不可能な操作を行う可能性が${RESET}`,
+  `${DIM}    あります。発生するあらゆる結果について、すべて利用者が責任を負います。${RESET}`,
   "",
-  `${RED}  *${RESET} ${BOLD}No warranty.${RESET}${DIM} This software is provided under the MIT License,${RESET}`,
-  `${DIM}    "as is", without warranty of any kind. The authors and${RESET}`,
-  `${DIM}    contributors are not liable for any damages, costs, data${RESET}`,
-  `${DIM}    loss, or any other harm arising from the use of this system.${RESET}`,
+  `${RED}  *${RESET} ${BOLD}無保証。${RESET}${DIM} 本ソフトウェアは MIT ライセンスの下で「現状有姿」で${RESET}`,
+  `${DIM}    提供され、いかなる保証もありません。作者および貢献者は、本システムの${RESET}`,
+  `${DIM}    使用によって発生する損害、費用、データ損失、その他あらゆる損害について${RESET}`,
+  `${DIM}    一切の責任を負いません。${RESET}`,
   "",
-  `${RED}  *${RESET} ${BOLD}Not a supported product.${RESET}${DIM} This is an experimental technology${RESET}`,
-  `${DIM}    demonstration. There are no SLAs, no guarantees of correctness,${RESET}`,
-  `${DIM}    safety, or availability.${RESET}`,
+  `${RED}  *${RESET} ${BOLD}サポート対象外。${RESET}${DIM} 本ソフトウェアは実験的な技術デモンストレー${RESET}`,
+  `${DIM}    ションです。SLA、正確性、安全性、可用性に関する保証はありません。${RESET}`,
   "",
   `${RED}${BOLD}  ============================================================${RESET}`,
   "",
@@ -72,7 +69,7 @@ export async function showDisclaimer(): Promise<void> {
   }
 
   process.stdout.write(
-    `${YELLOW}  Type ${WHITE}${BOLD}accept${RESET}${YELLOW} to acknowledge the risks and continue: ${RESET}`,
+    `${YELLOW}  リスクに同意して続行するには ${WHITE}${BOLD}accept${RESET}${YELLOW} と入力してください: ${RESET}`,
   );
 
   const response = await new Promise<string>((resolve) => {
@@ -91,10 +88,10 @@ export async function showDisclaimer(): Promise<void> {
   });
 
   if (response !== "accept") {
-    process.stdout.write(`\n${RED}  Disclaimer not accepted. Exiting.${RESET}\n\n`);
+    process.stdout.write(`\n${RED}  免責事項に同意しなかったため終了します。${RESET}\n\n`);
     process.exit(1);
   }
 
   await Bun.write(DISCLAIMER_FLAG, new Date().toISOString());
-  process.stdout.write(`\n${DIM}  Disclaimer accepted.${RESET}\n\n`);
+  process.stdout.write(`\n${DIM}  免責事項に同意しました。${RESET}\n\n`);
 }
