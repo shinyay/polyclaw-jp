@@ -96,7 +96,7 @@ export async function removeDeployment(onLine?: (line: string) => void): Promise
 
   // Try the admin's destroy endpoint first
   try {
-    log("Requesting ACA deployment teardown from admin...");
+    log("Admin に ACA デプロイの撤去をリクエスト中...");
     let secret = await getAdminSecret();
     if (secret.startsWith("@kv:")) secret = await resolveKvSecret(secret);
     const authHeaders: Record<string, string> = { "Content-Type": "application/json" };
@@ -114,15 +114,15 @@ export async function removeDeployment(onLine?: (line: string) => void): Promise
     for (const step of data.steps || []) {
       log(`  ${step.step}: ${step.status}`);
     }
-    log(data.status === "ok" ? "ACA deployment removed." : "Warning: some teardown steps may have failed.");
+    log(data.status === "ok" ? "ACA デプロイを削除しました。" : "警告: 一部の撤去ステップが失敗した可能性があります。");
   } catch {
-    log("Could not reach admin. Skipping ACA teardown.");
+    log("Admin に接続できません。ACA 撤去をスキップします。");
   }
 
   // Stop the local admin container
-  log("Stopping admin container...");
+  log("Admin コンテナを停止中...");
   await stopContainer("polyclaw-admin");
-  log("Done.");
+  log("完了。");
   return true;
 }
 
@@ -166,46 +166,46 @@ export class AcaDeployTarget implements DeployTarget {
 
     // -- Step 1: Start local admin container --------------------------------
     if (this._reconnect) {
-      log("Checking if admin container is already running...");
+      log("Admin コンテナの稼働状況を確認中...");
       const healthy = await waitForReady(localUrl, 5_000);
       if (!healthy) {
-        log("Admin not running. Building images and starting...");
+        log("Admin が未起動です。イメージをビルドして起動中...");
         // Build the native image for the local admin container
         const localOk = await buildImage(onLine);
-        if (!localOk) throw new Error("Docker compose build failed");
+        if (!localOk) throw new Error("Docker compose build に失敗");
         // Build the amd64 image for ACA runtime (pushed to ACR later)
-        log("Building linux/amd64 image for ACA...");
+        log("ACA 用の linux/amd64 イメージをビルド中...");
         const acaOk = await buildAcaImage(this._imageTag, onLine);
-        if (!acaOk) throw new Error("Docker build (linux/amd64) failed");
+        if (!acaOk) throw new Error("Docker build (linux/amd64) に失敗");
         await this._startAdminOnly(adminPort, botPort, mode);
       }
     } else {
-      log("Building Docker image...");
+      log("Docker イメージをビルド中...");
       const localOk = await buildImage(onLine);
-      if (!localOk) throw new Error("Docker compose build failed");
+      if (!localOk) throw new Error("Docker compose build に失敗");
 
-      log("Building linux/amd64 image for ACA...");
+      log("ACA 用の linux/amd64 イメージをビルド中...");
       const acaOk = await buildAcaImage(this._imageTag, onLine);
-      if (!acaOk) throw new Error("Docker build (linux/amd64) failed");
+      if (!acaOk) throw new Error("Docker build (linux/amd64) に失敗");
 
-      log("Starting local admin container...");
+      log("ローカル Admin コンテナを起動中...");
       await this._startAdminOnly(adminPort, botPort, mode);
     }
 
     // -- Step 2: Wait for local admin to be healthy -----------------------
-    log("Waiting for local admin to be healthy...");
+    log("ローカル Admin のヘルスチェック待ち...");
     const healthy = await waitForReady(localUrl, 120_000);
-    if (!healthy) throw new Error("Admin container failed to start. Check: docker logs polyclaw-admin");
-    log("Local admin is healthy.");
+    if (!healthy) throw new Error("Admin コンテナの起動に失敗。確認: docker logs polyclaw-admin");
+    log("ローカル Admin が正常稼働。");
 
     // -- Fetch admin secret for authenticated API calls -------------------
     this._secret = await getAdminSecret();
     if (this._secret.startsWith("@kv:")) {
-      log("Resolving admin secret from Key Vault...");
+      log("Key Vault から Admin secret を解決中...");
       this._secret = await resolveKvSecret(this._secret);
     }
     if (!this._secret) {
-      log("WARNING: Could not read admin secret. API calls may fail.");
+      log("警告: Admin secret を取得できませんでした。API 呼び出しが失敗する可能性があります。");
     }
 
     // -- Step 3: Check for existing ACA deployment (reconnect) ------------
@@ -214,12 +214,12 @@ export class AcaDeployTarget implements DeployTarget {
       if (existing) {
         return { baseUrl: existing, instanceId: "polyclaw-admin", reconnected: true };
       }
-      log("No existing ACA deployment. Deploying fresh...");
+      log("既存の ACA デプロイなし。新規デプロイ中...");
     }
 
     // -- Step 4: Trigger ACA deployment via local admin API ---------------
-    log("Triggering ACA deployment (pushes pre-built image to ACR)...");
-    log("This deploys the runtime to ACA. May take 30-40 minutes.");
+    log("ACA デプロイを起動中 (ビルド済みイメージを ACR に push)...");
+    log("ランタイムを ACA にデプロイします。30〜40 分かかる場合があります。");
 
     const deployRes = await fetch(`${localUrl}/api/setup/aca/deploy`, {
       method: "POST",
@@ -249,11 +249,11 @@ export class AcaDeployTarget implements DeployTarget {
     }
 
     if (result.status !== "ok" || !result.runtime_fqdn) {
-      throw new Error(`ACA deployment failed: ${result.message}`);
+      throw new Error(`ACA デプロイに失敗: ${result.message}`);
     }
 
-    log(`ACA runtime (external, IP-whitelisted): https://${result.runtime_fqdn}`);
-    log("Local admin stays running -- proxying to ACA runtime via RUNTIME_URL.");
+    log(`ACA ランタイム (外部、IP ホワイトリスト適用): https://${result.runtime_fqdn}`);
+    log("ローカル Admin は引き続き稼働 -- RUNTIME_URL 経由で ACA ランタイムをプロキシ。");
     return { baseUrl: localUrl, instanceId: "polyclaw-admin", reconnected: false };
   }
 
@@ -299,8 +299,8 @@ export class AcaDeployTarget implements DeployTarget {
         runtime_fqdn?: string;
       };
       if (data.deployed && data.runtime_fqdn) {
-        log(`Found existing ACA deployment: runtime at ${data.runtime_fqdn}`);
-        log("Reconnecting -- local admin stays running.");
+        log(`既存の ACA デプロイを検出: runtime ${data.runtime_fqdn}`);
+        log("再接続中 -- ローカル Admin は引き続き稼働。");
         return localUrl;
       }
     } catch { /* not deployed */ }

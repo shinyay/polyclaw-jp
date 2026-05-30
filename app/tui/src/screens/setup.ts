@@ -39,24 +39,24 @@ export class SetupScreen extends Screen {
     });
 
     // -- Auth status --
-    const authBox = this.createSection(" Authentication ");
-    this.authText = this.createText("Loading...");
+    const authBox = this.createSection(" 認証 ");
+    this.authText = this.createText("読み込み中...");
     authBox.add(this.authText);
     this.container.add(authBox);
 
     // -- Actions --
-    const actionsBox = this.createSection(" Actions ");
+    const actionsBox = this.createSection(" 操作 ");
     this.actionSelect = new SelectRenderable(this.renderer, {
       options: [
-        { name: "Azure Login", description: "Log in to Azure" },
-        { name: "Azure Logout", description: "Log out from Azure" },
-        { name: "Deploy Foundry", description: "Deploy AI models via Bicep" },
-        { name: "Start Tunnel", description: "Start dev tunnel" },
-        { name: "Run Smoke Test", description: "Test Copilot connectivity" },
-        { name: "Save Configuration", description: "Save bot and channel config" },
-        { name: "Deploy Infrastructure", description: "Provision Azure resources" },
-        { name: "Decommission Infrastructure", description: "Remove Azure resources" },
-        { name: "Run Preflight Checks", description: "Verify all prerequisites" },
+        { name: "Azure ログイン", description: "Azure にログインする" },
+        { name: "Azure ログアウト", description: "Azure からログアウトする" },
+        { name: "Foundry デプロイ", description: "Bicep で AI モデルをデプロイ" },
+        { name: "トンネル開始", description: "開発トンネルを起動" },
+        { name: "スモークテスト実行", description: "Copilot 接続を検証" },
+        { name: "設定を保存", description: "ボット/チャネル設定を保存" },
+        { name: "インフラデプロイ", description: "Azure リソースを作成" },
+        { name: "インフラ撤去", description: "Azure リソースを削除" },
+        { name: "事前チェック実行", description: "前提条件を全件検証" },
       ],
       textColor: Colors.text,
       selectedTextColor: Colors.accent,
@@ -71,21 +71,21 @@ export class SetupScreen extends Screen {
     });
 
     // -- Bot configuration form --
-    const configBox = this.createSection(" Bot Configuration ");
-    configBox.add(this.createLabel("Resource Group:"));
+    const configBox = this.createSection(" ボット設定 ");
+    configBox.add(this.createLabel("リソースグループ:"));
     this.botRgInput = this.createInput("polyclaw-rg", "polyclaw-rg");
     configBox.add(this.botRgInput);
-    configBox.add(this.createLabel("Location:"));
+    configBox.add(this.createLabel("リージョン:"));
     this.botLocationInput = this.createInput("eastus", "eastus");
     configBox.add(this.botLocationInput);
-    configBox.add(this.createLabel("Bot Display Name:"));
+    configBox.add(this.createLabel("ボット表示名:"));
     this.botNameInput = this.createInput("polyclaw", "polyclaw");
     configBox.add(this.botNameInput);
-    configBox.add(this.createLabel("Telegram Token (optional):"));
-    this.tgTokenInput = this.createInput("Bot token from @BotFather");
+    configBox.add(this.createLabel("Telegram トークン (任意):"));
+    this.tgTokenInput = this.createInput("@BotFather から取得したボットトークン");
     configBox.add(this.tgTokenInput);
-    configBox.add(this.createLabel("Telegram Whitelist (optional):"));
-    this.tgWhitelistInput = this.createInput("comma-separated usernames");
+    configBox.add(this.createLabel("Telegram ホワイトリスト (任意):"));
+    this.tgWhitelistInput = this.createInput("カンマ区切りのユーザー名");
     configBox.add(this.tgWhitelistInput);
     this.container.add(configBox);
 
@@ -94,8 +94,8 @@ export class SetupScreen extends Screen {
     this.container.add(this.configText);
 
     // -- Infra status --
-    const infraBox = this.createSection(" Infrastructure Status ");
-    this.infraText = this.createText("Loading...");
+    const infraBox = this.createSection(" インフラ状態 ");
+    this.infraText = this.createText("読み込み中...");
     infraBox.add(this.infraText);
     this.container.add(infraBox);
 
@@ -153,12 +153,12 @@ export class SetupScreen extends Screen {
       const tunnelOk = s.tunnel?.active ?? false;
       const dot = (ok: boolean) => ok ? "\x1b[32m●\x1b[0m" : "\x1b[31m●\x1b[0m";
       this.authText.content = [
-        `  ${dot(azOk)} Azure    ${azOk ? `${s.azure?.user ?? ""} (${s.azure?.subscription ?? ""})` : "Not logged in  --  run 'Azure Login' below"}`,
-        `  ${dot(tunnelOk)} Tunnel   ${tunnelOk ? (s.tunnel?.url ?? "Active") : "Not active  --  run 'Start Tunnel' below"}`,
+        `  ${dot(azOk)} Azure    ${azOk ? `${s.azure?.user ?? ""} (${s.azure?.subscription ?? ""})` : "未ログイン -- 下の「Azure ログイン」を実行してください"}`,
+        `  ${dot(tunnelOk)} Tunnel   ${tunnelOk ? (s.tunnel?.url ?? "稼働中") : "停止中 -- 下の「トンネル開始」を実行してください"}`,
       ].join("\n");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.authText.content = `\x1b[31m  Error loading status: ${msg}\x1b[0m`;
+      this.authText.content = `\x1b[31m  状態取得エラー: ${msg}\x1b[0m`;
     }
   }
 
@@ -176,13 +176,13 @@ export class SetupScreen extends Screen {
       const r = await this.api.getInfraStatus();
       const prov = r.provisioned as Record<string, Record<string, unknown>> | undefined;
       const lines: string[] = [];
-      if (prov?.tunnel) lines.push(`  Tunnel:   ${prov.tunnel.active ? prov.tunnel.url : "not running"}`);
-      if (prov?.bot) lines.push(`  Bot:      ${prov.bot.deployed ? `${prov.bot.name} (${prov.bot.resource_group})` : "not deployed"}`);
+      if (prov?.tunnel) lines.push(`  トンネル: ${prov.tunnel.active ? prov.tunnel.url : "未起動"}`);
+      if (prov?.bot) lines.push(`  ボット:   ${prov.bot.deployed ? `${prov.bot.name} (${prov.bot.resource_group})` : "未デプロイ"}`);
       const channels = prov?.channels as Record<string, Record<string, unknown>> | undefined;
-      if (channels?.telegram) lines.push(`  Telegram: ${channels.telegram.live ? "live" : "not provisioned"}`);
-      this.infraText.content = lines.length > 0 ? lines.join("\n") : "  No infrastructure deployed yet.";
+      if (channels?.telegram) lines.push(`  Telegram: ${channels.telegram.live ? "稼働中" : "未作成"}`);
+      this.infraText.content = lines.length > 0 ? lines.join("\n") : "  まだインフラはデプロイされていません。";
     } catch {
-      this.infraText.content = "  Could not load.";
+      this.infraText.content = "  読み込めませんでした。";
     }
   }
 
@@ -190,10 +190,10 @@ export class SetupScreen extends Screen {
     try {
       const cfg = await this.api.getChannelsConfig();
       if (cfg.telegram?.token) {
-        this.configText.content = "  Telegram: \x1b[32mConfigured\x1b[0m";
+        this.configText.content = "  Telegram: \x1b[32m設定済み\x1b[0m";
         this.tgWhitelistInput.value = cfg.telegram.whitelist || "";
       } else {
-        this.configText.content = "  Telegram: \x1b[90mNot configured\x1b[0m";
+        this.configText.content = "  Telegram: \x1b[90m未設定\x1b[0m";
       }
     } catch { /* ignore */ }
   }
@@ -222,21 +222,21 @@ export class SetupScreen extends Screen {
   }
 
   private async doAzureLogin(): Promise<void> {
-    this.setResult("  Starting Azure login...");
+    this.setResult("  Azure ログインを開始しています...");
     try {
       const r = await this.api.azureLogin();
       if (r.status === "already_logged_in") {
-        this.setResult(`  \x1b[32mAlready logged in as ${r.user}\x1b[0m`);
+        this.setResult(`  \x1b[32m${r.user} としてすでにログイン済み\x1b[0m`);
       } else if (r.code) {
-        this.setResult(`  Open ${r.url} and enter code: \x1b[1m${r.code}\x1b[0m\n  Waiting for completion...`);
+        this.setResult(`  ${r.url} を開いて以下のコードを入力してください: \x1b[1m${r.code}\x1b[0m\n  完了を待機中...`);
         await this.pollAzure();
       } else {
-        this.setResult(`  ${r.message || "Login started -- check terminal"}`);
+        this.setResult(`  ${r.message || "ログインを開始しました -- ターミナルを確認してください"}`);
       }
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.setResult(`  \x1b[31mError: ${msg}\x1b[0m`);
+      this.setResult(`  \x1b[31mエラー: ${msg}\x1b[0m`);
     }
   }
 
@@ -246,19 +246,19 @@ export class SetupScreen extends Screen {
       try {
         const c = await this.api.azureCheck();
         if (c.status === "logged_in") {
-          this.setResult("  \x1b[32mAzure login successful!\x1b[0m");
+          this.setResult("  \x1b[32mAzure ログインに成功しました!\x1b[0m");
           this.loadAuthStatus();
           return;
         }
       } catch { /* keep trying */ }
     }
-    this.setResult("  \x1b[33mLogin timed out. Try again.\x1b[0m");
+    this.setResult("  \x1b[33mログインがタイムアウトしました。再度お試しください。\x1b[0m");
   }
 
   private async doAzureLogout(): Promise<void> {
     try {
       await this.api.azureLogout();
-      this.setResult("  Logged out from Azure.");
+      this.setResult("  Azure からログアウトしました。");
       this.loadAuthStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -267,7 +267,7 @@ export class SetupScreen extends Screen {
   }
 
   private async doDeployFoundry(): Promise<void> {
-    this.setResult("  Deploying Foundry infrastructure via Bicep...");
+    this.setResult("  Bicep で Foundry インフラをデプロイ中...");
     try {
       const r = await this.api.fetchRaw("/api/setup/foundry/deploy", {
         method: "POST",
@@ -276,9 +276,9 @@ export class SetupScreen extends Screen {
       });
       const body = await r.json();
       if (body.status === "ok") {
-        this.setResult(`  \x1b[32mFoundry deployed!\x1b[0m\n  Endpoint: ${body.foundry_endpoint}\n  Models: ${(body.deployed_models || []).join(", ")}`);
+        this.setResult(`  \x1b[32mFoundry をデプロイしました!\x1b[0m\n  エンドポイント: ${body.foundry_endpoint}\n  モデル: ${(body.deployed_models || []).join(", ")}`);
       } else {
-        this.setResult(`  \x1b[31mDeployment failed: ${body.error || "unknown error"}\x1b[0m`);
+        this.setResult(`  \x1b[31mデプロイに失敗: ${body.error || "原因不明"}\x1b[0m`);
       }
       this.loadAuthStatus();
     } catch (err: unknown) {
@@ -288,11 +288,11 @@ export class SetupScreen extends Screen {
   }
 
   private async doStartTunnel(): Promise<void> {
-    this.setResult("  Starting tunnel...");
+    this.setResult("  トンネルを起動中...");
     try {
       const r = await this.api.startTunnel();
       if (r.status === "ok") {
-        this.setResult(`  \x1b[32mTunnel started: ${r.url}\x1b[0m${r.endpoint_updated ? "\n  Bot endpoint updated" : ""}`);
+        this.setResult(`  \x1b[32mトンネルを起動: ${r.url}\x1b[0m${r.endpoint_updated ? "\n  ボットのエンドポイントを更新しました" : ""}`);
       } else {
         this.setResult(`  \x1b[31m${r.message}\x1b[0m`);
       }
@@ -304,11 +304,11 @@ export class SetupScreen extends Screen {
   }
 
   private async doSmokeTest(): Promise<void> {
-    this.setResult("  Running smoke test...");
+    this.setResult("  スモークテストを実行中...");
     try {
       const r = await this.api.smokeTest() as Record<string, unknown>;
       const lines: string[] = [];
-      lines.push(r.status === "ok" ? "  \x1b[32mSmoke test passed\x1b[0m" : "  \x1b[31mSmoke test failed\x1b[0m");
+      lines.push(r.status === "ok" ? "  \x1b[32mスモークテスト合格\x1b[0m" : "  \x1b[31mスモークテスト失敗\x1b[0m");
       const steps = r.steps as Array<{ ok: boolean; step: string; detail?: string }> | undefined;
       if (steps) {
         for (const s of steps) {
@@ -323,7 +323,7 @@ export class SetupScreen extends Screen {
   }
 
   private async doSaveConfiguration(): Promise<void> {
-    this.setResult("  Saving configuration...");
+    this.setResult("  設定を保存中...");
     try {
       const body: Record<string, unknown> = {
         bot: {
@@ -348,7 +348,7 @@ export class SetupScreen extends Screen {
   }
 
   private async doDeployInfra(): Promise<void> {
-    this.setResult("  \x1b[33mDeploying infrastructure... This may take several minutes.\x1b[0m");
+    this.setResult("  \x1b[33mインフラをデプロイ中... 数分かかる場合があります。\x1b[0m");
     try {
       const r = await this.api.deployInfra();
       this.setResult(this.formatStepResult(r));
@@ -360,7 +360,7 @@ export class SetupScreen extends Screen {
   }
 
   private async doDecommissionInfra(): Promise<void> {
-    this.setResult("  \x1b[33mDecommissioning infrastructure...\x1b[0m");
+    this.setResult("  \x1b[33mインフラを撤去中...\x1b[0m");
     try {
       const r = await this.api.decommissionInfra();
       this.setResult(this.formatStepResult(r));
@@ -372,26 +372,26 @@ export class SetupScreen extends Screen {
   }
 
   private async doPreflightChecks(): Promise<void> {
-    this.setResult("  Running preflight checks...");
+    this.setResult("  事前チェックを実行中...");
     try {
       const r = await this.api.getPreflight();
       const checks = (r as Record<string, unknown>).checks as Array<{ ok: boolean; check: string; detail: string }> | undefined;
       const labels: Record<string, string> = {
-        bot_credentials: "Bot Credentials",
-        jwt_validation: "JWT Validation",
-        tunnel: "Tunnel",
-        tenant_id: "Tenant ID",
-        endpoint_auth: "Endpoint Auth",
-        telegram_security: "Telegram Security",
-        acs_voice: "ACS / Voice",
-        acs_callback_security: "ACS Callback Security",
+        bot_credentials: "ボット認証情報",
+        jwt_validation: "JWT 検証",
+        tunnel: "トンネル",
+        tenant_id: "テナント ID",
+        endpoint_auth: "エンドポイント認証",
+        telegram_security: "Telegram セキュリティ",
+        acs_voice: "ACS / 音声",
+        acs_callback_security: "ACS コールバックセキュリティ",
       };
       const lines: string[] = [];
       for (const c of checks || []) {
         const icon = c.ok ? "\x1b[32m✓\x1b[0m" : "\x1b[31m✗\x1b[0m";
         lines.push(`    ${icon} ${labels[c.check] || c.check}: ${c.detail}`);
       }
-      this.setResult(lines.length > 0 ? lines.join("\n") : "  No checks available.");
+      this.setResult(lines.length > 0 ? lines.join("\n") : "  実行可能なチェックがありません。");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       this.setResult(`  \x1b[31m${msg}\x1b[0m`);

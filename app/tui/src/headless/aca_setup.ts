@@ -56,7 +56,7 @@ function log(msg: string): void {
 }
 
 function fail(msg: string): never {
-  console.error(`FATAL: ${msg}`);
+  console.error(`致命的エラー: ${msg}`);
   process.exit(1);
 }
 
@@ -87,44 +87,44 @@ async function sleep(ms: number): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function stepBuildImages(): Promise<void> {
-  log("Building Docker image (compose) ...");
+  log("Docker イメージをビルド中 (compose) ...");
   writeAzureOverride();
 
   const buildOk = await buildImage((line) => {
     if (process.env.VERBOSE) console.log(line);
   });
-  if (!buildOk) fail("Docker compose build failed");
+  if (!buildOk) fail("Docker compose build に失敗");
 
-  log(`Building linux/amd64 image for ACA (tag=${IMAGE_TAG}) ...`);
+  log(`ACA 用の linux/amd64 イメージをビルド中 (tag=${IMAGE_TAG}) ...`);
   const acaOk = await buildAcaImage(IMAGE_TAG, (line) => {
     if (process.env.VERBOSE) console.log(line);
   });
-  if (!acaOk) fail("Docker build (linux/amd64) failed");
+  if (!acaOk) fail("Docker build (linux/amd64) に失敗");
 }
 
 async function stepStartAdminOnly(): Promise<void> {
-  log("Stopping any existing stack ...");
+  log("既存スタックを停止中 ...");
   try {
     await exec(["docker", "compose", "down", "--remove-orphans"], PROJECT_ROOT);
   } catch { /* may not be running */ }
 
   writeAzureOverride();
 
-  log("Starting admin container only ...");
+  log("Admin コンテナのみを起動中 ...");
   const { exitCode, stderr } = await exec(
     ["docker", "compose", "up", "-d", "admin"],
     PROJECT_ROOT,
   );
   if (exitCode !== 0) fail(`docker compose up admin failed (exit ${exitCode}): ${stderr}`);
 
-  log("Waiting for admin health ...");
+  log("Admin のヘルスチェック待ち ...");
   const ready = await waitForReady(BASE_URL, 120_000);
-  if (!ready) fail("Admin did not become healthy within 120s");
-  log("Admin is healthy");
+  if (!ready) fail("Admin が 120 秒以内に正常稼働しませんでした");
+  log("Admin が正常稼働");
 }
 
 async function stepAzureCheck(): Promise<void> {
-  log("Checking Azure CLI status ...");
+  log("Azure CLI の状態を確認中 ...");
   const deadline = Date.now() + 120_000;
 
   while (Date.now() < deadline) {
@@ -136,34 +136,34 @@ async function stepAzureCheck(): Promise<void> {
       if (status === 200 && data) {
         const st = data.status;
         if (st === "logged_in") {
-          log(`Azure logged in: ${data.user || "?"} (${data.subscription || "?"})`);
+          log(`Azure ログイン中: ${data.user || "?"} (${data.subscription || "?"})`);
           return;
         }
         if (st === "needs_subscription") {
-          log("Azure needs subscription selection");
+          log("Azure サブスクリプションの選択が必要");
           await stepSetSubscription();
           const { data: d2 } = await api<Record<string, string>>(
             "/api/setup/azure/check",
             { timeoutMs: 60_000 },
           );
           if (d2?.status === "logged_in") {
-            log(`Azure logged in: ${d2.user || "?"} (${d2.subscription || "?"})`);
+            log(`Azure ログイン中: ${d2.user || "?"} (${d2.subscription || "?"})`);
             return;
           }
         }
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      log(`Azure check attempt failed: ${msg} -- retrying ...`);
+      log(`Azure チェックに失敗: ${msg} -- 再試行中 ...`);
     }
     await sleep(5_000);
   }
-  fail("Azure CLI not logged in within 120s -- ensure ~/.azure exists");
+  fail("Azure CLI が 120 秒以内にログイン状態になりませんでした -- ~/.azure の存在を確認してください");
 }
 
 async function stepSetSubscription(): Promise<void> {
   if (SUBSCRIPTION_ID) {
-    log(`Setting subscription: ${SUBSCRIPTION_ID}`);
+    log(`サブスクリプションを設定: ${SUBSCRIPTION_ID}`);
     await api("/api/setup/azure/subscription", {
       method: "POST",
       body: { subscription_id: SUBSCRIPTION_ID },
@@ -173,10 +173,10 @@ async function stepSetSubscription(): Promise<void> {
 
   const { data } = await api<Array<Record<string, string>>>("/api/setup/azure/subscriptions");
   const subs = Array.isArray(data) ? data : [];
-  if (subs.length === 0) fail("No Azure subscriptions available");
+  if (subs.length === 0) fail("利用可能な Azure サブスクリプションがありません");
 
   const sub = subs[0];
-  log(`Auto-selecting subscription: ${sub.name} (${sub.id})`);
+  log(`サブスクリプションを自動選択: ${sub.name} (${sub.id})`);
   await api("/api/setup/azure/subscription", {
     method: "POST",
     body: { subscription_id: sub.id },
@@ -184,7 +184,7 @@ async function stepSetSubscription(): Promise<void> {
 }
 
 async function stepDeployFoundry(): Promise<Record<string, unknown>> {
-  log(`Deploying Foundry: rg=${RG} location=${LOCATION} base_name=${BASE_NAME || "(auto)"}`);
+  log(`Foundry をデプロイ中: rg=${RG} location=${LOCATION} base_name=${BASE_NAME || "(自動)"}`);
   const body: Record<string, unknown> = {
     resource_group: RG,
     location: LOCATION,
@@ -199,17 +199,17 @@ async function stepDeployFoundry(): Promise<Record<string, unknown>> {
   });
 
   if (status !== 200 || data?.status !== "ok") {
-    fail(`Foundry deploy failed (${status}): ${JSON.stringify(data)}`);
+    fail(`Foundry デプロイに失敗 (${status}): ${JSON.stringify(data)}`);
   }
 
-  log(`Foundry deployed: endpoint=${data.foundry_endpoint}`);
-  log(`  Models: ${JSON.stringify(data.deployed_models)}`);
+  log(`Foundry をデプロイ: endpoint=${data.foundry_endpoint}`);
+  log(`  モデル: ${JSON.stringify(data.deployed_models)}`);
   if (data.key_vault_url) log(`  Key Vault: ${data.key_vault_url}`);
   return data;
 }
 
 async function stepDeployAca(): Promise<Record<string, unknown>> {
-  log(`Deploying ACA: rg=${RG} location=${LOCATION} image_tag=${IMAGE_TAG}`);
+  log(`ACA をデプロイ中: rg=${RG} location=${LOCATION} image_tag=${IMAGE_TAG}`);
 
   const { status, data } = await api<Record<string, unknown>>("/api/setup/aca/deploy", {
     method: "POST",
@@ -224,7 +224,7 @@ async function stepDeployAca(): Promise<Record<string, unknown>> {
   });
 
   if (status !== 200 || data?.status !== "ok") {
-    fail(`ACA deploy failed (${status}): ${JSON.stringify(data)}`);
+    fail(`ACA デプロイに失敗 (${status}): ${JSON.stringify(data)}`);
   }
 
   // Log each step
@@ -234,19 +234,19 @@ async function stepDeployAca(): Promise<Record<string, unknown>> {
     log(`  [${icon}] ${step.step}${step.detail ? `: ${step.detail}` : ""}`);
   }
 
-  log(`ACA runtime FQDN: ${data.runtime_fqdn}`);
+  log(`ACA ランタイム FQDN: ${data.runtime_fqdn}`);
   return data;
 }
 
 async function stepWaitForAcaRuntime(): Promise<void> {
-  log("Waiting for ACA runtime to become ready via admin proxy ...");
+  log("Admin プロキシ経由で ACA ランタイムの起動を待機中 ...");
   const deadline = Date.now() + 300_000; // 5 min -- ACA cold start can be slow
 
   while (Date.now() < deadline) {
     try {
       const res = await fetch(`${BASE_URL}/health`, { signal: AbortSignal.timeout(5_000) });
       if (res.ok) {
-        log("Admin health OK (runtime proxied)");
+        log("Admin のヘルス OK (ランタイムをプロキシ中)");
         break;
       }
     } catch { /* not ready */ }
@@ -255,11 +255,11 @@ async function stepWaitForAcaRuntime(): Promise<void> {
 
   // ACA cold start -- give extra time
   await sleep(10_000);
-  log("ACA runtime health check passed");
+  log("ACA ランタイムのヘルスチェック合格");
 }
 
 async function stepChatProbe(): Promise<string> {
-  log("Sending chat probe via WebSocket ...");
+  log("WebSocket でチャット疎通確認を送信中 ...");
   const secret = await getAdminSecret();
   const wsUrl = secret
     ? `ws://localhost:${COMPOSE_ADMIN_PORT}/api/chat/ws?token=${secret}`
@@ -272,16 +272,16 @@ async function stepChatProbe(): Promise<string> {
     try {
       const text = await chatOnce(wsUrl);
       if (text) {
-        log(`Chat probe OK: ${text.slice(0, 100)}`);
+        log(`チャット疎通確認 OK: ${text.slice(0, 100)}`);
         return text;
       }
     } catch (err: unknown) {
       lastError = err instanceof Error ? err.message : String(err);
-      log(`Chat probe failed: ${lastError} -- retrying in 10s`);
+      log(`チャット疎通確認失敗: ${lastError} -- 10 秒後に再試行`);
     }
     await sleep(10_000);
   }
-  fail(`Chat probe did not succeed within 300s. Last error: ${lastError}`);
+  fail(`チャット疎通確認が 300 秒以内に成功しませんでした。Last error: ${lastError}`);
 }
 
 function chatOnce(wsUrl: string): Promise<string> {
@@ -289,7 +289,7 @@ function chatOnce(wsUrl: string): Promise<string> {
     const ws = new WebSocket(wsUrl);
     const timeout = setTimeout(() => {
       ws.close();
-      reject(new Error("Chat response timed out after 90s"));
+      reject(new Error("チャット応答が 90 秒以内に届きませんでした"));
     }, 90_000);
 
     const chunks: string[] = [];
@@ -313,26 +313,26 @@ function chatOnce(wsUrl: string): Promise<string> {
         } else if (data.type === "error") {
           clearTimeout(timeout);
           ws.close();
-          reject(new Error(data.content || data.message || "Chat error"));
+          reject(new Error(data.content || data.message || "チャットエラー"));
         }
       } catch { /* non-JSON */ }
     };
 
     ws.onerror = () => {
       clearTimeout(timeout);
-      reject(new Error("WebSocket connection error"));
+      reject(new Error("WebSocket 接続エラー"));
     };
 
     ws.onclose = () => {
       clearTimeout(timeout);
       if (chunks.length > 0) resolve(chunks.join(""));
-      else reject(new Error("WebSocket closed without response"));
+      else reject(new Error("WebSocket が応答なしでクローズされました"));
     };
   });
 }
 
 async function stepDestroyAca(): Promise<void> {
-  log("Destroying ACA deployment ...");
+  log("ACA デプロイを破棄中 ...");
   try {
     const { status, data } = await api<Record<string, unknown>>("/api/setup/aca/destroy", {
       method: "POST",
@@ -342,27 +342,27 @@ async function stepDestroyAca(): Promise<void> {
     log(`ACA destroy: ${status} ${JSON.stringify(data)}`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    log(`ACA destroy failed (best-effort): ${msg}`);
+    log(`ACA destroy に失敗 (ベストエフォート): ${msg}`);
   }
 }
 
 async function stepDecommissionFoundry(): Promise<void> {
-  log(`Decommissioning Foundry: rg=${RG}`);
+  log(`Foundry を撤去中: rg=${RG}`);
   try {
     const { status, data } = await api<Record<string, unknown>>("/api/setup/foundry/decommission", {
       method: "POST",
       body: { resource_group: RG },
       timeoutMs: 480_000,
     });
-    log(`Decommission: ${status} ${JSON.stringify(data)}`);
+    log(`撤去: ${status} ${JSON.stringify(data)}`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    log(`Decommission failed (best-effort): ${msg}`);
+    log(`撤去に失敗 (ベストエフォート): ${msg}`);
   }
 }
 
 async function stepAcaRestart(): Promise<void> {
-  log("Triggering ACA runtime restart ...");
+  log("ACA ランタイム再起動を起動中 ...");
   try {
     const { status, data } = await api<Record<string, unknown>>("/api/setup/container/restart", {
       method: "POST",
@@ -372,8 +372,8 @@ async function stepAcaRestart(): Promise<void> {
     log(`ACA restart: ${status} ${JSON.stringify(data)}`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    log(`ACA restart failed: ${msg}`);
-    throw new Error(`ACA restart failed: ${msg}`);
+    log(`ACA restart に失敗: ${msg}`);
+    throw new Error(`ACA restart に失敗: ${msg}`);
   }
 }
 
@@ -395,8 +395,8 @@ export async function runAcaHeadlessSetup(): Promise<void> {
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
     log("========================================");
-    log(`ACA SETUP COMPLETE in ${elapsed}s`);
-    log(`  Chat probe: ${probeText.slice(0, 100)}`);
+    log(`ACA セットアップ完了 (${elapsed} 秒)`);
+    log(`  チャット疎通確認: ${probeText.slice(0, 100)}`);
     log("========================================");
 
     console.log(JSON.stringify({
@@ -407,7 +407,7 @@ export async function runAcaHeadlessSetup(): Promise<void> {
     }));
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error(`\nFATAL: ACA Setup failed: ${msg}`);
+    console.error(`\n致命的エラー: ACA セットアップ失敗: ${msg}`);
     process.exit(1);
   }
 }
@@ -416,7 +416,7 @@ export async function runAcaHeadlessDecommission(): Promise<void> {
   await stepDestroyAca();
   await stepDecommissionFoundry();
   // Stop local admin container
-  log("Stopping admin container ...");
+  log("Admin コンテナを停止中 ...");
   await stopContainer("polyclaw-admin");
 }
 

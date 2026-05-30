@@ -330,7 +330,7 @@ export class DockerDeployTarget implements DeployTarget {
     onLine?: (line: string) => void,
   ): Promise<DeployResult> {
     const buildOk = await buildImage(onLine);
-    if (!buildOk) throw new Error("Docker build failed");
+    if (!buildOk) throw new Error("Docker build に失敗");
 
     const instanceId = await startContainer(adminPort, botPort, mode);
     // Admin listens on 9090 (docker-compose.yml), runtime on 8080
