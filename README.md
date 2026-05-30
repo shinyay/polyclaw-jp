@@ -110,6 +110,9 @@ For full setup instructions, configuration reference, and feature guides, see th
 - [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) (`az login` required)
 - An Azure subscription (for Foundry BYOK inference, voice, bot channels, and infrastructure provisioning)
 
+> [!NOTE]
+> For local development with `docker compose`, `scripts/run-tui.sh` automatically injects your `az login` credentials into the runtime container on every TUI launch. See [docs/local-dev/runtime-auth.md](./docs/local-dev/runtime-auth.md) for details, troubleshooting, and the underlying authentication pipeline.
+
 ## Security, Governance & Responsible AI
 
 Polyclaw is in **early preview**. Treat it as experimental software and read this section carefully.
