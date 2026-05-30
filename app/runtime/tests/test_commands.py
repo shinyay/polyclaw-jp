@@ -37,7 +37,7 @@ class TestTryHandle:
         handled = await dispatcher.try_handle("/help", reply, "web")
         assert handled
         reply.assert_awaited_once()
-        assert "Commands" in reply.call_args[0][0]
+        assert "コマンド" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_prefix_command(self, dispatcher: CommandDispatcher) -> None:
@@ -65,7 +65,7 @@ class TestNewCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/new", reply, "web")
         agent.new_session.assert_awaited_once()
-        assert "New session" in reply.call_args[0][0]
+        assert "新しいセッション" in reply.call_args[0][0]
 
 
 class TestModelCommand:
@@ -74,7 +74,7 @@ class TestModelCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/model", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Current model" in msg
+        assert "現在のモデル" in msg
 
     @pytest.mark.asyncio
     async def test_model_with_arg_switches(self, dispatcher: CommandDispatcher, agent: AsyncMock) -> None:
@@ -91,9 +91,9 @@ class TestStatusCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/status", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Status" in msg
-        assert "Model" in msg
-        assert "Uptime" in msg
+        assert "システム状態" in msg
+        assert "モデル" in msg
+        assert "稼働時間" in msg
 
 
 class TestSessionCommand:
@@ -102,7 +102,7 @@ class TestSessionCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/session", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Session" in msg
+        assert "セッション情報" in msg
 
 
 class TestSkillsCommand:
@@ -111,7 +111,7 @@ class TestSkillsCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/skills", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Skills" in msg
+        assert "スキル" in msg
 
     @pytest.mark.asyncio
     async def test_skills_with_installed(self, dispatcher: CommandDispatcher, data_dir: Path) -> None:
@@ -133,7 +133,7 @@ class TestClearCommand:
         (mem_dir / "file.txt").write_text("data")
         reply = AsyncMock()
         await dispatcher.try_handle("/clear", reply, "web")
-        assert "cleared" in reply.call_args[0][0].lower()
+        assert "クリア" in reply.call_args[0][0]
 
 
 class TestHelpCommand:
@@ -154,7 +154,7 @@ class TestProfileCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/profile", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Profile" in msg
+        assert "プロファイル" in msg
 
 
 class TestConfigCommand:
@@ -163,21 +163,21 @@ class TestConfigCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/config", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Configuration" in msg
+        assert "ランタイム設定" in msg
 
     @pytest.mark.asyncio
     async def test_config_set_allowed_key(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/config COPILOT_MODEL gpt-4o", reply, "web")
         msg = reply.call_args[0][0]
-        assert "updated" in msg.lower()
+        assert "更新しました" in msg
 
     @pytest.mark.asyncio
     async def test_config_set_disallowed_key(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/config SECRET_KEY bad", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Cannot set" in msg
+        assert "設定できません" in msg
 
 
 class TestSchedulesCommand:
@@ -186,7 +186,7 @@ class TestSchedulesCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/schedules", reply, "web")
         msg = reply.call_args[0][0]
-        assert "No scheduled" in msg
+        assert "スケジュール済みタスクはありません" in msg
 
 
 class TestSessionsCommand:
@@ -195,14 +195,14 @@ class TestSessionsCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/sessions", reply, "web")
         msg = reply.call_args[0][0]
-        assert "No recorded" in msg or "sessions" in msg.lower()
+        assert "記録されたセッションはありません" in msg
 
     @pytest.mark.asyncio
     async def test_sessions_clear(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/sessions clear", reply, "web")
         msg = reply.call_args[0][0]
-        assert "cleared" in msg.lower()
+        assert "削除しました" in msg
 
 
 class TestSessionSubCommand:
@@ -211,7 +211,7 @@ class TestSessionSubCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/session delete abc123", reply, "web")
         msg = reply.call_args[0][0]
-        assert "not found" in msg.lower()
+        assert "見つかりません" in msg
 
 
 class TestPhoneCommand:
@@ -220,13 +220,13 @@ class TestPhoneCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/phone", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Usage" in msg or "number" in msg.lower()
+        assert "使い方" in msg or "発信先番号" in msg
 
     @pytest.mark.asyncio
     async def test_phone_no_plus(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/phone 12345", reply, "web")
-        assert "must start with +" in reply.call_args[0][0]
+        assert "+ (国番号) で始めてください" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_phone_valid(self, dispatcher: CommandDispatcher) -> None:
@@ -241,20 +241,20 @@ class TestLockdownCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/lockdown", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Lock Down" in msg
+        assert "ロックダウン" in msg
 
     @pytest.mark.asyncio
     async def test_lockdown_invalid_action(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/lockdown maybe", reply, "web")
         msg = reply.call_args[0][0]
-        assert "Usage" in msg
+        assert "使い方" in msg
 
     @pytest.mark.asyncio
     async def test_lockdown_off_when_already_off(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/lockdown off", reply, "web")
-        assert "already disabled" in reply.call_args[0][0].lower()
+        assert "すでに無効です" in reply.call_args[0][0]
 
 
 class TestModelsCommand:
@@ -270,7 +270,7 @@ class TestModelsCommand:
         agent.list_models.return_value = []
         reply = AsyncMock()
         await dispatcher.try_handle("/models", reply, "web")
-        assert "No models" in reply.call_args[0][0]
+        assert "モデルはありません" in reply.call_args[0][0]
 
 
 class TestMcpCommand:
@@ -288,19 +288,19 @@ class TestPluginsCommand:
         reply = AsyncMock()
         await dispatcher.try_handle("/plugins", reply, "web")
         msg = reply.call_args[0][0]
-        assert "No plugins" in msg or "Plugins" in msg
+        assert "プラグイン" in msg
 
     @pytest.mark.asyncio
     async def test_plugin_no_args(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/plugin", reply, "web")
-        assert "Usage" in reply.call_args[0][0]
+        assert "使い方" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_plugin_unknown_action(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/plugin explode test", reply, "web")
-        assert "Unknown" in reply.call_args[0][0]
+        assert "不明なアクション" in reply.call_args[0][0]
 
 
 class TestChangeCommand:
@@ -308,7 +308,7 @@ class TestChangeCommand:
     async def test_change_no_sessions(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/change", reply, "web")
-        assert "No sessions" in reply.call_args[0][0]
+        assert "切り替え可能なセッションがありません" in reply.call_args[0][0]
 
 
 class TestScheduleCommand:
@@ -316,13 +316,13 @@ class TestScheduleCommand:
     async def test_schedule_no_args(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/schedule", reply, "web")
-        assert "Usage" in reply.call_args[0][0]
+        assert "使い方" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_schedule_add_too_few_args(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/schedule add 0 9", reply, "web")
-        assert "Usage" in reply.call_args[0][0]
+        assert "使い方" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_schedule_add_valid(self, dispatcher: CommandDispatcher) -> None:
@@ -335,10 +335,10 @@ class TestScheduleCommand:
     async def test_schedule_remove_missing(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/schedule remove abc123", reply, "web")
-        assert "not found" in reply.call_args[0][0].lower()
+        assert "見つかりません" in reply.call_args[0][0]
 
     @pytest.mark.asyncio
     async def test_schedule_remove_no_id(self, dispatcher: CommandDispatcher) -> None:
         reply = AsyncMock()
         await dispatcher.try_handle("/schedule remove", reply, "web")
-        assert "Usage" in reply.call_args[0][0]
+        assert "使い方" in reply.call_args[0][0]

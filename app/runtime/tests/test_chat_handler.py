@@ -89,7 +89,7 @@ class TestTryCommand:
         assert "message" in types
         assert "done" in types
         msg = next(c for c in calls if c["type"] == "message")
-        assert "session" in msg["content"].lower() or "new" in msg["content"].lower()
+        assert "セッション" in msg["content"] or "新しい" in msg["content"]
 
     @pytest.mark.asyncio
     async def test_clear_command(self, handler: ChatHandler) -> None:
@@ -99,7 +99,7 @@ class TestTryCommand:
         assert handled is True
         calls = [c[0][0] for c in ws.send_json.call_args_list]
         msg = next(c for c in calls if c["type"] == "message")
-        assert "clear" in msg["content"].lower() or "removed" in msg["content"].lower()
+        assert "クリア" in msg["content"] or "削除" in msg["content"]
 
     @pytest.mark.asyncio
     async def test_not_command(self, handler: ChatHandler) -> None:
