@@ -82,7 +82,7 @@ class MessageProcessor:
             record_event("agent_error", {"error": str(exc)})
             logger.error("Background processing error: %s", exc, exc_info=True)
             try:
-                await self._send_proactive_reply(ref, "An error occurred while processing your message.", channel)
+                await self._send_proactive_reply(ref, "メッセージ処理中にエラーが発生しました。", channel)
             except Exception as inner:
                 logger.error("Failed to send error reply: %s", inner)
 
@@ -113,7 +113,7 @@ class MessageProcessor:
             logger.error("No BOT_APP_ID configured")
             return
 
-        text = response or "(no response)"
+        text = response or "(応答なし)"
         outgoing = extract_outgoing_attachments(text) if response else []
         outgoing.extend(collect_pending_outgoing())
         outgoing.extend(drain_pending_cards())
@@ -135,9 +135,9 @@ class MessageProcessor:
                     error_note = ""
                     if error_details:
                         detail_lines = [f"- {e['filename']}: {e['reason']}" for e in error_details[-5:]]
-                        error_note = "\n\nMedia delivery failed:\n" + "\n".join(detail_lines)
+                        error_note = "\n\nメディアの送信に失敗しました:\n" + "\n".join(detail_lines)
                     else:
-                        error_note = "\n\n_(Some files could not be delivered.)_"
+                        error_note = "\n\n_(一部のファイルを送信できませんでした。)_"
                     for chunk in split_message(_text + error_note):
                         await turn_context.send_activity(_channel_activity(chunk, _channel))
             else:

@@ -15,13 +15,13 @@ async def cmd_new(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     await dispatcher._agent.new_session()
     if dispatcher._session_store:
         dispatcher._session_store.start_session(uuid.uuid4().hex[:12], model=cfg.copilot_model)
-    await ctx.reply("New session started.")
+    await ctx.reply("新しいセッションを開始しました。")
 
 
 async def cmd_model(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     parts = ctx.text.split(maxsplit=1)
     if len(parts) < 2:
-        await ctx.reply(f"Current model: {cfg.copilot_model}\n\nUsage: /model <name>")
+        await ctx.reply(f"現在のモデル: {cfg.copilot_model}\n\n使い方: /model <name>")
         return
     new_model = parts[1].strip()
     old_model = cfg.copilot_model
@@ -29,13 +29,13 @@ async def cmd_model(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     await dispatcher._agent.new_session()
     if dispatcher._session_store:
         dispatcher._session_store.start_session(uuid.uuid4().hex[:12], model=new_model)
-    await ctx.reply(f"Model switched: {old_model} -> {new_model}\nNew session started.")
+    await ctx.reply(f"モデルを切り替えました: {old_model} -> {new_model}\n新しいセッションを開始しました。")
 
 
 async def cmd_models(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     models = await dispatcher._agent.list_models()
     if not models:
-        await ctx.reply("No models available.")
+        await ctx.reply("利用可能なモデルはありません。")
         return
     current = cfg.copilot_model
     lines = ["Available Models", ""]
@@ -64,11 +64,11 @@ async def cmd_session(dispatcher: CommandDispatcher, ctx: CommandContext) -> Non
 
 async def cmd_sessions(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     if not dispatcher._session_store:
-        await ctx.reply("Session store not available.")
+        await ctx.reply("セッションストアが利用できません。")
         return
     sessions = dispatcher._session_store.list_sessions()
     if not sessions:
-        await ctx.reply("No recorded sessions.")
+        await ctx.reply("記録されたセッションはありません。")
         return
     stats = dispatcher._session_store.get_session_stats()
     lines = [f"Sessions ({stats['total_sessions']} total, {stats['total_messages']} messages)", ""]
@@ -84,10 +84,10 @@ async def cmd_sessions_sub(dispatcher: CommandDispatcher, ctx: CommandContext) -
     parts = ctx.text.split()
     if len(parts) >= 2 and parts[1].lower() == "clear":
         if not dispatcher._session_store:
-            await ctx.reply("Session store not available.")
+            await ctx.reply("セッションストアが利用できません。")
             return
         count = dispatcher._session_store.clear_all()
-        await ctx.reply(f"All sessions cleared ({count} deleted).")
+        await ctx.reply(f"すべてのセッションを削除しました ({count} 件)。")
     else:
         await cmd_sessions(dispatcher, ctx)
 
@@ -96,21 +96,21 @@ async def cmd_session_sub(dispatcher: CommandDispatcher, ctx: CommandContext) ->
     parts = ctx.text.split()
     if len(parts) >= 3 and parts[1].lower() == "delete":
         if not dispatcher._session_store:
-            await ctx.reply("Session store not available.")
+            await ctx.reply("セッションストアが利用できません。")
             return
         ok = dispatcher._session_store.delete_session(parts[2])
-        await ctx.reply(f"Session '{parts[2]}' deleted." if ok else f"Session '{parts[2]}' not found.")
+        await ctx.reply(f"セッション '{parts[2]}' を削除しました。" if ok else f"セッション '{parts[2]}' が見つかりません。")
     else:
         await cmd_session(dispatcher, ctx)
 
 
 async def cmd_change(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
     if not dispatcher._session_store:
-        await ctx.reply("Session store not available.")
+        await ctx.reply("セッションストアが利用できません。")
         return
     sessions = dispatcher._session_store.list_sessions()
     if not sessions:
-        await ctx.reply("No sessions to switch to. Use /new to start one.")
+        await ctx.reply("切り替え可能なセッションがありません。/new で新しいセッションを開始してください。")
         return
     lines = ["Recent Sessions:", ""]
     for i, s in enumerate(sessions[:5], 1):
@@ -127,4 +127,4 @@ async def cmd_clear(dispatcher: CommandDispatcher, ctx: CommandContext) -> None:
             if f.is_file():
                 f.unlink()
                 cleared += 1
-    await ctx.reply(f"Memory cleared ({cleared} files removed).")
+    await ctx.reply(f"メモリーをクリアしました ({cleared} ファイル削除)。")

@@ -77,7 +77,7 @@ class Bot(ActivityHandler):
 
     async def _handle_message(self, turn_context: TurnContext) -> None:
         if not _is_authorized(turn_context):
-            await _reply(turn_context, "You are not authorized to use this bot.")
+            await _reply(turn_context, "このボットを利用する権限がありません。")
             return
 
         ref = TurnContext.get_conversation_reference(turn_context.activity)
@@ -146,7 +146,7 @@ class Bot(ActivityHandler):
                 ref = TurnContext.get_conversation_reference(turn_context.activity)
                 self._conv_store.upsert(ref)
                 await turn_context.send_activity(
-                    "Hello! I'm your autonomous copilot. Send any message to begin."
+                    "こんにちは。自律型コパイロットです。メッセージを送ると会話を開始できます。"
                 )
 
 
