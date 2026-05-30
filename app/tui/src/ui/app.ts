@@ -1,5 +1,41 @@
 /**
- * Tab-based TUI application.
+ * Tab-based TUI application (⚠️ WIP — NOT WIRED).
+ *
+ * ===========================================================================
+ * 🚨 STATUS (2026-05-30): This module is currently **dead code**.
+ * ===========================================================================
+ *
+ * `PolyclawApp` is not instantiated anywhere in the repository. The active
+ * admin TUI entry point is `index.ts` → `launchTUI` → `src/ui/tui.ts`
+ * (a chat-centric single-screen UI with slash commands). All files under
+ * `src/screens/*` are reachable only through this module, so they are
+ * transitively dead code as well.
+ *
+ * Why it still exists:
+ *   - Originally drafted as the Phase 2 tab-based replacement for tui.ts.
+ *   - Implementation was paused before integration; the file was kept so
+ *     the work can be revived without re-inventing the screen abstractions.
+ *
+ * Why we left it in tree (E case decision, see phase4-smoke.md §4.4.7.1):
+ *   - PR-5.1 applied the ANSI escape → `fg` property refactor here as a
+ *     defensive measure so a future reactivation does not regress on CJK
+ *     width rendering.
+ *   - Removing it now would discard ~100-200 Phase 4 JA translations and
+ *     a reusable screen architecture; the maintenance cost is low while
+ *     this header makes the inactive status explicit.
+ *
+ * Before reactivating:
+ *   1. Replace the `launchTUI(...)` call in `src/index.ts` admin mode
+ *      branch with `new PolyclawApp(...).start()` (or equivalent).
+ *   2. Re-verify that every `screens/*.ts` builds correctly under the
+ *      current `@opentui/core` (the API has moved since the initial draft).
+ *   3. Re-run the smoke checklist in `docs/i18n/phase4-smoke.md §4.2`.
+ *
+ * If you are about to delete this module: also delete `src/screens/`,
+ * `src/utils/text.ts`, and update `phase4-smoke.md §4.4.7.1`.
+ *
+ * ---------------------------------------------------------------------------
+ * Original docstring (when active):
  *
  * Phase 1 -- Startup: build Docker image (live log output), start
  *            container, wait for health.

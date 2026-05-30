@@ -1,6 +1,15 @@
 /**
  * Text rendering helpers.
  *
+ * ⚠️ DEAD CODE (2026-05-30) — currently only consumed by the dead
+ *    `src/screens/*` tree behind `src/ui/app.ts`. The active admin TUI
+ *    (`src/ui/tui.ts`) already follows the `fg`-property pattern by hand
+ *    and does not import this helper. The helper is kept in tree so a
+ *    future reactivation of the tab-based UI inherits the correct
+ *    pattern without re-discovering PR-5.1's findings.
+ *    See `src/ui/app.ts` header and `docs/i18n/phase4-smoke.md §4.4.7.1`
+ *    for the decision rationale.
+ *
  * Centralises the pattern of updating a {@link TextRenderable}'s content
  * and foreground color in one call so callers do not need to drop down to
  * the `(text as unknown as { fg: string }).fg` cast every time.

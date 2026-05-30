@@ -1,6 +1,10 @@
 /**
  * Abstract base class for TUI screens.
  *
+ * ⚠️ DEAD CODE — see `src/ui/app.ts` header for status (not wired into
+ *    admin mode; admin mode uses `src/ui/tui.ts` instead). Retained for
+ *    possible future reactivation of the tab-based UI.
+ *
  * Each screen owns a root container that is mounted into the content
  * area when the tab is selected, and unmounted when a different tab
  * is activated. Screens populate their container in `build()` and

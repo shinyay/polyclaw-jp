@@ -560,6 +560,55 @@ export function setText(text: TextRenderable, content: string, color: string = C
 - mcp/scheduler/plugins/workspace/dashboard/sessions の各画面で成功/失敗時の着色が PR-5.1 前と等価
 - proactive 画面の toggle / cancel 結果の着色が等価
 
+#### 4.4.7.1 PR-5.1 検証時の発見 — refactor 対象が dead code だった (E 案決定)
+
+**経緯** (2026-05-30、PR-5.1 commit 後の実機検証準備中):
+
+PR-5.1 push 後にユーザに実機検証を依頼し、`./scripts/run-tui.sh` で admin mode を起動して各画面の色表示確認を提案した。しかし TUI 起動後に **Tab で画面遷移が起きない** ことが判明し、コードを精査した結果、以下が明らかになった:
+
+| 観点 | 実態 |
+|---|---|
+| 実機 admin mode のエントリ | `src/index.ts` → `launchTUI()` → **`src/ui/tui.ts`** (チャット中心 + slash command の単一画面 UI) |
+| PR-5.1 で refactor した `src/ui/app.ts` (`PolyclawApp` クラス) | **どこからも import されていない = dead code** |
+| PR-5.1 で refactor した `src/screens/*.ts` (9 ファイル) | `app.ts` 経由でしか使われない = **連鎖的に dead code** |
+| 実機 UI (`tui.ts`) の ANSI escape 数 | **0 件** (元々 `fg:` プロパティ方式で実装、36 サイト) |
+| PR-5.1 の実機 UI への影響 | **ゼロ** |
+| Phase 4 で実証した CJK 崩れの源 | `target-picker.ts` の ANSI escape (PR-5.0 で既に修正済、本件と無関係) |
+
+**結論**:
+- Phase 4 翻訳期と PR-5.1 refactor 期の双方で、`src/screens/*` を「実機画面の実装」と誤認していた
+- 実機検証 (PR-5.1 結果確認) は **不要** — 検証すべき差分が UI 上に存在しない
+- ただし PR-5.1 の typecheck/test 結果は健全で、コードは破壊していない
+
+**5 つの選択肢を比較し E 案を採用**:
+
+| 案 | 内容 | 採否 |
+|---|---|:---:|
+| A | PR-5.1 を温存 (将来 app.ts 復活時の備え)、ただし dead code は未明示 | ✗ |
+| B | PR-5.1 + screens/* + app.ts を削除 | ✗ |
+| C | tui.ts (1900 行モノリス) を screens/* で再構築 (大改修) | ✗ |
+| **E** | **PR-5.1 温存 + dead code 状態を docstring と本ドキュメントで明示** | **✓** |
+| F | PR-5.1 revert + screens/* archive | ✗ |
+
+**E 案の採用理由**:
+- PR-5.1 の工数 (10 ファイル refactor + 検証) は無駄にならない (将来反転時に有効)
+- Phase 4 で screens/* に施した JA 翻訳 (推定 100-200 entries) も将来反転時に有効
+- 削除のコスト (B/F) と再構築のコスト (C) を回避
+- dead code であることを明示すれば、次回保守者の誤認 (= 同じ refactor を再度走らせる無駄) を防げる
+
+**実装** (本 commit):
+- `app/tui/src/ui/app.ts` の冒頭 docstring に **詳細な dead code 注記** (状態 / 経緯 / 復活手順 / 削除時の連鎖) を追加
+- `app/tui/src/screens/screen.ts` 冒頭に短い dead code 注記 + `app.ts` 参照
+- `app/tui/src/screens/index.ts` 冒頭に短い dead code 注記 + `app.ts` 参照
+- `app/tui/src/utils/text.ts` 冒頭の PR-5.1 文脈に dead code 補足追加
+- 本セクション (§4.4.7.1) で決定の背景と理由を記録
+
+**今後の作業判断ガイド**:
+- `src/screens/*` で見つけた英語 leak: 翻訳しても実機影響ゼロ → 緊急度低
+- `src/ui/tui.ts` で見つけた英語 leak: 実機影響あり → 緊急度高
+- ANSI escape: tui.ts には元々ない、screens/* は PR-5.1 で対処済 → 新規追加禁止
+- PR-5.2 (部分着色 BoxRenderable 化) の scope: tui.ts に絞る (screens/* は touch 不要)
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
