@@ -793,14 +793,14 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 792,frontend,app/frontend/src/pages/Environments.tsx,142,Orphaned RGs:,,approved,PR-2.7,
 793,frontend,app/frontend/src/pages/Environments.tsx,145,No orphaned resources found.,,approved,PR-2.7,
 794,frontend,app/frontend/src/pages/Environments.tsx,149,Orphaned Resource Groups,,approved,PR-2.7,
-795,backend,app/runtime/agent/agent.py,218,Agent not started,,pending,,
-796,backend,app/runtime/agent/agent.py,242,Agent not started,,pending,,
-797,backend,app/runtime/agent/agent.py,364,Agent not started,,pending,,
-798,backend,app/runtime/scheduler/engine.py,105,Provide either cron or run_at,,pending,,
-799,backend,app/runtime/realtime/middleware.py,296,No authentication configured for OpenAI Realtime,,pending,,
-800,backend,app/runtime/realtime/routes.py,79,"message"": ""Phone number is required",,pending,,
-801,backend,app/runtime/registries/plugins.py,219,No PLUGIN.json found in zip archive,,pending,,
-802,backend,app/runtime/registries/plugins.py,228,Invalid PLUGIN.json in archive,,pending,,
+795,backend,app/runtime/agent/agent.py,218,Agent not started,エージェントが起動していません,approved,PR-3.3,"PR-3.3: RuntimeError, agent core lifecycle"
+796,backend,app/runtime/agent/agent.py,242,Agent not started,エージェントが起動していません,approved,PR-3.3,"PR-3.3: RuntimeError, agent core lifecycle (same as #795)"
+797,backend,app/runtime/agent/agent.py,364,Agent not started,エージェントが起動していません,approved,PR-3.3,"PR-3.3: RuntimeError, agent core lifecycle (same as #795)"
+798,backend,app/runtime/scheduler/engine.py,105,Provide either cron or run_at,cron または run_at のいずれかを指定してください,approved,PR-3.3,"PR-3.3: scheduler validation, attr names kept English"
+799,backend,app/runtime/realtime/middleware.py,296,No authentication configured for OpenAI Realtime,OpenAI Realtime の認証が設定されていません,approved,PR-3.3,"PR-3.3: realtime auth error, OpenAI Realtime kept English (proper noun)"
+800,backend,app/runtime/realtime/routes.py,79,"message"": ""Phone number is required",電話番号は必須です,approved,PR-3.3,"PR-3.3: voice call JSON literal, frontend toast"
+801,backend,app/runtime/registries/plugins.py,219,No PLUGIN.json found in zip archive,zip アーカイブに PLUGIN.json が見つかりません,approved,PR-3.3,PR-3.3: plugin import error
+802,backend,app/runtime/registries/plugins.py,228,Invalid PLUGIN.json in archive,アーカイブ内の PLUGIN.json が不正です,approved,PR-3.3,PR-3.3: plugin import error
 803,backend,app/runtime/messaging/message_processor.py,85,An error occurred while processing your message.,メッセージ処理中にエラーが発生しました。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
 804,backend,app/runtime/messaging/bot.py,80,You are not authorized to use this bot.,このボットを利用する権限がありません。,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
 805,backend,app/runtime/messaging/commands/agent.py,51,Installing skill '{name}'...,スキル '{name}' をインストールしています...,approved,PR-3.1,PR-3.1: messaging cluster translation (awaiting user flag review)
@@ -904,10 +904,10 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 886,backend,app/runtime/state/mcp_config.py,113,Server name is required,Server name は必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
 887,backend,app/runtime/state/mcp_config.py,119,command is required for local servers,local サーバーには command が必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
 888,backend,app/runtime/state/mcp_config.py,121,url is required for remote (http/sse) servers,remote (http/sse) サーバーには url が必須です,approved,PR-3.2,"PR-3.2: validation error, attr name kept English per style-guide §1"
-889,backend,app/runtime/sandbox/executor.py,255,Failed to acquire Azure credentials for Dynamic Sessions,,pending,,
+889,backend,app/runtime/sandbox/executor.py,255,Failed to acquire Azure credentials for Dynamic Sessions,Dynamic Sessions 用の Azure 資格情報の取得に失敗しました,approved,PR-3.3,"PR-3.3: sandbox auth, Dynamic Sessions / Azure kept English (proper noun)"
 890,backend,app/runtime/server/routes/_helpers.py,51,Invalid JSON body,JSON 形式の本文が不正です,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
 891,backend,app/runtime/server/routes/_helpers.py,53,JSON body must be an object,JSON の本文はオブジェクトである必要があります,approved,PR-3.2,PR-3.2: HTTPBadRequest message visible to frontend toast
-892,backend,app/runtime/server/routes/proactive_routes.py,66,"message"": ""No pending follow-up.",,pending,,
+892,backend,app/runtime/server/routes/proactive_routes.py,66,"message"": ""No pending follow-up.",保留中のフォローアップはありません。,approved,PR-3.3,"PR-3.3: proactive cancel_pending JSON literal, frontend toast"
 893,tui,app/tui/src/config/constants.ts,71,\u280B,,pending,,
 894,tui,app/tui/src/config/constants.ts,71,\u2819,,pending,,
 895,tui,app/tui/src/config/constants.ts,71,\u2839,,pending,,
