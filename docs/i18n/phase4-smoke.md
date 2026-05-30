@@ -381,6 +381,48 @@ PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同�
 
 PR-5.0.1 適用後の `bun run typecheck` exit 0、`bun test` 103/103 pass。
 
+#### 4.4.3 Step H 重大 regression — PR-5.0 useAlternateScreen 削除 → Ctrl+C 不動 → PR-5.0.2 revert
+
+**経緯** (2026-05-30):
+1. PR-5.0 で `app/tui/src/ui/app.ts:94` から `useAlternateScreen: true` を削除 (`@opentui/core` 0.1.107 で型から消えていた → typecheck error 解消目的)
+2. PR-5.0.1 適用後の実機検証で **Ctrl+C が効かなくなる** ことが判明 — TUI からターミナル window を閉じる以外に脱出不能、Docker container も残留
+3. PR-5.0.2 で **immediate revert** (`useAlternateScreen: true` を `@ts-expect-error` 付きで復帰)
+
+**根本原因の推定**:
+- `@opentui/core` 0.1.107 では型定義から `useAlternateScreen` が削除されたが、**runtime には依然として残っており、SIGINT (Ctrl+C) ハンドリングの初期化シーケンスに影響する** 副作用がある
+- alternate screen buffer への切替時に raw mode + signal handler が正しく設定されるが、削除すると signal handler 設定が skip される (推定)
+- 型定義削除は **breaking change なし** という upstream の判断だが、実際は SIGINT 経路に regression がある
+
+**対策** (PR-5.0.2):
+```typescript
+this.renderer = await createCliRenderer({
+  exitOnCtrlC: true,
+  // @ts-expect-error: useAlternateScreen was removed from @opentui/core 0.1.107
+  //   type definitions but is still required at runtime - removing it breaks
+  //   Ctrl+C signal handling (verified via PR-5.0 regression).
+  useAlternateScreen: true,
+  useMouse: true,
+  backgroundColor: Colors.bg,
+});
+```
+
+**教訓** (将来のために):
+- `@opentui/core` のような外部ライブラリの API 削除は、**型定義の変更だけで判断せず必ず実機検証** する
+- typecheck の error 解消 = 安全、とは限らない
+- TUI の critical UX 機能 (Ctrl+C 等の脱出経路) は **smoke test の必須項目** に追加すべき (§5.3 に追加)
+
+**upstream PR 候補**:
+- `@opentui/core` リポジトリに「`useAlternateScreen` 型定義復帰 OR `exitOnCtrlC` の独立化」issue を投げる
+
+#### 4.4.4 Step H smoke test (Ctrl+C 検証) を §4.2 必須項目に追加
+
+| Step | 検証項目 | 期待結果 |
+|---|---|---|
+| **H** | TUI 起動中に Ctrl+C を入力 | 即座に終了、Docker container も停止 |
+| **H2** | TUI 起動中に Ctrl+\ (SIGQUIT) を入力 | core dump or 即終了 (フォールバック検証) |
+
+これは Phase 5 Wave 1-A の smoke spec (§4.2) に **後から追加** すべき。「Ctrl+C 検証」は当初 §4.2.2 (Disclaimer 後の脱出パス) のみだったが、**起動完了後の TUI 内からの脱出** も明示的に検証する必要がある。
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
@@ -395,7 +437,7 @@ PR-5.0.1 適用後の `bun run typecheck` exit 0、`bun test` 103/103 pass。
 |:---:|---|---|---|
 | 🔴 P0 | `ui/target-picker.ts:83` | `(試験的)` から ANSI escape `\x1b[32m...\x1b[0m` を除去 | 残像 + 半切れ消失 (Step A で実証済) |
 | 🟡 P1 | `ui/tui.ts:412` | `activityText = "Thinking"` → `"考え中"` | status bar の英語 leak 解消 |
-| 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 |
+| 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 → **⚠️ PR-5.0.2 で revert** (Ctrl+C regression 発生) |
 | 🔴 P0 (PR-5.0.1) | `runtime/agent/agent.py:258-259` | 認証エラーメッセージ JA 化 | backend i18n 漏れ修正、chat 最初のインタラクションで露見する critical path |
 | 🟡 P1 (PR-5.0.1) | `tui/{screens/chat.ts:138,143,256, ui/tui.ts:750,759,764}` | chat role label `Bot:` → `ポリ:` (6 箇所) | `あなた:` ↔ `Bot:` 不整合解消、mascot 名 `ポリ` (Polyclaw のフクロウ Poly) 採用 |
 

@@ -91,6 +91,12 @@ export class App {
   async start(): Promise<void> {
     this.renderer = await createCliRenderer({
       exitOnCtrlC: true,
+      // @ts-expect-error: useAlternateScreen was removed from @opentui/core 0.1.107
+      //   type definitions but is still required at runtime - removing it breaks
+      //   Ctrl+C signal handling (verified 2026-05-30 via PR-5.0 regression). Keep
+      //   the property until upstream fixes type definitions or provides a
+      //   replacement API. See docs/i18n/phase4-smoke.md §4.4.3.
+      useAlternateScreen: true,
       useMouse: true,
       backgroundColor: Colors.bg,
     });
