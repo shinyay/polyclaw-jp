@@ -18,15 +18,16 @@
 | 英語 residue 静的監査 (UI 表示テキスト) | ⚠️ **3 leak 候補検出 — Phase 5 hotfix (PR-4.6) 推奨** |
 | CJK 幅対応 (`utils/width.ts` 利用箇所) | ❌ **FAIL — `width.ts` は実装済だが `import` 件数 0 (どこからも使われていない)** |
 | 文字列 truncate (`.slice(N)`) の CJK 半切れリスク | ⚠️ **4 site 検出 — `chat.ts` 2 + `headless/{setup,aca_setup}.ts` 2** |
-| 実機 TUI 起動 / 主要画面遷移 | ⚠️ **DEFERRED — §4 に実機操作手順 spec、user 任意で実施** |
+| 実機 TUI 起動 / 主要画面遷移 | ⚠️ **PARTIAL — Step 0 + 1 + 2 実施、§4.4 に実機検証結果記録、Step 3 以降 deferred** |
 | Setup wizard (headless) JA 文言検証 | ⚠️ **DEFERRED — Azure subscription + Container Apps 環境必要、user 任意** |
+| **実機 CJK 幅崩れ検証** | 🔴 **FAIL — target picker ACA 行で実証 (§4.4 Step 2)、PR-5.0 critical hotfix 必須** |
 
 **総合判定**:
 
 - **翻訳作業の完了**: ✅ Phase 4 のスコープ (TUI 840 entries の JP 化) は **100% 達成**、9 commit に分割、CI 全 green
 - **静的品質**: ✅ test 103/103 pass、typecheck pre-existing 1 のみ、新規 error 0
-- **動作品質**: ⚠️ **3 件の leak 候補 + CJK 幅 helper 未配線** を発見 → Phase 5 で hotfix 必要だが、blocker ではない
-- **本番運用判定**: 🟡 **TUI 翻訳成果物のみで本番投入可能だが、Phase 5 で `width.ts` 配線 + leak 解消推奨**
+- **動作品質**: 🔴 **実機検証で CJK 幅崩れ実証** (§4.4 Step 2) — `target-picker` の ACA option で前フレーム残像 + truncate 半切れ発生
+- **本番運用判定**: 🔴 **PR-5.0 hotfix 必須** — 実機 UX で日本語表示が破綻する箇所あり (Phase 4 翻訳作業自体は 100% 完了だが、`@opentui/core` が CJK 幅非対応で副作用)
 
 ---
 
@@ -128,6 +129,8 @@ src/ui/app.ts(94,7): error TS2353:
 | `headless/aca_setup.ts:275` | `text.slice(0, 100)` | 同上 | 同上 |
 
 **現状の影響**: chat screen での tool args 表示 (`web_search "日本語クエリ..."` 等) が UTF-8 byte 境界で切れる可能性。`String.prototype.slice` は UTF-16 code unit 単位で動くため、surrogate pair (絵文字 / SMP+ CJK) を半分に切る可能性も。
+
+**🔴 実機実証 (2026-05-30 §4.4 Step 2)**: `target-picker` の ACA option で **前フレーム残像** + **truncate 半切れ** が同時発生することを実機で確認。`@opentui/core` の `TextRenderable` が文字列幅を `.length` (UTF-16 code unit 数) で計算しているため、日本語混在文字列の **再描画時に前のフレームの末尾文字が残る** + **長文 description が CJK 文字境界を無視して切れる** という二重の問題が発生。詳細は §4.4 Step 2 の結果参照。
 
 ### 2.6 静的監査 サマリ
 
@@ -268,37 +271,131 @@ cd app/tui && bun run src/index.ts headless setup
 - 進捗 log (`チャット疎通確認 OK: ...` 等) が JA 化
 - エラー時に英語 leak がないか
 
-### 4.4 結果記録欄 (実施時に追記)
+### 4.4 実機検証結果 (2026-05-30 実施)
+
+#### Step 0: `bun run src/index.ts help` (usage 表示)
+
+**結果**: ✅ **PASS**
+
+- 全 `console.log` 行が JA 化、英語 leak 0 件
+- proper noun (`Bot Framework` / `Foundry` / `Azure` / `ACA`) は正しく英語維持
+- `不明なコマンド: help` (translation of `Unknown command:`) JA 化確認
+- `環境変数:` セクション、`ADMIN_PORT` 等の説明全 JA
+
+**Pre-existing bug 検出**:
+- `src/index.ts:46-48 と 49-51` で `aca-setup` / `aca-decommission` / `aca-restart` の 3 行が **重複表示** (upstream 初期コミットから存在、翻訳作業由来ではない)
+- → Phase 5 で upstream にも fix PR を投げる候補
+
+#### Step 1: Disclaimer 画面表示
+
+**結果**: ✅ **EXCELLENT**
+
+- `============================================================`
+- `技術デモンストレーター — リスクに関する免責事項`
+- 5 bullet (高自律エージェント / サンドボックス環境専用 / 損害発生の可能性 / 無保証 / サポート対象外) 全て自然な JA
+- 入力プロンプト: `リスクに同意して続行するには accept と入力してください:`
+- ASCII 罫線、ANSI color、自然な日本語 wrap、全て完璧
+- 英語 leak: **0 件** (`accept` は意図的な command keyword)
+- 文字化け: **0 件**
+
+#### Step 2: Target Picker 画面表示 — 🔴 **CJK 幅崩れ実証**
+
+**結果**: 🟡 **PARTIAL** (翻訳品質は good、CJK 幅崩れの実証 finding が決定的)
+
+✅ **Good**:
+- POLYCLAW ASCII ロゴ + フクロウ mascot: 完璧表示
+- `デプロイターゲット` タイトル: JA 化
+- `矢印キーで選択、Enter で確定、Ctrl+C で終了` ヒント: JA 完璧
+- `▶ ローカル Docker  --  ローカルでビルドして実行 (デフォルト)`: 1 行目は崩れず
+- `(account info) としてログイン中`: 自然な JA
+
+🔴 **重大 finding — CJK 幅崩れの実証**:
+
+ACA option 行の実機表示:
+```
+  Azure Container Apps 試験的)験的)  --  Azureに  ィ  デプロイ (...account info)
+```
+
+**期待表示** (ソースコードから):
+```
+  Azure Container Apps (試験的)  --  Azure にデプロイ (永続化、クラウドホスト)
+```
+
+**観察された 2 つの異常**:
+
+| # | 観察事象 | 推定原因 |
+|---|---|---|
+| 1 | `(試験的)` が `試験的)験的)` と **重複** | 再描画時に前のフレームの末尾文字が残った。`@opentui/core` の `TextRenderable.content =` 再代入時に「これは N cell の text」と `.length` ベースで判定 → CJK 幅 2 cell の文字を 1 cell として扱い、右側 column が clear されず残骸が表示 |
+| 2 | `Azure にデプロイ (永続化、クラウドホスト)` (24 全角 = 48 cell) が `Azureに  ィ  デプロイ` (15 半角 + 5 全角 = 25 cell) に **半分以下に切れて**、しかも `ィ` という意味不明な小カタカナだけ残った | 同様に `.length` ベースの幅計算で truncate された結果、CJK 境界を無視して内部の半端な文字列だけ表示 |
+
+**根本原因**: 
+- `app/tui/src/utils/width.ts` (PR-4.0 で実装した CJK 幅 helper) が **どこからも import されていない** (§2.4)
+- `@opentui/core` の `TextRenderable` 描画レイヤーが CJK 幅を理解していない (upstream の限界)
+- → 翻訳した日本語文字列を `TextRenderable.content` にそのまま渡すと、再描画時に **残像 + 半切れ** が発生
+
+**修正方針 (PR-5.0)**:
+1. `target-picker.ts:173-177` の `renderItem()` で、`padToWidth(text, MAX_WIDTH, 'left')` を使って文字列を「右端を空白で埋めて固定幅」にする → 再描画時の残像消去
+2. `description` が長すぎる場合は `truncateByWidth(text, AVAIL_WIDTH, '…')` で安全に truncate → 半切れ防止
+3. 同様の `TextRenderable.content` を動的更新している全箇所 (`chat.ts` / `sessions.ts` / `mcp.ts` 等の `Loading...` → 実コンテンツ置換、`scheduler.ts` の task 一覧更新、`proactive.ts` の history 更新など) で `width.ts` 配線
+
+#### Step 3 以降: ⚠️ **DEFERRED**
+
+Step 2 で重大 finding (CJK 幅崩れ実証) が確定したため、Step 3 (タブ巡回) / Step 4 (chat 日本語入力) / Step 5 (`Thinking` leak verify) は **PR-5.0 hotfix 適用後に再実施** することにする。今のままで Step 3 以降を続けても、同じ CJK 幅崩れが他画面でも発生する可能性が高く、検証成果が limited。
+
+PR-5.0 hotfix 適用後に再 smoke することで、修正の有効性も同時に検証可能。
 
 | 日時 | 実施者 | 検証項目 | 結果 | 備考 |
 |---|---|---|:---:|---|
-| (未実施) | — | 4.2.1 起動 + ASCII art | — | |
-| (未実施) | — | 4.2.2 タブ巡回 (11 タブ) | — | |
-| (未実施) | — | 4.2.3 日本語入力 + tool args | — | CJK 半切れ確認 |
-| (未実施) | — | 4.2.4 `Thinking` leak verify | — | leak 検出された?  |
-| (未実施) | — | 4.2.5 終了 | — | |
-| (未実施) | — | 4.3 setup wizard 文言 | — | (任意、Azure 必要) |
+| 2026-05-30 | shinyay | 4.2.0 usage (`help`) | ✅ PASS | pre-existing aca-* 行 6 重複検出 |
+| 2026-05-30 | shinyay | 4.2.1 Disclaimer 画面 | ✅ EXCELLENT | 5 bullet 全 JA、英語 leak 0 |
+| 2026-05-30 | shinyay | 4.2.2 Target Picker 画面 | 🟡 PARTIAL | **CJK 幅崩れ実証** → PR-5.0 critical |
+| (deferred) | — | 4.2.3 タブ巡回 (11 タブ) | — | PR-5.0 後に再実施 |
+| (deferred) | — | 4.2.3 日本語入力 + tool args | — | PR-5.0 後に再実施 |
+| (deferred) | — | 4.2.4 `Thinking` leak verify | — | PR-5.0 後に再実施 |
+| (deferred) | — | 4.3 setup wizard 文言 | — | (任意、Azure 必要) |
 
 ---
 
-## 5. Phase 5 backlog (PR-5.0 hotfix 候補 + 改善項目)
+## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
 
-### 5.1 PR-5.0 hotfix (Phase 4 仕上げ)
+### 5.1 PR-5.0 critical hotfix (実機検証で必須化)
 
-`docs/i18n/inventory.csv` の status は全 translated/approved 済だが、以下 9 site の追加修正が望ましい:
+`docs/i18n/inventory.csv` の status は全 translated/approved 済だが、**実機 §4.4 Step 2 で CJK 幅崩れを実証**したため、以下を **必須対応**:
 
-1. **leak 修正** (3 site, §2.3):
-   - `ui/tui.ts:412` `"Thinking"` → `"考え中"`
-   - `ui/tui.ts:356` `"Admin"/"Runtime"` → 議論後翻訳 or 英語維持
-   - `config/constants.ts:85,86,91,92` `"Tunnel"/"Bot"` → 議論後翻訳 or 英語維持
+#### 5.1.1 🔴 CRITICAL: CJK 幅 helper 配線 (実機 finding に基づく)
 
-2. **CJK 幅 helper 配線** (`width.ts` import + 4 site 置換, §2.4 + §2.5):
-   - `screens/chat.ts:189,283` `args.slice(N)` → `truncateByWidth(args, N, "...")`
-   - `headless/{setup,aca_setup}.ts` `text.slice(0, 100)` → 同上
-   - (将来) `padEnd(5)` を使う log level 整形などにも段階的に展開
+`app/tui/src/utils/width.ts` の `padToWidth` / `truncateByWidth` / `stringWidth` を **動的に再描画される全 `TextRenderable.content` 更新箇所**に配線する。
 
-3. **`@opentui/core` 0.1.107 API 追従**:
-   - `ui/app.ts:94` の `useAlternateScreen` プロパティ削除 (typecheck error 解消)
+| 優先度 | ファイル | 関数 | 修正 |
+|:---:|---|---|---|
+| 🔴 P0 | `ui/target-picker.ts:173-177` | `renderItem()` | `padToWidth(text, COLS, 'left')` で固定幅化 → 残像消去 |
+| 🔴 P0 | `ui/target-picker.ts:83` | ACA option `description` | description が長すぎる場合 `truncateByWidth(text, AVAIL_W, '…')` |
+| 🔴 P0 | `screens/chat.ts:189` | tool args display | `truncateByWidth(args, 120, '...')` |
+| 🔴 P0 | `screens/chat.ts:283` | tool args display (short) | `truncateByWidth(args, 60, '...')` |
+| 🟡 P1 | `headless/setup.ts:226` | 疎通確認 log | `truncateByWidth(text, 100, '')` |
+| 🟡 P1 | `headless/aca_setup.ts:275` | 同上 | 同上 |
+| 🟡 P1 | `screens/mcp.ts`, `scheduler.ts`, `proactive.ts`, `plugins.ts`, `workspace.ts`, `skills.ts` | SelectRenderable options 動的更新 (`Loading...` → 実 content) | 同じ残像問題が発生する可能性 → `padToWidth` で空白埋め |
+| 🟢 P2 | `ui/tui.ts:549` | log level `padEnd(5)` | `padToWidth(level, 5, 'left')` |
+
+**動作確認**: PR-5.0 適用後に再 smoke (§4.4 Step 3 以降を実施) して残像 + 半切れが解消したことを目視確認。
+
+#### 5.1.2 🟡 leak 修正 (3-4 site, §2.3)
+
+- `ui/tui.ts:412` `"Thinking"` → `"考え中"` (status bar leak、§4.4 Step 5 で deferred、PR-5.0 で同時修正)
+- `ui/tui.ts:356` `"Admin"/"Runtime"` → 議論後翻訳 or 英語維持
+- `config/constants.ts:85,86,91,92` `"Tunnel"/"Bot"` → 議論後翻訳 or 英語維持
+
+#### 5.1.3 🟢 `@opentui/core` 0.1.107 API 追従
+
+- `ui/app.ts:94` の `useAlternateScreen` プロパティ削除 (typecheck error 解消)
+
+#### 5.1.4 ⭐ 推奨追加: `TextRenderable` ラッパー作成
+
+長期的には、`@opentui/core` の `TextRenderable` を直接使うのではなく、**CJK 幅対応のラッパー** (例: `CjkTextRenderable`) を作って TUI 全体で統一すべき。
+- `setContent(text: string, maxWidth?: number)` メソッドで自動 padToWidth + truncate
+- これにより、新たに追加される画面で同じ問題が再発しない
+
+Phase 5 PR-5.1 候補。
 
 ### 5.2 Collector blind spot back-fill (Phase 5 Wave 2)
 
