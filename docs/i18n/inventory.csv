@@ -918,40 +918,40 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 900,tui,app/tui/src/config/constants.ts,72,\u2827,\u2827,approved,PR-4.0,noise: braille spinner frame — no translation needed
 901,tui,app/tui/src/config/constants.ts,73,\u2807,\u2807,approved,PR-4.0,noise: braille spinner frame — no translation needed
 902,tui,app/tui/src/config/constants.ts,73,\u280F,\u280F,approved,PR-4.0,noise: braille spinner frame — no translation needed
-903,tui,app/tui/src/config/constants.ts,81,Build,,pending,,
-904,tui,app/tui/src/config/constants.ts,82,Container,,pending,,
-905,tui,app/tui/src/config/constants.ts,83,Server,,pending,,
-906,tui,app/tui/src/config/constants.ts,84,Azure,,pending,,
-907,tui,app/tui/src/config/constants.ts,85,Tunnel,,pending,,
-908,tui,app/tui/src/config/constants.ts,86,Bot,,pending,,
-909,tui,app/tui/src/config/constants.ts,90,Azure,,pending,,
-910,tui,app/tui/src/config/constants.ts,91,Tunnel,,pending,,
-911,tui,app/tui/src/config/constants.ts,92,Bot,,pending,,
-912,tui,app/tui/src/config/constants.ts,111,Start a new session,,pending,,
-913,tui,app/tui/src/config/constants.ts,112,Switch AI model,,pending,,
-914,tui,app/tui/src/config/constants.ts,113,List available models,,pending,,
-915,tui,app/tui/src/config/constants.ts,114,System status,,pending,,
-916,tui,app/tui/src/config/constants.ts,115,Current session info,,pending,,
-917,tui,app/tui/src/config/constants.ts,116,List recent sessions,,pending,,
-918,tui,app/tui/src/config/constants.ts,117,View/set runtime config,,pending,,
-919,tui,app/tui/src/config/constants.ts,118,Clear all memory,,pending,,
-920,tui,app/tui/src/config/constants.ts,119,Show all commands,,pending,,
-921,tui,app/tui/src/config/constants.ts,120,List installed skills,,pending,,
-922,tui,app/tui/src/config/constants.ts,121,Install a skill,,pending,,
-923,tui,app/tui/src/config/constants.ts,122,Remove a skill,,pending,,
-924,tui,app/tui/src/config/constants.ts,123,List plugins,,pending,,
-925,tui,app/tui/src/config/constants.ts,124,Enable/disable a plugin,,pending,,
-926,tui,app/tui/src/config/constants.ts,125,Manage MCP servers,,pending,,
-927,tui,app/tui/src/config/constants.ts,126,List scheduled tasks,,pending,,
-928,tui,app/tui/src/config/constants.ts,127,Create/remove tasks,,pending,,
-929,tui,app/tui/src/config/constants.ts,128,Agent profile,,pending,,
-930,tui,app/tui/src/config/constants.ts,129,Channel config,,pending,,
-931,tui,app/tui/src/config/constants.ts,130,Run security checks,,pending,,
-932,tui,app/tui/src/config/constants.ts,131,Set voice target number,,pending,,
-933,tui,app/tui/src/config/constants.ts,132,Call configured number,,pending,,
-934,tui,app/tui/src/config/constants.ts,133,Switch to a recent session,,pending,,
-935,tui,app/tui/src/config/constants.ts,134,Shut down and exit,,pending,,
-936,tui,app/tui/src/config/constants.ts,135,Shut down and exit,,pending,,
+903,tui,app/tui/src/config/constants.ts,81,Build,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+904,tui,app/tui/src/config/constants.ts,82,Container,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+905,tui,app/tui/src/config/constants.ts,83,Server,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+906,tui,app/tui/src/config/constants.ts,84,Azure,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+907,tui,app/tui/src/config/constants.ts,85,Tunnel,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+908,tui,app/tui/src/config/constants.ts,86,Bot,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+909,tui,app/tui/src/config/constants.ts,90,Azure,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+910,tui,app/tui/src/config/constants.ts,91,Tunnel,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+911,tui,app/tui/src/config/constants.ts,92,Bot,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+912,tui,app/tui/src/config/constants.ts,111,Start a new session,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+913,tui,app/tui/src/config/constants.ts,112,Switch AI model,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+914,tui,app/tui/src/config/constants.ts,113,List available models,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+915,tui,app/tui/src/config/constants.ts,114,System status,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+916,tui,app/tui/src/config/constants.ts,115,Current session info,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+917,tui,app/tui/src/config/constants.ts,116,List recent sessions,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+918,tui,app/tui/src/config/constants.ts,117,View/set runtime config,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+919,tui,app/tui/src/config/constants.ts,118,Clear all memory,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+920,tui,app/tui/src/config/constants.ts,119,Show all commands,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+921,tui,app/tui/src/config/constants.ts,120,List installed skills,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+922,tui,app/tui/src/config/constants.ts,121,Install a skill,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+923,tui,app/tui/src/config/constants.ts,122,Remove a skill,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+924,tui,app/tui/src/config/constants.ts,123,List plugins,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+925,tui,app/tui/src/config/constants.ts,124,Enable/disable a plugin,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+926,tui,app/tui/src/config/constants.ts,125,Manage MCP servers,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+927,tui,app/tui/src/config/constants.ts,126,List scheduled tasks,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+928,tui,app/tui/src/config/constants.ts,127,Create/remove tasks,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+929,tui,app/tui/src/config/constants.ts,128,Agent profile,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+930,tui,app/tui/src/config/constants.ts,129,Channel config,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+931,tui,app/tui/src/config/constants.ts,130,Run security checks,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+932,tui,app/tui/src/config/constants.ts,131,Set voice target number,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+933,tui,app/tui/src/config/constants.ts,132,Call configured number,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+934,tui,app/tui/src/config/constants.ts,133,Switch to a recent session,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+935,tui,app/tui/src/config/constants.ts,134,Shut down and exit,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+936,tui,app/tui/src/config/constants.ts,135,Shut down and exit,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
 937,tui,app/tui/src/headless/aca_setup.ts,55,[${ts}] ${msg},,pending,,
 938,tui,app/tui/src/headless/aca_setup.ts,59,FATAL: ${msg},,pending,,
 939,tui,app/tui/src/headless/aca_setup.ts,68,Content-Type,,pending,,
@@ -1061,50 +1061,50 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1043,tui,app/tui/src/api/client.ts,113,/api/mcp/servers/${name}/disable,,pending,,
 1044,tui,app/tui/src/api/client.ts,114,/api/mcp/servers/${name},,pending,,
 1045,tui,app/tui/src/api/client.ts,124,/api/schedules/${id},,pending,,
-1046,tui,app/tui/src/index.ts,37,Usage: polyclaw-cli <command> [options],,pending,,
-1047,tui,app/tui/src/index.ts,39,Commands:,,pending,,
-1048,tui,app/tui/src/index.ts,40,admin Interactive TUI with dashboard and chat (default),,pending,,
-1049,tui,app/tui/src/index.ts,41,bot Bot Framework server only (headless),,pending,,
-1050,tui,app/tui/src/index.ts,42,"start Build, start, and print admin URL (scriptable)",,pending,,
-1051,tui,app/tui/src/index.ts,43,"run <prompt> Start stack, send prompt, print response, exit",,pending,,
-1052,tui,app/tui/src/index.ts,44,"setup Headless full setup: build, deploy Foundry, verify chat",,pending,,
-1053,tui,app/tui/src/index.ts,45,decommission Tear down Azure resources provisioned by setup,,pending,,
-1054,tui,app/tui/src/index.ts,46,"aca-setup Headless ACA setup: build, Foundry + ACA deploy, verify chat",,pending,,
-1055,tui,app/tui/src/index.ts,47,aca-decommission Tear down ACA + Foundry resources,,pending,,
-1056,tui,app/tui/src/index.ts,48,aca-restart Restart the ACA runtime container,,pending,,
-1057,tui,app/tui/src/index.ts,49,"aca-setup Headless ACA setup: build, Foundry + ACA deploy, verify chat",,pending,,
-1058,tui,app/tui/src/index.ts,50,aca-decommission Tear down ACA + Foundry resources,,pending,,
-1059,tui,app/tui/src/index.ts,51,aca-restart Restart the ACA runtime container,,pending,,
-1060,tui,app/tui/src/index.ts,52,health Check if the stack is running and healthy,,pending,,
-1061,tui,app/tui/src/index.ts,53,stop Stop the running stack,,pending,,
-1062,tui,app/tui/src/index.ts,55,Environment:,,pending,,
-1063,tui,app/tui/src/index.ts,79,Docker build failed.,,pending,,
-1064,tui,app/tui/src/index.ts,87,Failed to start containers:,,pending,,
-1065,tui,app/tui/src/index.ts,108,Server did not become ready.,,pending,,
-1066,tui,app/tui/src/index.ts,117,Stopping...,,pending,,
-1067,tui,app/tui/src/index.ts,132,|| mode ===,,pending,,
-1068,tui,app/tui/src/index.ts,138,Unknown command: ${mode},,pending,,
-1069,tui,app/tui/src/index.ts,200,Health check failed: ${res.status} ${res.statusText},,pending,,
-1070,tui,app/tui/src/index.ts,204,Stack is not running or not reachable.,,pending,,
-1071,tui,app/tui/src/index.ts,211,Stopping stack...,,pending,,
-1072,tui,app/tui/src/index.ts,213,Stopped.,,pending,,
-1073,tui,app/tui/src/index.ts,219,Building and starting polyclaw...,,pending,,
-1074,tui,app/tui/src/index.ts,223,Runtime: http://localhost:8080,,pending,,
-1075,tui,app/tui/src/index.ts,224,Admin: ${url},,pending,,
-1076,tui,app/tui/src/index.ts,228,Waiting for server...,,pending,,
-1077,tui,app/tui/src/index.ts,230,Server is ready. Press Ctrl+C to stop.,,pending,,
-1078,tui,app/tui/src/index.ts,239,Usage: polyclaw-cli run <prompt>,,pending,,
-1079,tui,app/tui/src/index.ts,256,Building and starting polyclaw...,,pending,,
-1080,tui,app/tui/src/index.ts,261,Waiting for server...,,pending,,
-1081,tui,app/tui/src/index.ts,278,Chat response timed out after 120s,,pending,,
-1082,tui,app/tui/src/index.ts,302,Chat error,,pending,,
-1083,tui,app/tui/src/index.ts,311,WebSocket error: ${err},,pending,,
-1084,tui,app/tui/src/index.ts,323,Chat failed: ${msg},,pending,,
-1085,tui,app/tui/src/index.ts,334,Building polyclaw...,,pending,,
-1086,tui,app/tui/src/index.ts,340,Runtime on port 8080 | Admin on port ${composeAdminPort},,pending,,
-1087,tui,app/tui/src/index.ts,341,Admin: ${adminUrl},,pending,,
-1088,tui,app/tui/src/index.ts,346,Waiting for server...,,pending,,
-1089,tui,app/tui/src/index.ts,348,Server is ready. Press Ctrl+C to stop.,,pending,,
+1046,tui,app/tui/src/index.ts,37,Usage: polyclaw-cli <command> [options],,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1047,tui,app/tui/src/index.ts,39,Commands:,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1048,tui,app/tui/src/index.ts,40,admin Interactive TUI with dashboard and chat (default),,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1049,tui,app/tui/src/index.ts,41,bot Bot Framework server only (headless),,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1050,tui,app/tui/src/index.ts,42,"start Build, start, and print admin URL (scriptable)",,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1051,tui,app/tui/src/index.ts,43,"run <prompt> Start stack, send prompt, print response, exit",,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1052,tui,app/tui/src/index.ts,44,"setup Headless full setup: build, deploy Foundry, verify chat",,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1053,tui,app/tui/src/index.ts,45,decommission Tear down Azure resources provisioned by setup,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1054,tui,app/tui/src/index.ts,46,"aca-setup Headless ACA setup: build, Foundry + ACA deploy, verify chat",,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1055,tui,app/tui/src/index.ts,47,aca-decommission Tear down ACA + Foundry resources,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1056,tui,app/tui/src/index.ts,48,aca-restart Restart the ACA runtime container,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1057,tui,app/tui/src/index.ts,49,"aca-setup Headless ACA setup: build, Foundry + ACA deploy, verify chat",,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1058,tui,app/tui/src/index.ts,50,aca-decommission Tear down ACA + Foundry resources,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1059,tui,app/tui/src/index.ts,51,aca-restart Restart the ACA runtime container,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1060,tui,app/tui/src/index.ts,52,health Check if the stack is running and healthy,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1061,tui,app/tui/src/index.ts,53,stop Stop the running stack,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1062,tui,app/tui/src/index.ts,55,Environment:,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1063,tui,app/tui/src/index.ts,79,Docker build failed.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1064,tui,app/tui/src/index.ts,87,Failed to start containers:,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1065,tui,app/tui/src/index.ts,108,Server did not become ready.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1066,tui,app/tui/src/index.ts,117,Stopping...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1067,tui,app/tui/src/index.ts,132,|| mode ===,|| mode ===,approved,PR-4.1,noise: collector false positive (extracted operator fragment) — no translation needed
+1068,tui,app/tui/src/index.ts,138,Unknown command: ${mode},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1069,tui,app/tui/src/index.ts,200,Health check failed: ${res.status} ${res.statusText},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1070,tui,app/tui/src/index.ts,204,Stack is not running or not reachable.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1071,tui,app/tui/src/index.ts,211,Stopping stack...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1072,tui,app/tui/src/index.ts,213,Stopped.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1073,tui,app/tui/src/index.ts,219,Building and starting polyclaw...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1074,tui,app/tui/src/index.ts,223,Runtime: http://localhost:8080,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1075,tui,app/tui/src/index.ts,224,Admin: ${url},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1076,tui,app/tui/src/index.ts,228,Waiting for server...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1077,tui,app/tui/src/index.ts,230,Server is ready. Press Ctrl+C to stop.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1078,tui,app/tui/src/index.ts,239,Usage: polyclaw-cli run <prompt>,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1079,tui,app/tui/src/index.ts,256,Building and starting polyclaw...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1080,tui,app/tui/src/index.ts,261,Waiting for server...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1081,tui,app/tui/src/index.ts,278,Chat response timed out after 120s,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1082,tui,app/tui/src/index.ts,302,Chat error,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1083,tui,app/tui/src/index.ts,311,WebSocket error: ${err},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1084,tui,app/tui/src/index.ts,323,Chat failed: ${msg},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1085,tui,app/tui/src/index.ts,334,Building polyclaw...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1086,tui,app/tui/src/index.ts,340,Runtime on port 8080 | Admin on port ${composeAdminPort},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1087,tui,app/tui/src/index.ts,341,Admin: ${adminUrl},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1088,tui,app/tui/src/index.ts,346,Waiting for server...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
+1089,tui,app/tui/src/index.ts,348,Server is ready. Press Ctrl+C to stop.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
 1090,tui,app/tui/src/utils/containers.ts,4,docker inspect,,pending,,
 1091,tui,app/tui/src/utils/containers.ts,19,Up 3 minutes,,pending,,
 1092,tui,app/tui/src/utils/containers.ts,41,docker inspect,,pending,,

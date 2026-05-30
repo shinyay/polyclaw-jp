@@ -191,7 +191,7 @@ describe("TAB_LABELS", () => {
   });
 
   test("first tab is Dashboard", () => {
-    expect(TAB_LABELS[0]).toBe("Dashboard");
+    expect(TAB_LABELS[0]).toBe("ダッシュボード");
   });
 
   test("all labels are non-empty strings", () => {

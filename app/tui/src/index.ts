@@ -34,31 +34,31 @@ import { pickDeployTarget } from "./ui/target-picker.js";
 // -----------------------------------------------------------------------
 
 function usage(): void {
-  console.log("Usage: polyclaw-cli <command> [options]");
+  console.log("使い方: polyclaw-cli <コマンド> [オプション]");
   console.log("");
-  console.log("Commands:");
-  console.log("  admin           Interactive TUI with dashboard and chat (default)");
-  console.log("  bot             Bot Framework server only (headless)");
-  console.log("  start           Build, start, and print admin URL (scriptable)");
-  console.log("  run <prompt>    Start stack, send prompt, print response, exit");
-  console.log("  setup           Headless full setup: build, deploy Foundry, verify chat");
-  console.log("  decommission    Tear down Azure resources provisioned by setup");
-  console.log("  aca-setup       Headless ACA setup: build, Foundry + ACA deploy, verify chat");
-  console.log("  aca-decommission  Tear down ACA + Foundry resources");
-  console.log("  aca-restart     Restart the ACA runtime container");
-  console.log("  aca-setup       Headless ACA setup: build, Foundry + ACA deploy, verify chat");
-  console.log("  aca-decommission  Tear down ACA + Foundry resources");
-  console.log("  aca-restart     Restart the ACA runtime container");
-  console.log("  health          Check if the stack is running and healthy");
-  console.log("  stop            Stop the running stack");
+  console.log("コマンド:");
+  console.log("  admin           ダッシュボードとチャットを備えた対話型 TUI (デフォルト)");
+  console.log("  bot             Bot Framework サーバーのみ (ヘッドレス)");
+  console.log("  start           ビルド・起動して admin URL を出力 (スクリプト用)");
+  console.log("  run <prompt>    スタックを起動してプロンプトを送信し、応答を出力して終了");
+  console.log("  setup           ヘッドレスフルセットアップ: ビルド・Foundry デプロイ・チャット検証");
+  console.log("  decommission    setup で構築した Azure リソースを破棄");
+  console.log("  aca-setup       ヘッドレス ACA セットアップ: ビルド・Foundry + ACA デプロイ・チャット検証");
+  console.log("  aca-decommission  ACA + Foundry リソースを破棄");
+  console.log("  aca-restart     ACA ランタイムコンテナを再起動");
+  console.log("  aca-setup       ヘッドレス ACA セットアップ: ビルド・Foundry + ACA デプロイ・チャット検証");
+  console.log("  aca-decommission  ACA + Foundry リソースを破棄");
+  console.log("  aca-restart     ACA ランタイムコンテナを再起動");
+  console.log("  health          スタックが起動して正常か確認");
+  console.log("  stop            起動中のスタックを停止");
   console.log("");
-  console.log("Environment:");
-  console.log("  ADMIN_PORT      Admin server port (default: 8080)");
-  console.log("  BOT_PORT        Bot Framework port (default: 3978)");
-  console.log("  POLYCLAW_SETUP_RG              Resource group for setup (default: polyclaw-e2e-rg)");
-  console.log("  POLYCLAW_SETUP_LOCATION        Azure region (default: eastus)");
-  console.log("  POLYCLAW_SETUP_BASE_NAME       Cognitive Services base name (auto if empty)");
-  console.log("  POLYCLAW_SETUP_SUBSCRIPTION_ID Target subscription ID (first if empty)");
+  console.log("環境変数:");
+  console.log("  ADMIN_PORT      Admin サーバーポート (デフォルト: 8080)");
+  console.log("  BOT_PORT        Bot Framework ポート (デフォルト: 3978)");
+  console.log("  POLYCLAW_SETUP_RG              setup 用リソースグループ (デフォルト: polyclaw-e2e-rg)");
+  console.log("  POLYCLAW_SETUP_LOCATION        Azure リージョン (デフォルト: eastus)");
+  console.log("  POLYCLAW_SETUP_BASE_NAME       Cognitive Services ベース名 (空なら自動)");
+  console.log("  POLYCLAW_SETUP_SUBSCRIPTION_ID 対象サブスクリプション ID (空なら先頭)");
   console.log("");
 }
 
@@ -76,7 +76,7 @@ async function ensureStack(
 ): Promise<string> {
   const buildOk = await buildImage(onLine);
   if (!buildOk) {
-    console.error("Docker build failed.");
+    console.error("Docker ビルドに失敗しました。");
     process.exit(1);
   }
 
@@ -84,7 +84,7 @@ async function ensureStack(
     return await startContainer(adminPort, botPort, "bot");
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("Failed to start containers:", msg);
+    console.error("コンテナの起動に失敗しました:", msg);
     process.exit(1);
   }
 }
@@ -105,7 +105,7 @@ async function resolveAdminUrl(port: number): Promise<{ secret: string; url: str
 async function waitOrDie(baseUrl: string, instanceId: string): Promise<void> {
   const ready = await waitForReady(baseUrl);
   if (!ready) {
-    console.error("Server did not become ready.");
+    console.error("サーバーが準備完了になりませんでした。");
     await stopContainer(instanceId);
     process.exit(1);
   }
@@ -114,7 +114,7 @@ async function waitOrDie(baseUrl: string, instanceId: string): Promise<void> {
 /** Wire Ctrl-C / SIGTERM to gracefully stop the stack. */
 function wireShutdown(instanceId: string): void {
   const shutdown = async () => {
-    console.log("\nStopping...");
+    console.log("\n停止中...");
     await stopContainer(instanceId);
     process.exit(0);
   };
@@ -135,7 +135,7 @@ async function main(): Promise<void> {
   }
 
   if (!VALID_MODES.includes(mode)) {
-    console.error(`Unknown command: ${mode}`);
+    console.error(`不明なコマンド: ${mode}`);
     usage();
     process.exit(1);
   }
@@ -197,26 +197,26 @@ async function main(): Promise<void> {
         console.log(JSON.stringify(body, null, 2));
         process.exit(0);
       } else {
-        console.error(`Health check failed: ${res.status} ${res.statusText}`);
+        console.error(`ヘルスチェックに失敗しました: ${res.status} ${res.statusText}`);
         process.exit(1);
       }
     } catch {
-      console.error("Stack is not running or not reachable.");
+      console.error("スタックが起動していないか到達不可です。");
       process.exit(1);
     }
   }
 
   // ---- Stop -------------------------------------------------------------
   if (mode === "stop") {
-    console.log("Stopping stack...");
+    console.log("スタックを停止中...");
     await stopContainer("polyclaw-admin");
-    console.log("Stopped.");
+    console.log("停止しました。");
     process.exit(0);
   }
 
   // ---- Start mode (scriptable, headless) --------------------------------
   if (mode === "start") {
-    console.log("Building and starting polyclaw...");
+    console.log("polyclaw をビルドして起動中...");
     const instanceId = await ensureStack(adminPort, botPort);
     const { url } = await resolveAdminUrl(composeAdminPort);
 
@@ -225,9 +225,9 @@ async function main(): Promise<void> {
 
     wireShutdown(instanceId);
 
-    console.log("Waiting for server...");
+    console.log("サーバーの起動を待機中...");
     await waitOrDie(`http://localhost:${composeAdminPort}`, instanceId);
-    console.log("Server is ready. Press Ctrl+C to stop.");
+    console.log("サーバーの準備が完了しました。Ctrl+C で停止します。");
     await new Promise(() => {});
     return;
   }
@@ -236,7 +236,7 @@ async function main(): Promise<void> {
   if (mode === "run") {
     const prompt = process.argv.slice(3).join(" ").trim();
     if (!prompt) {
-      console.error("Usage: polyclaw-cli run <prompt>");
+      console.error("使い方: polyclaw-cli run <プロンプト>");
       process.exit(1);
     }
 
@@ -253,12 +253,12 @@ async function main(): Promise<void> {
     if (alreadyRunning) {
       instanceId = "polyclaw-admin";
     } else {
-      console.log("Building and starting polyclaw...");
+      console.log("polyclaw をビルドして起動中...");
       instanceId = await ensureStack(adminPort, botPort, (line) => {
         if (process.env.VERBOSE) console.log(line);
       });
 
-      console.log("Waiting for server...");
+      console.log("サーバーの起動を待機中...");
       await waitOrDie(baseUrl, instanceId);
     }
 
@@ -275,7 +275,7 @@ async function main(): Promise<void> {
       response = await new Promise<string>((resolve, reject) => {
         const timeout = setTimeout(() => {
           ws.close();
-          reject(new Error("Chat response timed out after 120s"));
+          reject(new Error("チャット応答が 120 秒でタイムアウトしました"));
         }, 120_000);
 
         const chunks: string[] = [];
@@ -299,7 +299,7 @@ async function main(): Promise<void> {
             } else if (data.type === "error") {
               clearTimeout(timeout);
               ws.close();
-              reject(new Error(data.content || data.message || "Chat error"));
+              reject(new Error(data.content || data.message || "チャットエラー"));
             }
           } catch {
             // Non-JSON message, ignore
@@ -308,7 +308,7 @@ async function main(): Promise<void> {
 
         ws.onerror = (err) => {
           clearTimeout(timeout);
-          reject(new Error(`WebSocket error: ${err}`));
+          reject(new Error(`WebSocket エラー: ${err}`));
         };
 
         ws.onclose = () => {
@@ -320,7 +320,7 @@ async function main(): Promise<void> {
       });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`Chat failed: ${msg}`);
+      console.error(`チャットに失敗しました: ${msg}`);
       if (!alreadyRunning) await stopContainer(instanceId);
       process.exit(1);
     }
@@ -331,26 +331,26 @@ async function main(): Promise<void> {
   }
 
   // ---- Bot-only mode (headless) -----------------------------------------
-  console.log("Building polyclaw...");
+  console.log("polyclaw をビルド中...");
   console.log("");
 
   const instanceId = await ensureStack(adminPort, botPort);
   const { url: adminUrl } = await resolveAdminUrl(composeAdminPort);
 
-  console.log(`Runtime on port 8080 | Admin on port ${composeAdminPort}`);
+  console.log(`Runtime はポート 8080 | Admin はポート ${composeAdminPort}`);
   console.log(`Admin: ${adminUrl}`);
   console.log("");
 
   wireShutdown(instanceId);
 
-  console.log("Waiting for server...");
+  console.log("サーバーの起動を待機中...");
   await waitOrDie(`http://localhost:${composeAdminPort}`, instanceId);
-  console.log("Server is ready. Press Ctrl+C to stop.");
+  console.log("サーバーの準備が完了しました。Ctrl+C で停止します。");
   await new Promise(() => {});
 }
 
 main().catch((err: unknown) => {
   const msg = err instanceof Error ? err.message : String(err);
-  console.error("Fatal:", msg);
+  console.error("致命的エラー:", msg);
   process.exit(1);
 });
