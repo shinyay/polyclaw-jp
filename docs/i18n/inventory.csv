@@ -1105,12 +1105,12 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1087,tui,app/tui/src/index.ts,341,Admin: ${adminUrl},,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
 1088,tui,app/tui/src/index.ts,346,Waiting for server...,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
 1089,tui,app/tui/src/index.ts,348,Server is ready. Press Ctrl+C to stop.,,translated,PR-4.1,PR-4.1 translated in source file (TUI Phase 4)
-1090,tui,app/tui/src/utils/containers.ts,4,docker inspect,,pending,,
-1091,tui,app/tui/src/utils/containers.ts,19,Up 3 minutes,,pending,,
-1092,tui,app/tui/src/utils/containers.ts,41,docker inspect,,pending,,
-1093,tui,app/tui/src/utils/containers.ts,68,", ports:",,pending,,
-1094,tui,app/tui/src/utils/containers.ts,72,{{.State.Status}}|{{.State.StartedAt}}|{{.State.Running}},,pending,,
-1095,tui,app/tui/src/utils/containers.ts,79,).trim() ===,,pending,,
+1090,tui,app/tui/src/utils/containers.ts,4,docker inspect,,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
+1091,tui,app/tui/src/utils/containers.ts,19,Up 3 minutes,,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
+1092,tui,app/tui/src/utils/containers.ts,41,docker inspect,,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
+1093,tui,app/tui/src/utils/containers.ts,68,", ports:",,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
+1094,tui,app/tui/src/utils/containers.ts,72,{{.State.Status}}|{{.State.StartedAt}}|{{.State.Running}},,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
+1095,tui,app/tui/src/utils/containers.ts,79,).trim() ===,,approved,PR-4.2,noise: docker template/JSDoc/code fragment — no translation needed
 1096,tui,app/tui/src/screens/chat.ts,58,Chat,,pending,,
 1097,tui,app/tui/src/screens/chat.ts,73,Type a message...,,pending,,
 1098,tui,app/tui/src/screens/chat.ts,85,|| seq ===,,pending,,
@@ -1469,211 +1469,211 @@ id,layer,source_path,line,english,proposed_ja,status,reviewer,notes
 1451,tui,app/tui/src/screens/setup.ts,397,\x1b[31m${msg}\x1b[0m,,pending,,
 1452,tui,app/tui/src/screens/setup.ts,405,\x1b[32m${msg}\x1b[0m,,pending,,
 1453,tui,app/tui/src/screens/setup.ts,406,\x1b[31m${msg}\x1b[0m,,pending,,
-1454,tui,app/tui/src/ui/target-picker.ts,79,Reconnect,,pending,,
-1455,tui,app/tui/src/ui/target-picker.ts,79,Deploy fresh,,pending,,
-1456,tui,app/tui/src/ui/target-picker.ts,79,Remove,,pending,,
-1457,tui,app/tui/src/ui/target-picker.ts,82,Local Docker,,pending,,
-1458,tui,app/tui/src/ui/target-picker.ts,82,Build and run locally (default),,pending,,
-1459,tui,app/tui/src/ui/target-picker.ts,83,Azure Container Apps \x1b[32m(experimental)\x1b[0m,,pending,,
-1460,tui,app/tui/src/ui/target-picker.ts,83,"Deploy to Azure (persistent, cloud-hosted)",,pending,,
-1461,tui,app/tui/src/ui/target-picker.ts,83,Checking...,,pending,,
-1462,tui,app/tui/src/ui/target-picker.ts,107,|| sequence ===,,pending,,
-1463,tui,app/tui/src/ui/target-picker.ts,121,Done. Exiting.,,pending,,
-1464,tui,app/tui/src/ui/target-picker.ts,122,Removal failed: ${(err as Error).message},,pending,,
-1465,tui,app/tui/src/ui/target-picker.ts,150,Deployment Target,,pending,,
-1466,tui,app/tui/src/ui/target-picker.ts,153,"Use arrow keys to select, Enter to confirm, Ctrl+C to quit",,pending,,
+1454,tui,app/tui/src/ui/target-picker.ts,79,Reconnect,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1455,tui,app/tui/src/ui/target-picker.ts,79,Deploy fresh,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1456,tui,app/tui/src/ui/target-picker.ts,79,Remove,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1457,tui,app/tui/src/ui/target-picker.ts,82,Local Docker,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1458,tui,app/tui/src/ui/target-picker.ts,82,Build and run locally (default),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1459,tui,app/tui/src/ui/target-picker.ts,83,Azure Container Apps \x1b[32m(experimental)\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1460,tui,app/tui/src/ui/target-picker.ts,83,"Deploy to Azure (persistent, cloud-hosted)",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1461,tui,app/tui/src/ui/target-picker.ts,83,Checking...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1462,tui,app/tui/src/ui/target-picker.ts,107,|| sequence ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1463,tui,app/tui/src/ui/target-picker.ts,121,Done. Exiting.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1464,tui,app/tui/src/ui/target-picker.ts,122,Removal failed: ${(err as Error).message},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1465,tui,app/tui/src/ui/target-picker.ts,150,Deployment Target,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1466,tui,app/tui/src/ui/target-picker.ts,153,"Use arrow keys to select, Enter to confirm, Ctrl+C to quit",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1467,tui,app/tui/src/ui/target-picker.ts,174,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1468,tui,app/tui/src/ui/target-picker.ts,175,: ` [${opt.detail ||,,pending,,
-1469,tui,app/tui/src/ui/target-picker.ts,175,"[${opt.detail || ""unavailable""}]",,pending,,
-1470,tui,app/tui/src/ui/target-picker.ts,193,\u25b6 ${label},,pending,,
-1471,tui,app/tui/src/ui/target-picker.ts,209,az CLI not installed,,pending,,
-1472,tui,app/tui/src/ui/target-picker.ts,212,Azure CLI is required for ACA. Install from https://aka.ms/installazurecli,,pending,,
-1473,tui,app/tui/src/ui/target-picker.ts,221,not logged in (run: az login),,pending,,
-1474,tui,app/tui/src/ui/target-picker.ts,224,"Run 'az login' first, then restart the CLI.",,pending,,
-1475,tui,app/tui/src/ui/target-picker.ts,224,az login,,pending,,
-1476,tui,app/tui/src/ui/target-picker.ts,233,Deploy to Azure (${loginResult.account}),,pending,,
-1477,tui,app/tui/src/ui/target-picker.ts,239,Existing deployment found: ${acaExisting.appName} (${acaExisting.fqdn}),,pending,,
-1478,tui,app/tui/src/ui/target-picker.ts,246,Logged in as ${loginResult.account},,pending,,
-1479,tui,app/tui/src/ui/tui.ts,63,[${new Date().toISOString()}] ${label}: ${err instanceof Error ? err.stack || err.message : String(err)},,pending,,
-1480,tui,app/tui/src/ui/tui.ts,66,uncaughtException,,pending,,
-1481,tui,app/tui/src/ui/tui.ts,67,unhandledRejection,,pending,,
-1482,tui,app/tui/src/ui/tui.ts,142,\x1b,,pending,,
-1483,tui,app/tui/src/ui/tui.ts,142,\x1b\x1b,,pending,,
-1484,tui,app/tui/src/ui/tui.ts,149,|| sequence ===,,pending,,
-1485,tui,app/tui/src/ui/tui.ts,153,/model ${selected.id},,pending,,
-1486,tui,app/tui/src/ui/tui.ts,154,Switching to ${selected.name || selected.id}...,,pending,,
-1487,tui,app/tui/src/ui/tui.ts,160,\x1b,,pending,,
-1488,tui,app/tui/src/ui/tui.ts,160,\x1b\x1b,,pending,,
-1489,tui,app/tui/src/ui/tui.ts,168,|| sequence ===,,pending,,
-1490,tui,app/tui/src/ui/tui.ts,174,New session started.,,pending,,
-1491,tui,app/tui/src/ui/tui.ts,179,Resuming session ${entry.id}...,,pending,,
-1492,tui,app/tui/src/ui/tui.ts,186,\x1b,,pending,,
-1493,tui,app/tui/src/ui/tui.ts,186,\x1b\x1b,,pending,,
-1494,tui,app/tui/src/ui/tui.ts,193,|| lower ===,,pending,,
-1495,tui,app/tui/src/ui/tui.ts,199,Approved,,pending,,
-1496,tui,app/tui/src/ui/tui.ts,199,Denied,,pending,,
-1497,tui,app/tui/src/ui/tui.ts,286,", fg:",,pending,,
-1498,tui,app/tui/src/ui/tui.ts,290,pb-f-${i},,pending,,
-1499,tui,app/tui/src/ui/tui.ts,324,)}${pending.length > 3 ?,,pending,,
-1500,tui,app/tui/src/ui/tui.ts,325,All systems go,,pending,,
-1501,tui,app/tui/src/ui/tui.ts,350,dot-${item.key},,pending,,
-1502,tui,app/tui/src/ui/tui.ts,350,● ${item.label},,pending,,
-1503,tui,app/tui/src/ui/tui.ts,356,Admin,,pending,,
-1504,tui,app/tui/src/ui/tui.ts,356,Runtime,,pending,,
-1505,tui,app/tui/src/ui/tui.ts,357,dot-${ctr.key},,pending,,
-1506,tui,app/tui/src/ui/tui.ts,357,● ${ctr.label},,pending,,
-1507,tui,app/tui/src/ui/tui.ts,361,│ ${target.name},,pending,,
-1508,tui,app/tui/src/ui/tui.ts,363,│ ${currentModelName},,pending,,
-1509,tui,app/tui/src/ui/tui.ts,389,│ ${currentModelName},,pending,,
-1510,tui,app/tui/src/ui/tui.ts,445,Opening admin UI for setup: ${adminUrl},,pending,,
-1511,tui,app/tui/src/ui/tui.ts,492,Log,,pending,,
-1512,tui,app/tui/src/ui/tui.ts,495,(Tab to minimize),,pending,,
-1513,tui,app/tui/src/ui/tui.ts,573,Log,,pending,,
-1514,tui,app/tui/src/ui/tui.ts,574,(Tab to minimize),,pending,,
-1515,tui,app/tui/src/ui/tui.ts,579,Log (${lineCount} lines),,pending,,
-1516,tui,app/tui/src/ui/tui.ts,580,(Tab to expand),,pending,,
-1517,tui,app/tui/src/ui/tui.ts,594,Chat,,pending,,
-1518,tui,app/tui/src/ui/tui.ts,615,Waiting for server... (Ctrl+C to quit),,pending,,
-1519,tui,app/tui/src/ui/tui.ts,631,) && !val.includes(,,pending,,
+1468,tui,app/tui/src/ui/target-picker.ts,175,: ` [${opt.detail ||,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1469,tui,app/tui/src/ui/target-picker.ts,175,"[${opt.detail || ""unavailable""}]",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1470,tui,app/tui/src/ui/target-picker.ts,193,\u25b6 ${label},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1471,tui,app/tui/src/ui/target-picker.ts,209,az CLI not installed,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1472,tui,app/tui/src/ui/target-picker.ts,212,Azure CLI is required for ACA. Install from https://aka.ms/installazurecli,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1473,tui,app/tui/src/ui/target-picker.ts,221,not logged in (run: az login),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1474,tui,app/tui/src/ui/target-picker.ts,224,"Run 'az login' first, then restart the CLI.",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1475,tui,app/tui/src/ui/target-picker.ts,224,az login,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1476,tui,app/tui/src/ui/target-picker.ts,233,Deploy to Azure (${loginResult.account}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1477,tui,app/tui/src/ui/target-picker.ts,239,Existing deployment found: ${acaExisting.appName} (${acaExisting.fqdn}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1478,tui,app/tui/src/ui/target-picker.ts,246,Logged in as ${loginResult.account},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1479,tui,app/tui/src/ui/tui.ts,63,[${new Date().toISOString()}] ${label}: ${err instanceof Error ? err.stack || err.message : String(err)},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1480,tui,app/tui/src/ui/tui.ts,66,uncaughtException,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1481,tui,app/tui/src/ui/tui.ts,67,unhandledRejection,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1482,tui,app/tui/src/ui/tui.ts,142,\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1483,tui,app/tui/src/ui/tui.ts,142,\x1b\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1484,tui,app/tui/src/ui/tui.ts,149,|| sequence ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1485,tui,app/tui/src/ui/tui.ts,153,/model ${selected.id},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1486,tui,app/tui/src/ui/tui.ts,154,Switching to ${selected.name || selected.id}...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1487,tui,app/tui/src/ui/tui.ts,160,\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1488,tui,app/tui/src/ui/tui.ts,160,\x1b\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1489,tui,app/tui/src/ui/tui.ts,168,|| sequence ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1490,tui,app/tui/src/ui/tui.ts,174,New session started.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1491,tui,app/tui/src/ui/tui.ts,179,Resuming session ${entry.id}...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1492,tui,app/tui/src/ui/tui.ts,186,\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1493,tui,app/tui/src/ui/tui.ts,186,\x1b\x1b,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1494,tui,app/tui/src/ui/tui.ts,193,|| lower ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1495,tui,app/tui/src/ui/tui.ts,199,Approved,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1496,tui,app/tui/src/ui/tui.ts,199,Denied,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1497,tui,app/tui/src/ui/tui.ts,286,", fg:",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1498,tui,app/tui/src/ui/tui.ts,290,pb-f-${i},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1499,tui,app/tui/src/ui/tui.ts,324,)}${pending.length > 3 ?,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1500,tui,app/tui/src/ui/tui.ts,325,All systems go,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1501,tui,app/tui/src/ui/tui.ts,350,dot-${item.key},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1502,tui,app/tui/src/ui/tui.ts,350,● ${item.label},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1503,tui,app/tui/src/ui/tui.ts,356,Admin,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1504,tui,app/tui/src/ui/tui.ts,356,Runtime,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1505,tui,app/tui/src/ui/tui.ts,357,dot-${ctr.key},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1506,tui,app/tui/src/ui/tui.ts,357,● ${ctr.label},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1507,tui,app/tui/src/ui/tui.ts,361,│ ${target.name},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1508,tui,app/tui/src/ui/tui.ts,363,│ ${currentModelName},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1509,tui,app/tui/src/ui/tui.ts,389,│ ${currentModelName},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1510,tui,app/tui/src/ui/tui.ts,445,Opening admin UI for setup: ${adminUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1511,tui,app/tui/src/ui/tui.ts,492,Log,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1512,tui,app/tui/src/ui/tui.ts,495,(Tab to minimize),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1513,tui,app/tui/src/ui/tui.ts,573,Log,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1514,tui,app/tui/src/ui/tui.ts,574,(Tab to minimize),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1515,tui,app/tui/src/ui/tui.ts,579,Log (${lineCount} lines),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1516,tui,app/tui/src/ui/tui.ts,580,(Tab to expand),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1517,tui,app/tui/src/ui/tui.ts,594,Chat,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1518,tui,app/tui/src/ui/tui.ts,615,Waiting for server... (Ctrl+C to quit),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1519,tui,app/tui/src/ui/tui.ts,631,) && !val.includes(,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1520,tui,app/tui/src/ui/tui.ts,671,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1521,tui,app/tui/src/ui/tui.ts,681,... ${extra} more (keep typing to filter),,pending,,
+1521,tui,app/tui/src/ui/tui.ts,681,... ${extra} more (keep typing to filter),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1522,tui,app/tui/src/ui/tui.ts,711,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1523,tui,app/tui/src/ui/tui.ts,750,You,,pending,,
-1524,tui,app/tui/src/ui/tui.ts,750,Bot,,pending,,
-1525,tui,app/tui/src/ui/tui.ts,750,[tool],,pending,,
-1526,tui,app/tui/src/ui/tui.ts,750,[error],,pending,,
-1527,tui,app/tui/src/ui/tui.ts,750,[system],,pending,,
-1528,tui,app/tui/src/ui/tui.ts,759,Bot: ${text},,pending,,
-1529,tui,app/tui/src/ui/tui.ts,764,Bot: ${text},,pending,,
+1523,tui,app/tui/src/ui/tui.ts,750,You,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1524,tui,app/tui/src/ui/tui.ts,750,Bot,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1525,tui,app/tui/src/ui/tui.ts,750,[tool],,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1526,tui,app/tui/src/ui/tui.ts,750,[error],,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1527,tui,app/tui/src/ui/tui.ts,750,[system],,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1528,tui,app/tui/src/ui/tui.ts,759,Bot: ${text},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1529,tui,app/tui/src/ui/tui.ts,764,Bot: ${text},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1530,tui,app/tui/src/ui/tui.ts,774,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1531,tui,app/tui/src/ui/tui.ts,775,\u2713,\u2713,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1532,tui,app/tui/src/ui/tui.ts,776,(${m.billing_multiplier}x),,pending,,
-1533,tui,app/tui/src/ui/tui.ts,805,Loading models...,,pending,,
-1534,tui,app/tui/src/ui/tui.ts,808,Authorization,,pending,,
-1535,tui,app/tui/src/ui/tui.ts,808,Bearer ${secret},,pending,,
-1536,tui,app/tui/src/ui/tui.ts,810,Failed to fetch models (${res.status}),,pending,,
-1537,tui,app/tui/src/ui/tui.ts,813,No models available.,,pending,,
-1538,tui,app/tui/src/ui/tui.ts,815,Failed to fetch models: ${err instanceof Error ? err.message : err},,pending,,
-1539,tui,app/tui/src/ui/tui.ts,833,"Select Model (arrows to move, Enter to select, Esc to cancel)",,pending,,
+1532,tui,app/tui/src/ui/tui.ts,776,(${m.billing_multiplier}x),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1533,tui,app/tui/src/ui/tui.ts,805,Loading models...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1534,tui,app/tui/src/ui/tui.ts,808,Authorization,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1535,tui,app/tui/src/ui/tui.ts,808,Bearer ${secret},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1536,tui,app/tui/src/ui/tui.ts,810,Failed to fetch models (${res.status}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1537,tui,app/tui/src/ui/tui.ts,813,No models available.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1538,tui,app/tui/src/ui/tui.ts,815,Failed to fetch models: ${err instanceof Error ? err.message : err},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1539,tui,app/tui/src/ui/tui.ts,833,"Select Model (arrows to move, Enter to select, Esc to cancel)",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1540,tui,app/tui/src/ui/tui.ts,834,\u2500,\u2500,approved,PR-4.0,noise: braille spinner frame — no translation needed
 1541,tui,app/tui/src/ui/tui.ts,858,\u25b6,\u25b6,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1542,tui,app/tui/src/ui/tui.ts,887,Loading sessions...,,pending,,
-1543,tui,app/tui/src/ui/tui.ts,890,Authorization,,pending,,
-1544,tui,app/tui/src/ui/tui.ts,890,Bearer ${secret},,pending,,
-1545,tui,app/tui/src/ui/tui.ts,892,Failed to fetch sessions (${res.status}),,pending,,
-1546,tui,app/tui/src/ui/tui.ts,895,+ New session,,pending,,
-1547,tui,app/tui/src/ui/tui.ts,901,"""${fmsg.slice(0, 35)}${fmsg.length > 35 ? ""..."" : """"}""",,pending,,
-1548,tui,app/tui/src/ui/tui.ts,904,No sessions yet. Use /new to start one.,,pending,,
-1549,tui,app/tui/src/ui/tui.ts,906,Failed to fetch sessions: ${err instanceof Error ? err.message : err},,pending,,
-1550,tui,app/tui/src/ui/tui.ts,923,"Switch Session (arrows to move, Enter to select, Esc to cancel)",,pending,,
+1542,tui,app/tui/src/ui/tui.ts,887,Loading sessions...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1543,tui,app/tui/src/ui/tui.ts,890,Authorization,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1544,tui,app/tui/src/ui/tui.ts,890,Bearer ${secret},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1545,tui,app/tui/src/ui/tui.ts,892,Failed to fetch sessions (${res.status}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1546,tui,app/tui/src/ui/tui.ts,895,+ New session,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1547,tui,app/tui/src/ui/tui.ts,901,"""${fmsg.slice(0, 35)}${fmsg.length > 35 ? ""..."" : """"}""",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1548,tui,app/tui/src/ui/tui.ts,904,No sessions yet. Use /new to start one.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1549,tui,app/tui/src/ui/tui.ts,906,Failed to fetch sessions: ${err instanceof Error ? err.message : err},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1550,tui,app/tui/src/ui/tui.ts,923,"Switch Session (arrows to move, Enter to select, Esc to cancel)",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1551,tui,app/tui/src/ui/tui.ts,924,\u2500,\u2500,approved,PR-4.0,noise: braille spinner frame — no translation needed
-1552,tui,app/tui/src/ui/tui.ts,948,Building polyclaw v3...,,pending,,
-1553,tui,app/tui/src/ui/tui.ts,948,Deploying to ${target.name}...,,pending,,
-1554,tui,app/tui/src/ui/tui.ts,950,Building,,pending,,
-1555,tui,app/tui/src/ui/tui.ts,950,Deploying,,pending,,
-1556,tui,app/tui/src/ui/tui.ts,962,Reconnected to ${containerId},,pending,,
-1557,tui,app/tui/src/ui/tui.ts,964,Compose stack started (admin + runtime),,pending,,
-1558,tui,app/tui/src/ui/tui.ts,965,Deployed to ${baseUrl},,pending,,
-1559,tui,app/tui/src/ui/tui.ts,968,Deploy failed: ${err instanceof Error ? err.message : err},,pending,,
-1560,tui,app/tui/src/ui/tui.ts,969,Press Ctrl+C to exit.,,pending,,
-1561,tui,app/tui/src/ui/tui.ts,984,Waiting for server...,,pending,,
-1562,tui,app/tui/src/ui/tui.ts,985,Waiting for server,,pending,,
-1563,tui,app/tui/src/ui/tui.ts,1015,Server did not become ready.,,pending,,
-1564,tui,app/tui/src/ui/tui.ts,1016,Press Ctrl+C to exit.,,pending,,
-1565,tui,app/tui/src/ui/tui.ts,1022,Server is ready!,,pending,,
-1566,tui,app/tui/src/ui/tui.ts,1039,Admin UI: http://...?secret=XXX,,pending,,
-1567,tui,app/tui/src/ui/tui.ts,1045,Warning: Admin secret not found in logs. Status polling may fail (401).,,pending,,
-1568,tui,app/tui/src/ui/tui.ts,1056,Ctrl+C to quit,,pending,,
-1569,tui,app/tui/src/ui/tui.ts,1056,Ctrl+C to disconnect (container keeps running),,pending,,
-1570,tui,app/tui/src/ui/tui.ts,1058,Type a message and press Enter (${exitHint}),,pending,,
-1571,tui,app/tui/src/ui/tui.ts,1072,Connected,,pending,,
-1572,tui,app/tui/src/ui/tui.ts,1081,; currentReplyId = addMessage(,,pending,,
-1573,tui,app/tui/src/ui/tui.ts,1088,(no response),,pending,,
-1574,tui,app/tui/src/ui/tui.ts,1114,Tool: ${tool},,pending,,
-1575,tui,app/tui/src/ui/tui.ts,1115,Args: ${args},,pending,,
-1576,tui,app/tui/src/ui/tui.ts,1116,Press y to approve or n to deny,,pending,,
-1577,tui,app/tui/src/ui/tui.ts,1118,"[APPROVAL] press y = approve, n = deny",,pending,,
-1578,tui,app/tui/src/ui/tui.ts,1125,Approved.,,pending,,
-1579,tui,app/tui/src/ui/tui.ts,1125,Denied.,,pending,,
-1580,tui,app/tui/src/ui/tui.ts,1128,Ctrl+C to quit,,pending,,
-1581,tui,app/tui/src/ui/tui.ts,1128,Ctrl+C to disconnect,,pending,,
-1582,tui,app/tui/src/ui/tui.ts,1129,Type a message and press Enter (${exitHint}),,pending,,
-1583,tui,app/tui/src/ui/tui.ts,1133,)} -- ${String(data.reason ||,,pending,,
-1584,tui,app/tui/src/ui/tui.ts,1133,"Tool denied: ${String(data.tool || """")} -- ${String(data.reason || """")}",,pending,,
-1585,tui,app/tui/src/ui/tui.ts,1143,[${f.kind}] ${f.name},,pending,,
-1586,tui,app/tui/src/ui/tui.ts,1148,[${Array.isArray(data.cards) ? data.cards.length : 0} card(s)],,pending,,
-1587,tui,app/tui/src/ui/tui.ts,1152,Unknown error,,pending,,
-1588,tui,app/tui/src/ui/tui.ts,1161,Disconnected. Reconnecting...,,pending,,
-1589,tui,app/tui/src/ui/tui.ts,1175,Not connected,,pending,,
-1590,tui,app/tui/src/ui/tui.ts,1182,|| lower ===,,pending,,
-1591,tui,app/tui/src/ui/tui.ts,1184,|| lower ===,,pending,,
-1592,tui,app/tui/src/ui/tui.ts,1186,Approved,,pending,,
-1593,tui,app/tui/src/ui/tui.ts,1186,Denied,,pending,,
-1594,tui,app/tui/src/ui/tui.ts,1193,Shutting down...,,pending,,
-1595,tui,app/tui/src/ui/tui.ts,1221,Authorization,,pending,,
-1596,tui,app/tui/src/ui/tui.ts,1221,Bearer ${secret},,pending,,
-1597,tui,app/tui/src/ui/tui.ts,1224,refreshStatus,,pending,,
-1598,tui,app/tui/src/ui/tui.ts,1224,status endpoint returned ${res.status},,pending,,
-1599,tui,app/tui/src/ui/app.ts,120,Stopping container...,,pending,,
-1600,tui,app/tui/src/ui/app.ts,133,polyclaw v3 | Starting up...,,pending,,
-1601,tui,app/tui/src/ui/app.ts,150,\x1b[33m●\x1b[0m Building Docker image...,,pending,,
-1602,tui,app/tui/src/ui/app.ts,161,Build Output,,pending,,
-1603,tui,app/tui/src/ui/app.ts,192,Configuration,,pending,,
-1604,tui,app/tui/src/ui/app.ts,205,Admin: http://localhost:${displayPort},,pending,,
-1605,tui,app/tui/src/ui/app.ts,206,Runtime: http://localhost:8080,,pending,,
-1606,tui,app/tui/src/ui/app.ts,207,Server URL: ${serverUrl},,pending,,
-1607,tui,app/tui/src/ui/app.ts,208,(provided),,pending,,
-1608,tui,app/tui/src/ui/app.ts,208,(auto-detect),,pending,,
-1609,tui,app/tui/src/ui/app.ts,208,"Secret: ${this.cfg.secret ? ""(provided)"" : ""(auto-detect)""}",,pending,,
-1610,tui,app/tui/src/ui/app.ts,209,Project: ${this.cfg.projectRoot},,pending,,
-1611,tui,app/tui/src/ui/app.ts,219,q: quit,,pending,,
-1612,tui,app/tui/src/ui/app.ts,248,\x1b[33m●\x1b[0m Building Docker images...,,pending,,
-1613,tui,app/tui/src/ui/app.ts,253,\x1b[31m●\x1b[0m Docker build FAILED. Check output above. Press q to quit.,,pending,,
-1614,tui,app/tui/src/ui/app.ts,256,Build complete.,,pending,,
-1615,tui,app/tui/src/ui/app.ts,259,\x1b[33m●\x1b[0m Reading admin secret...,,pending,,
-1616,tui,app/tui/src/ui/app.ts,264,\x1b[33m●\x1b[0m Starting compose stack...,,pending,,
-1617,tui,app/tui/src/ui/app.ts,265,Starting admin + runtime containers...,,pending,,
-1618,tui,app/tui/src/ui/app.ts,268,Compose stack started (${this.containerId}),,pending,,
-1619,tui,app/tui/src/ui/app.ts,270,\x1b[31m●\x1b[0m Failed to start containers. Press q to quit.,,pending,,
-1620,tui,app/tui/src/ui/app.ts,271,Error: ${err instanceof Error ? err.message : err},,pending,,
-1621,tui,app/tui/src/ui/app.ts,276,Admin: http://localhost:${composeAdminPort},,pending,,
-1622,tui,app/tui/src/ui/app.ts,277,Runtime: http://localhost:8080,,pending,,
-1623,tui,app/tui/src/ui/app.ts,278,Server URL: ${serverUrl},,pending,,
-1624,tui,app/tui/src/ui/app.ts,282,\x1b[33m●\x1b[0m Waiting for server to become ready...,,pending,,
-1625,tui,app/tui/src/ui/app.ts,283,Waiting for health endpoint...,,pending,,
-1626,tui,app/tui/src/ui/app.ts,287,\x1b[33m●\x1b[0m Server did not respond in time. Launching TUI anyway...,,pending,,
-1627,tui,app/tui/src/ui/app.ts,288,Warning: /health did not respond within 90s,,pending,,
-1628,tui,app/tui/src/ui/app.ts,290,Server is healthy.,,pending,,
-1629,tui,app/tui/src/ui/app.ts,295,Reading admin secret from volume...,,pending,,
-1630,tui,app/tui/src/ui/app.ts,301,"Admin secret: ${secret.slice(0, 4)}****",,pending,,
-1631,tui,app/tui/src/ui/app.ts,303,Warning: Could not read admin secret. API calls may fail (401).,,pending,,
-1632,tui,app/tui/src/ui/app.ts,313,Admin: http://localhost:${composeAdminPort},,pending,,
-1633,tui,app/tui/src/ui/app.ts,314,Runtime: http://localhost:8080,,pending,,
-1634,tui,app/tui/src/ui/app.ts,315,Web UI: ${secret ?,,pending,,
-1635,tui,app/tui/src/ui/app.ts,315,: serverUrl},,pending,,
-1636,tui,app/tui/src/ui/app.ts,316,"Container: ${this.containerId.slice(0, 12)}",,pending,,
-1637,tui,app/tui/src/ui/app.ts,319,\x1b[32m●\x1b[0m Ready. Launching TUI...,,pending,,
-1638,tui,app/tui/src/ui/app.ts,347,polyclaw v3 | Autonomous AI Copilot,,pending,,
-1639,tui,app/tui/src/ui/app.ts,375,Tab/Shift+Tab: switch sections | q: quit,,pending,,
-1640,tui,app/tui/src/ui/app.ts,383,Web UI: ${this.api.webUiUrl},,pending,,
+1552,tui,app/tui/src/ui/tui.ts,948,Building polyclaw v3...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1553,tui,app/tui/src/ui/tui.ts,948,Deploying to ${target.name}...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1554,tui,app/tui/src/ui/tui.ts,950,Building,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1555,tui,app/tui/src/ui/tui.ts,950,Deploying,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1556,tui,app/tui/src/ui/tui.ts,962,Reconnected to ${containerId},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1557,tui,app/tui/src/ui/tui.ts,964,Compose stack started (admin + runtime),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1558,tui,app/tui/src/ui/tui.ts,965,Deployed to ${baseUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1559,tui,app/tui/src/ui/tui.ts,968,Deploy failed: ${err instanceof Error ? err.message : err},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1560,tui,app/tui/src/ui/tui.ts,969,Press Ctrl+C to exit.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1561,tui,app/tui/src/ui/tui.ts,984,Waiting for server...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1562,tui,app/tui/src/ui/tui.ts,985,Waiting for server,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1563,tui,app/tui/src/ui/tui.ts,1015,Server did not become ready.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1564,tui,app/tui/src/ui/tui.ts,1016,Press Ctrl+C to exit.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1565,tui,app/tui/src/ui/tui.ts,1022,Server is ready!,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1566,tui,app/tui/src/ui/tui.ts,1039,Admin UI: http://...?secret=XXX,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1567,tui,app/tui/src/ui/tui.ts,1045,Warning: Admin secret not found in logs. Status polling may fail (401).,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1568,tui,app/tui/src/ui/tui.ts,1056,Ctrl+C to quit,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1569,tui,app/tui/src/ui/tui.ts,1056,Ctrl+C to disconnect (container keeps running),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1570,tui,app/tui/src/ui/tui.ts,1058,Type a message and press Enter (${exitHint}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1571,tui,app/tui/src/ui/tui.ts,1072,Connected,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1572,tui,app/tui/src/ui/tui.ts,1081,; currentReplyId = addMessage(,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1573,tui,app/tui/src/ui/tui.ts,1088,(no response),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1574,tui,app/tui/src/ui/tui.ts,1114,Tool: ${tool},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1575,tui,app/tui/src/ui/tui.ts,1115,Args: ${args},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1576,tui,app/tui/src/ui/tui.ts,1116,Press y to approve or n to deny,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1577,tui,app/tui/src/ui/tui.ts,1118,"[APPROVAL] press y = approve, n = deny",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1578,tui,app/tui/src/ui/tui.ts,1125,Approved.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1579,tui,app/tui/src/ui/tui.ts,1125,Denied.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1580,tui,app/tui/src/ui/tui.ts,1128,Ctrl+C to quit,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1581,tui,app/tui/src/ui/tui.ts,1128,Ctrl+C to disconnect,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1582,tui,app/tui/src/ui/tui.ts,1129,Type a message and press Enter (${exitHint}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1583,tui,app/tui/src/ui/tui.ts,1133,)} -- ${String(data.reason ||,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1584,tui,app/tui/src/ui/tui.ts,1133,"Tool denied: ${String(data.tool || """")} -- ${String(data.reason || """")}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1585,tui,app/tui/src/ui/tui.ts,1143,[${f.kind}] ${f.name},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1586,tui,app/tui/src/ui/tui.ts,1148,[${Array.isArray(data.cards) ? data.cards.length : 0} card(s)],,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1587,tui,app/tui/src/ui/tui.ts,1152,Unknown error,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1588,tui,app/tui/src/ui/tui.ts,1161,Disconnected. Reconnecting...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1589,tui,app/tui/src/ui/tui.ts,1175,Not connected,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1590,tui,app/tui/src/ui/tui.ts,1182,|| lower ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1591,tui,app/tui/src/ui/tui.ts,1184,|| lower ===,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1592,tui,app/tui/src/ui/tui.ts,1186,Approved,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1593,tui,app/tui/src/ui/tui.ts,1186,Denied,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1594,tui,app/tui/src/ui/tui.ts,1193,Shutting down...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1595,tui,app/tui/src/ui/tui.ts,1221,Authorization,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1596,tui,app/tui/src/ui/tui.ts,1221,Bearer ${secret},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1597,tui,app/tui/src/ui/tui.ts,1224,refreshStatus,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1598,tui,app/tui/src/ui/tui.ts,1224,status endpoint returned ${res.status},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1599,tui,app/tui/src/ui/app.ts,120,Stopping container...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1600,tui,app/tui/src/ui/app.ts,133,polyclaw v3 | Starting up...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1601,tui,app/tui/src/ui/app.ts,150,\x1b[33m●\x1b[0m Building Docker image...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1602,tui,app/tui/src/ui/app.ts,161,Build Output,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1603,tui,app/tui/src/ui/app.ts,192,Configuration,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1604,tui,app/tui/src/ui/app.ts,205,Admin: http://localhost:${displayPort},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1605,tui,app/tui/src/ui/app.ts,206,Runtime: http://localhost:8080,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1606,tui,app/tui/src/ui/app.ts,207,Server URL: ${serverUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1607,tui,app/tui/src/ui/app.ts,208,(provided),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1608,tui,app/tui/src/ui/app.ts,208,(auto-detect),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1609,tui,app/tui/src/ui/app.ts,208,"Secret: ${this.cfg.secret ? ""(provided)"" : ""(auto-detect)""}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1610,tui,app/tui/src/ui/app.ts,209,Project: ${this.cfg.projectRoot},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1611,tui,app/tui/src/ui/app.ts,219,q: quit,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1612,tui,app/tui/src/ui/app.ts,248,\x1b[33m●\x1b[0m Building Docker images...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1613,tui,app/tui/src/ui/app.ts,253,\x1b[31m●\x1b[0m Docker build FAILED. Check output above. Press q to quit.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1614,tui,app/tui/src/ui/app.ts,256,Build complete.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1615,tui,app/tui/src/ui/app.ts,259,\x1b[33m●\x1b[0m Reading admin secret...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1616,tui,app/tui/src/ui/app.ts,264,\x1b[33m●\x1b[0m Starting compose stack...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1617,tui,app/tui/src/ui/app.ts,265,Starting admin + runtime containers...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1618,tui,app/tui/src/ui/app.ts,268,Compose stack started (${this.containerId}),,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1619,tui,app/tui/src/ui/app.ts,270,\x1b[31m●\x1b[0m Failed to start containers. Press q to quit.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1620,tui,app/tui/src/ui/app.ts,271,Error: ${err instanceof Error ? err.message : err},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1621,tui,app/tui/src/ui/app.ts,276,Admin: http://localhost:${composeAdminPort},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1622,tui,app/tui/src/ui/app.ts,277,Runtime: http://localhost:8080,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1623,tui,app/tui/src/ui/app.ts,278,Server URL: ${serverUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1624,tui,app/tui/src/ui/app.ts,282,\x1b[33m●\x1b[0m Waiting for server to become ready...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1625,tui,app/tui/src/ui/app.ts,283,Waiting for health endpoint...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1626,tui,app/tui/src/ui/app.ts,287,\x1b[33m●\x1b[0m Server did not respond in time. Launching TUI anyway...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1627,tui,app/tui/src/ui/app.ts,288,Warning: /health did not respond within 90s,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1628,tui,app/tui/src/ui/app.ts,290,Server is healthy.,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1629,tui,app/tui/src/ui/app.ts,295,Reading admin secret from volume...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1630,tui,app/tui/src/ui/app.ts,301,"Admin secret: ${secret.slice(0, 4)}****",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1631,tui,app/tui/src/ui/app.ts,303,Warning: Could not read admin secret. API calls may fail (401).,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1632,tui,app/tui/src/ui/app.ts,313,Admin: http://localhost:${composeAdminPort},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1633,tui,app/tui/src/ui/app.ts,314,Runtime: http://localhost:8080,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1634,tui,app/tui/src/ui/app.ts,315,Web UI: ${secret ?,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1635,tui,app/tui/src/ui/app.ts,315,: serverUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1636,tui,app/tui/src/ui/app.ts,316,"Container: ${this.containerId.slice(0, 12)}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1637,tui,app/tui/src/ui/app.ts,319,\x1b[32m●\x1b[0m Ready. Launching TUI...,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1638,tui,app/tui/src/ui/app.ts,347,polyclaw v3 | Autonomous AI Copilot,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1639,tui,app/tui/src/ui/app.ts,375,Tab/Shift+Tab: switch sections | q: quit,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1640,tui,app/tui/src/ui/app.ts,383,Web UI: ${this.api.webUiUrl},,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1641,tui,app/tui/src/ui/app.ts,442,\x1b[32m,\x1b[32m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
 1642,tui,app/tui/src/ui/app.ts,443,\x1b[33m,\x1b[33m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
-1643,tui,app/tui/src/ui/app.ts,453,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,pending,,
-1644,tui,app/tui/src/ui/app.ts,454,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,pending,,
-1645,tui,app/tui/src/ui/app.ts,457,"\x1b[33m●\x1b[0m polyclaw v3 | ${ctrPieces.join("" "")}",,pending,,
-1646,tui,app/tui/src/ui/app.ts,465,\x1b[32mOK\x1b[0m,,pending,,
-1647,tui,app/tui/src/ui/app.ts,465,\x1b[31m--\x1b[0m,,pending,,
-1648,tui,app/tui/src/ui/app.ts,465,"Azure: ${azOk ? ""\x1b[32mOK\x1b[0m"" : ""\x1b[31m--\x1b[0m""}",,pending,,
-1649,tui,app/tui/src/ui/app.ts,466,\x1b[32mOK\x1b[0m,,pending,,
-1650,tui,app/tui/src/ui/app.ts,466,\x1b[90m--\x1b[0m,,pending,,
-1651,tui,app/tui/src/ui/app.ts,466,"Tunnel: ${tunnelOk ? ""\x1b[32mOK\x1b[0m"" : ""\x1b[90m--\x1b[0m""}",,pending,,
+1643,tui,app/tui/src/ui/app.ts,453,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1644,tui,app/tui/src/ui/app.ts,454,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1645,tui,app/tui/src/ui/app.ts,457,"\x1b[33m●\x1b[0m polyclaw v3 | ${ctrPieces.join("" "")}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1646,tui,app/tui/src/ui/app.ts,465,\x1b[32mOK\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1647,tui,app/tui/src/ui/app.ts,465,\x1b[31m--\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1648,tui,app/tui/src/ui/app.ts,465,"Azure: ${azOk ? ""\x1b[32mOK\x1b[0m"" : ""\x1b[31m--\x1b[0m""}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1649,tui,app/tui/src/ui/app.ts,466,\x1b[32mOK\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1650,tui,app/tui/src/ui/app.ts,466,\x1b[90m--\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1651,tui,app/tui/src/ui/app.ts,466,"Tunnel: ${tunnelOk ? ""\x1b[32mOK\x1b[0m"" : ""\x1b[90m--\x1b[0m""}",,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1652,tui,app/tui/src/ui/app.ts,473,\x1b[32m,\x1b[32m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
 1653,tui,app/tui/src/ui/app.ts,474,\x1b[33m,\x1b[33m,approved,PR-4.0,noise: ANSI escape sequence — no translation needed
-1654,tui,app/tui/src/ui/app.ts,483,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,pending,,
-1655,tui,app/tui/src/ui/app.ts,484,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,pending,,
-1656,tui,app/tui/src/ui/app.ts,487,\x1b[32m●\x1b[0m,,pending,,
-1657,tui,app/tui/src/ui/app.ts,487,\x1b[33m●\x1b[0m,,pending,,
-1658,tui,app/tui/src/ui/disclaimer.ts,45,as is,,pending,,
+1654,tui,app/tui/src/ui/app.ts,483,Admin: ${cColor(cs.admin.health)}${cLabel(cs.admin.health)}\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1655,tui,app/tui/src/ui/app.ts,484,Runtime: ${cColor(cs.runtime.health)}${cLabel(cs.runtime.health)}\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1656,tui,app/tui/src/ui/app.ts,487,\x1b[32m●\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1657,tui,app/tui/src/ui/app.ts,487,\x1b[33m●\x1b[0m,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
+1658,tui,app/tui/src/ui/disclaimer.ts,45,as is,,translated,PR-4.2,PR-4.2 translated in source file (TUI Phase 4)
 1659,tui,app/tui/src/deploy/process.ts,51,--output json,,pending,,
 1660,tui,app/tui/src/deploy/process.ts,58,The behavior of this command has been altered,,pending,,
 1661,tui,app/tui/src/deploy/aca.ts,7,. It calls,,pending,,
