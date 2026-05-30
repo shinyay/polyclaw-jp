@@ -59,6 +59,7 @@ UI、Bot、Voice、Toast、LLM 応答など、体験に直結する面は日本�
 | [`phase-plan.md`](phase-plan.md) | 実装フェーズ計画です。Phase 1-5 の作業順序、成果物、完了条件、合計 33 PR の分割を整理します。 |
 | [`smoke-test-results.md`](smoke-test-results.md) | Phase 1 LLM 実機検証結果です。日本語応答品質、絵文字方針、bootstrap 動作の確認記録です。 |
 | [`phase2-smoke.md`](phase2-smoke.md) | Phase 2 Frontend スモークテスト結果です。794 entries 翻訳完了、E2E 結果、Phase 3 引き継ぎ事項を記録します。 |
+| [`phase3-smoke.md`](phase3-smoke.md) | Phase 3 Backend スモークテスト結果です。98 entries 翻訳完了、in-process smoke 22/22 PASS、CI green 3 PR 連続、Telegram bot 手動検証手順を記録します。 |
 | [`testid-convention.md`](testid-convention.md) | `data-testid` 命名規約です。E2E テストの安定化のため、PR-2.0 で策定しました。 |
 
 ### 読む順序
