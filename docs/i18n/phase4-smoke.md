@@ -432,6 +432,73 @@ exitOnCtrlC: true,  // (was: false)
 
 これは Phase 5 Wave 1-A の smoke spec (§4.2) に **後から追加** すべき。「Ctrl+C 検証」は当初 §4.2.2 (Disclaimer 後の脱出パス) のみだったが、**起動完了後の TUI 内からの脱出** も明示的に検証する必要がある。
 
+#### 4.4.5 PR-5.0.3 実機検証結果 (2026-05-30) — Ctrl+C 動作、container は orphan
+
+PR-5.0.3 (`exitOnCtrlC: true`) commit 後の実機 smoke test 結果:
+
+| 検証項目 | 結果 |
+|---|---|
+| Ctrl+C で TUI 終了 | ✅ 動作 (複数回押下した場合あり、後述) |
+| プロンプト復帰 | ✅ 復帰 |
+| Docker container 自動停止 | ❌ **失敗** — `polyclaw-runtime` Exit(137) / `polyclaw-admin` Up のまま orphan |
+
+**Exit code 137 の意味**: SIGKILL で強制終了 = graceful shutdown 不発。Docker daemon が healthcheck timeout 後に kill した可能性が高い。`polyclaw-admin` は `polyclaw-runtime` の depends_on 関係を介して残留。
+
+**根本原因** (再分析):
+- `@opentui/core` の `exitOnCtrlC: true` は **`process.exit(0)` を即座に呼ぶ**
+- `process.exit(0)` は同期 hook (`process.on("exit", ...)`) のみ実行 — async 関数は **silently 中断**
+- `shutdown()` の `await target.disconnect(containerId)` = `docker compose down` (async exec) は中断され、container が残る
+- `safeExit()` は sync hook だが、当時は renderer cleanup のみで container 停止処理を含まなかった
+
+→ **PR-5.0.4 で対処**: §4.4.6 参照
+
+#### 4.4.6 PR-5.0.4 — Sync container cleanup via execSync in exit hook
+
+**修正方針** (B案、§4.4.5 で確定):
+- `process.on("exit")` の `safeExit()` hook 内で **synchronous** に `docker compose down --remove-orphans` を実行
+- async 中断問題を回避し、Ctrl+C 後 3-10 秒 sync block して container を確実に停止
+- `process.exit(0)` 直前に走るため、ユーザは TUI 消失後 stderr に進捗 1 行 + container 停止を待つ
+
+**実装**:
+1. `app/tui/src/deploy/target.ts` の `DeployTarget` interface に `disconnectSync?(): void` 追加 (optional)
+2. `app/tui/src/deploy/docker.ts` に `tearDownSync()` を export 追加:
+   ```typescript
+   export function tearDownSync(): void {
+     try {
+       execSync("docker compose down --remove-orphans", {
+         cwd: PROJECT_ROOT,
+         stdio: "ignore",
+         timeout: 15000,
+       });
+     } catch { /* ignore */ }
+     try { removeAzureOverride(); } catch { /* ignore */ }
+   }
+   ```
+3. `DockerDeployTarget.disconnectSync()` 実装 (ACA は no-op で skip)
+4. `app/tui/src/ui/tui.ts:safeExit` で呼ぶ:
+   ```typescript
+   if (containerId && target.disconnectSync) {
+     process.stderr.write("コンテナーを停止しています...\n");
+     try { target.disconnectSync(); } catch { /* ignore */ }
+   }
+   ```
+
+**設計の選択理由**:
+- `execSync` は Node.js API だが Bun runtime でも完全互換 ✅
+- 15 秒 timeout で wedged Docker daemon の無限 block を防止
+- `stdio: "ignore"` で TUI 消失後の terminal に余計な出力を出さない (進捗は別途 stderr 1 行のみ)
+- ACA target は cloud lifecycle が CLI exit を超えて続くため `disconnectSync` を実装しない (intentional)
+
+**「複数回 Ctrl+C 押下」現象の解説**:
+- 1 回目: OpenTui が `process.exit(0)` 開始 → exit hook 起動 → `execSync` で 3-10 秒 block
+- 2 回目以降: 既に process が exit 中 → 無視される (Bun runtime の挙動)
+- → PR-5.0.4 後は 1 回押下 + 数秒待機で完了する想定 (要再検証)
+
+**動作確認** (commit 前):
+- `bun run typecheck`: ✅ exit 0
+- `bun test`: ✅ 103/103 pass
+- 実機: ユーザ Step H + `docker ps -a | grep polyclaw` で `polyclaw-*` が **存在しない or Exited(0)** 確認待ち
+
 ---
 
 ## 5. Phase 5 backlog (PR-5.0 critical hotfix + 改善項目)
@@ -448,6 +515,7 @@ exitOnCtrlC: true,  // (was: false)
 | 🟡 P1 | `ui/tui.ts:412` | `activityText = "Thinking"` → `"考え中"` | status bar の英語 leak 解消 |
 | 🟢 P2 | `ui/app.ts:94` | `useAlternateScreen: true` 削除 | `@opentui/core` 0.1.107 API 追従、typecheck error 解消 → **⚠️ PR-5.0.2 で revert** (当初 Ctrl+C bug の犯人と推定したが §4.4.3 で仮説誤りと判明、safety net として復元維持) |
 | 🔴 P0 (PR-5.0.3) | `ui/tui.ts:130` | `exitOnCtrlC: false` → `true` | **upstream `ee923da` 由来の長年 Ctrl+C bug の真の修正** — `\x03` を自前 handler で捕捉する設計は @opentui/core 0.1.107 で動作せず (focused InputRenderable が消費)、OpenTui のデフォルト処理に任せる方針に変更 |
+| 🔴 P0 (PR-5.0.4) | `deploy/target.ts` + `deploy/docker.ts` + `ui/tui.ts:safeExit` | `DeployTarget.disconnectSync?()` 追加 + `tearDownSync()` (execSync) 実装 + exit hook で sync container cleanup | **PR-5.0.3 後の container orphan 問題修正** — `process.exit(0)` で async `docker compose down` が中断されて `polyclaw-runtime` Exit(137) / `polyclaw-admin` Up のまま残る現象を、exit hook での sync `execSync('docker compose down --remove-orphans')` で解決 (§4.4.6) |
 | 🔴 P0 (PR-5.0.1) | `runtime/agent/agent.py:258-259` | 認証エラーメッセージ JA 化 | backend i18n 漏れ修正、chat 最初のインタラクションで露見する critical path |
 | 🟡 P1 (PR-5.0.1) | `tui/{screens/chat.ts:138,143,256, ui/tui.ts:750,759,764}` | chat role label `Bot:` → `ポリ:` (6 箇所) | `あなた:` ↔ `Bot:` 不整合解消、mascot 名 `ポリ` (Polyclaw のフクロウ Poly) 採用 |
 

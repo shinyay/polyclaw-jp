@@ -11,6 +11,7 @@
  * down` is called on exit.
  */
 
+import { execSync } from "child_process";
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import { homedir } from "os";
 import { join, resolve } from "path";
@@ -162,6 +163,40 @@ export async function stopContainer(_containerId: string): Promise<void> {
     // May already be stopped
   }
   removeAzureOverride();
+}
+
+/**
+ * Synchronously stop the compose stack.
+ *
+ * Called from the process exit hook (`process.on("exit")`) where async
+ * functions cannot be awaited. Without this sync path, `exitOnCtrlC: true`
+ * makes `@opentui/core` invoke `process.exit(0)` before the async
+ * `stopContainer()` completes, orphaning both containers (admin keeps
+ * running and runtime gets SIGKILL'd by the Docker daemon, exiting with
+ * code 137). See `docs/i18n/phase4-smoke.md` §4.4.6 for the smoke test
+ * that uncovered this.
+ *
+ * Implementation notes:
+ *   - Uses `child_process.execSync` (Node-compatible, supported by Bun).
+ *   - 15 s timeout so a wedged Docker daemon cannot block exit forever.
+ *   - `stdio: "ignore"` to keep the terminal clean while the user waits.
+ *   - All errors are swallowed: this is best-effort cleanup at exit time.
+ */
+export function tearDownSync(): void {
+  try {
+    execSync("docker compose down --remove-orphans", {
+      cwd: PROJECT_ROOT,
+      stdio: "ignore",
+      timeout: 15000,
+    });
+  } catch {
+    // Stack may not be running, docker daemon may be down, or timeout hit -- ignore.
+  }
+  try {
+    removeAzureOverride();
+  } catch {
+    /* ignore */
+  }
 }
 
 /** Read the admin secret from the shared data volume.
@@ -351,6 +386,10 @@ export class DockerDeployTarget implements DeployTarget {
 
   async disconnect(instanceId: string): Promise<void> {
     await stopContainer(instanceId);
+  }
+
+  disconnectSync(): void {
+    tearDownSync();
   }
 
   async getAdminSecret(_instanceId?: string): Promise<string> {

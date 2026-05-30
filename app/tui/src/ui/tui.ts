@@ -119,6 +119,19 @@ export async function launchTUI(
     try { renderer.stop(); } catch { /* ignore */ }
     try { renderer.destroy(); } catch { /* ignore */ }
     resetTerminal();
+    // PR-5.0.4: synchronous container cleanup at exit time.
+    //   exitOnCtrlC: true (PR-5.0.3) makes @opentui/core call process.exit(0)
+    //   without awaiting the async shutdown() path, so target.disconnect()
+    //   (docker compose down) never completes. The process.on("exit") hook
+    //   only runs sync code -- async functions are silently dropped.
+    //   target.disconnectSync() is an optional escape hatch that runs
+    //   `docker compose down --remove-orphans` synchronously via execSync.
+    //   ACA target does not implement it because cloud lifecycle outlives
+    //   the CLI. See docs/i18n/phase4-smoke.md §4.4.6.
+    if (containerId && target.disconnectSync) {
+      try { process.stderr.write("コンテナーを停止しています...\n"); } catch { /* ignore */ }
+      try { target.disconnectSync(); } catch { /* ignore */ }
+    }
   };
   process.on("exit", safeExit);
   process.on("SIGTERM", () => { shutdown(); });
