@@ -15,7 +15,33 @@ IMAGE_NAME = "polyclaw"
 BOT_CONTRIBUTOR_ROLE = "Azure Bot Service Contributor Role"
 RG_READER_ROLE = "Reader"
 KV_SECRETS_ROLE = "Key Vault Secrets Officer"
+KV_SECRETS_USER_ROLE = "Key Vault Secrets User"
+COGNITIVE_SERVICES_USER_ROLE = "Cognitive Services User"
 SESSION_EXECUTOR_ROLE = "Azure ContainerApps Session Executor"
+
+
+def cognitive_services_scope(
+    subscription_id: str,
+    resource_group: str,
+    account_name: str,
+) -> str:
+    """Return the ARM scope for a Cognitive Services (Foundry) account."""
+    return (
+        f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}"
+        f"/providers/Microsoft.CognitiveServices/accounts/{account_name}"
+    )
+
+
+def key_vault_scope(
+    subscription_id: str,
+    resource_group: str,
+    vault_name: str,
+) -> str:
+    """Return the ARM scope for a Key Vault."""
+    return (
+        f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}"
+        f"/providers/Microsoft.KeyVault/vaults/{vault_name}"
+    )
 
 
 def session_pool_scope(subscription_id: str) -> str | None:
