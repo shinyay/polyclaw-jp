@@ -49,3 +49,6 @@ docs/.hugo_build.lock
 docs/i18n/inventory.csv.bak
 presentations/~$polyclaw.pptx
 customer
+
+# Deploy-aca override backups (auto-created by scripts/deploy-aca.sh)
+docker-compose.override.yml.bak.*
