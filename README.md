@@ -113,6 +113,30 @@ For full setup instructions, configuration reference, and feature guides, see th
 > [!NOTE]
 > For local development with `docker compose`, `scripts/run-tui.sh` automatically injects your `az login` credentials into the runtime container on every TUI launch. See [docs/local-dev/runtime-auth.md](./docs/local-dev/runtime-auth.md) for details, troubleshooting, and the underlying authentication pipeline.
 
+## Quick Azure Deploy (this fork)
+
+This fork ships two helper scripts that automate the curl-based deployment path (verified end-to-end), more reliable than the TUI for unattended use:
+
+```bash
+# Deploy: admin (local) + runtime (ACA), all RBAC auto-assigned
+POLYCLAW_SETUP_RG=polyclaw-rg ./scripts/deploy-aca.sh
+
+# Tear down: deletes RG and purges soft-deleted Key Vault / Foundry
+POLYCLAW_SETUP_RG=polyclaw-rg ./scripts/destroy-aca.sh --yes
+```
+
+| Aspect | Behavior |
+|--------|----------|
+| **Foundry idempotency** | Skips deploy if `/api/setup/foundry/status` reports `deployed=true` with models |
+| **ACA idempotency** | Always re-deploys (the API internally cleans stale ACA/ACR/MI resources before rebuild) |
+| **Override file** | Generates `docker-compose.override.yml` automatically; existing files are backed up with a timestamp |
+| **Confirmation** | `destroy-aca.sh` requires typing the exact RG name to confirm; `--yes` skips that prompt but still prints a resource summary |
+| **Soft-delete cleanup** | `destroy-aca.sh` purges soft-deleted Key Vault and Cognitive Services entries so names can be reused immediately |
+
+Env var precedence: `POLYCLAW_SETUP_RG` (preferred, matches existing TUI env design) > `POLYCLAW_RG` (short alias). Setting both with different values fails fast. See the script headers for the full list of optional variables (`POLYCLAW_SETUP_LOCATION`, `POLYCLAW_IMAGE_TAG`, etc.).
+
+After deploy completes, open the printed URL (`http://localhost:9090/?secret=<ADMIN_SECRET>`) — the local admin proxies all `/api/*` requests to the ACA runtime.
+
 ## Security, Governance & Responsible AI
 
 Polyclaw is in **early preview**. Treat it as experimental software and read this section carefully.
