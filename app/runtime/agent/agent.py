@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import threading
 from collections.abc import Callable
 from time import monotonic as _now
@@ -385,8 +386,18 @@ class Agent:
 
     @staticmethod
     def _list_foundry_models() -> list[dict]:
-        """Return models deployed on the Foundry endpoint."""
-        raw = cfg.env.read("DEPLOYED_MODELS") or ""
+        """Return models deployed on the Foundry endpoint.
+
+        Reads ``DEPLOYED_MODELS`` from the on-disk env file first (admin
+        container pattern, written by the deployment wizard). Falls back to
+        ``os.environ`` so ACA runtime containers -- which receive their
+        configuration as container env vars rather than a ``.env`` file --
+        also expose every Foundry deployment in the UI's model picker.
+        """
+        raw = (
+            cfg.env.read("DEPLOYED_MODELS")
+            or os.getenv("DEPLOYED_MODELS", "")
+        )
         names = [n.strip() for n in raw.split(",") if n.strip()] if raw else []
         if not names:
             names = [cfg.copilot_model]

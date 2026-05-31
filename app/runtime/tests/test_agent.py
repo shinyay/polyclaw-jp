@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from app.runtime.agent.agent import Agent, MAX_START_RETRIES
+from app.runtime.config.settings import cfg
 
 
 class TestAgentInit:
@@ -186,6 +187,55 @@ class TestAgentListModels:
         a = Agent()
         with pytest.raises(RuntimeError, match="起動していません"):
             await a.list_models()
+
+
+class TestListFoundryModels:
+    """BYOK mode: ``_list_foundry_models`` resolves DEPLOYED_MODELS from
+    either the on-disk env file (admin) or container env vars (ACA runtime).
+    """
+
+    def test_from_env_file(self, monkeypatch):
+        """Admin container pattern: ``DEPLOYED_MODELS`` is in /data/.env."""
+        monkeypatch.delenv("DEPLOYED_MODELS", raising=False)
+        monkeypatch.setattr(
+            cfg.env, "read",
+            lambda k: "gpt-4.1,gpt-5,gpt-5-mini" if k == "DEPLOYED_MODELS" else "",
+        )
+        models = Agent._list_foundry_models()
+        assert [m["id"] for m in models] == ["gpt-4.1", "gpt-5", "gpt-5-mini"]
+        assert all(m["policy"] == "enabled" for m in models)
+
+    def test_from_env_var_fallback(self, monkeypatch):
+        """ACA runtime pattern: no .env file but env var is set."""
+        monkeypatch.setattr(cfg.env, "read", lambda _k: "")
+        monkeypatch.setenv("DEPLOYED_MODELS", "gpt-4.1,gpt-5,gpt-5-mini")
+        models = Agent._list_foundry_models()
+        assert [m["id"] for m in models] == ["gpt-4.1", "gpt-5", "gpt-5-mini"]
+
+    def test_env_file_takes_precedence(self, monkeypatch):
+        """If both sources are set, the env file wins."""
+        monkeypatch.setattr(
+            cfg.env, "read",
+            lambda k: "gpt-4.1" if k == "DEPLOYED_MODELS" else "",
+        )
+        monkeypatch.setenv("DEPLOYED_MODELS", "gpt-5,gpt-5-mini")
+        models = Agent._list_foundry_models()
+        assert [m["id"] for m in models] == ["gpt-4.1"]
+
+    def test_neither_source_falls_back_to_copilot_model(self, monkeypatch):
+        """When nothing is configured, return the single active model."""
+        monkeypatch.setattr(cfg.env, "read", lambda _k: "")
+        monkeypatch.delenv("DEPLOYED_MODELS", raising=False)
+        monkeypatch.setattr(cfg, "copilot_model", "gpt-4.1")
+        models = Agent._list_foundry_models()
+        assert [m["id"] for m in models] == ["gpt-4.1"]
+
+    def test_whitespace_and_empty_entries_stripped(self, monkeypatch):
+        """Tolerate sloppy comma-separated input."""
+        monkeypatch.setattr(cfg.env, "read", lambda _k: "")
+        monkeypatch.setenv("DEPLOYED_MODELS", "gpt-4.1, ,gpt-5  ,,")
+        models = Agent._list_foundry_models()
+        assert [m["id"] for m in models] == ["gpt-4.1", "gpt-5"]
 
 
 class TestBuildSessionConfig:
