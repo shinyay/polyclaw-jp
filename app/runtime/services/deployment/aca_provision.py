@@ -14,7 +14,13 @@ from ..cloud._azure_rbac import (
     BOT_CONTRIBUTOR_ROLE as _BOT_CONTRIBUTOR_ROLE,
 )
 from ..cloud._azure_rbac import (
+    COGNITIVE_SERVICES_USER_ROLE as _COGNITIVE_SERVICES_USER_ROLE,
+)
+from ..cloud._azure_rbac import (
     IMAGE_NAME as _IMAGE_NAME,
+)
+from ..cloud._azure_rbac import (
+    KV_SECRETS_USER_ROLE as _KV_SECRETS_USER_ROLE,
 )
 from ..cloud._azure_rbac import (
     MI_NAME as _MI_NAME,
@@ -24,6 +30,12 @@ from ..cloud._azure_rbac import (
 )
 from ..cloud._azure_rbac import (
     SESSION_EXECUTOR_ROLE as _SESSION_EXECUTOR_ROLE,
+)
+from ..cloud._azure_rbac import (
+    cognitive_services_scope as _cognitive_services_scope,
+)
+from ..cloud._azure_rbac import (
+    key_vault_scope as _key_vault_scope,
 )
 from ..cloud._azure_rbac import (
     session_pool_scope as _session_pool_scope,
@@ -197,8 +209,32 @@ def assign_rbac(
     mi_principal_id: str,
     resource_group: str,
     steps: StepTracker,
+    foundry_name: str = "",
+    kv_name: str = "",
+    foundry_rg: str = "",
+    kv_rg: str = "",
 ) -> None:
-    """Assign RBAC roles to the managed identity."""
+    """Assign RBAC roles to the managed identity.
+
+    Always assigns Bot Service Contributor + Reader on the runtime resource
+    group. When ``foundry_name`` / ``kv_name`` are non-empty (typical for a
+    fresh ``aca-setup`` deployment) the identity also gets:
+
+      * ``Cognitive Services User`` on the Foundry account -- required for
+        the runtime to mint Bearer tokens for the BYOK chat completion API.
+      * ``Key Vault Secrets User`` on the Key Vault -- required for the
+        runtime to resolve ``@kv:`` references at startup.
+
+    Without these two scoped assignments, the deployment succeeds but the
+    first chat request fails with ``[byok] az get-access-token failed``
+    even though ``az login --identity`` was successful at container start.
+
+    By default the Foundry / Key Vault scopes use ``resource_group`` (the
+    typical ``aca-setup`` single-RG layout). When ``foundry_rg`` / ``kv_rg``
+    are provided (e.g. existing pre-provisioned KV in a separate
+    ``polyclaw-prereq-rg``) they take precedence so the assignment lands on
+    the correct ARM scope.
+    """
     logger.info("[aca] Step 6/10: Assigning RBAC ...")
     account = az.account_info()
     sub_id = account.get("id", "") if account else ""
@@ -206,6 +242,20 @@ def assign_rbac(
 
     for role in (_BOT_CONTRIBUTOR_ROLE, _RG_READER_ROLE):
         _assign_role_with_retry(az, mi_principal_id, role, rg_scope, steps)
+
+    if sub_id and foundry_name:
+        _assign_role_with_retry(
+            az, mi_principal_id, _COGNITIVE_SERVICES_USER_ROLE,
+            _cognitive_services_scope(sub_id, foundry_rg or resource_group, foundry_name),
+            steps,
+        )
+
+    if sub_id and kv_name:
+        _assign_role_with_retry(
+            az, mi_principal_id, _KV_SECRETS_USER_ROLE,
+            _key_vault_scope(sub_id, kv_rg or resource_group, kv_name),
+            steps,
+        )
 
     session_scope = _session_pool_scope(sub_id)
     if session_scope:

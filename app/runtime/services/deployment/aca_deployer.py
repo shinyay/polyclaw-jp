@@ -102,7 +102,13 @@ class AcaDeployer:
                 result.error = "Managed identity creation failed"
                 return result
 
-            assign_rbac(self._az, mi_client_id, req.resource_group, steps)
+            assign_rbac(
+                self._az, mi_client_id, req.resource_group, steps,
+                foundry_name=env_vars.get("FOUNDRY_NAME", "") or cfg.foundry_name,
+                kv_name=env_vars.get("KEY_VAULT_NAME", ""),
+                foundry_rg=env_vars.get("FOUNDRY_RESOURCE_GROUP", "") or cfg.foundry_resource_group,
+                kv_rg=env_vars.get("KEY_VAULT_RG", ""),
+            )
 
             env_name, env_id = ensure_aca_environment(
                 self._az, req.resource_group, req.location, steps, rec,
